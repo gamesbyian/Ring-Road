@@ -180,15 +180,15 @@
             dpByRing.push(next);
           }
 
-          const totals = [...dpByRing[RING_COUNT].keys()]
-            .filter((baseMoves) => baseMoves <= level.targetMoves && (level.targetMoves - baseMoves) % 2 === 0)
-            .sort((a, b) => b - a);
+          const exactBaseMoves = dpByRing[RING_COUNT].has(level.targetMoves) ? level.targetMoves : null;
+          const fallbackBaseMoves = [...dpByRing[RING_COUNT].keys()]
+            .filter((baseMoves) => baseMoves < level.targetMoves && (level.targetMoves - baseMoves) % 2 === 0)
+            .sort((a, b) => b - a)[0];
+          const chosenBaseMoves = exactBaseMoves ?? fallbackBaseMoves;
 
-          if (totals.length === 0) {
+          if (chosenBaseMoves == null) {
             return;
           }
-
-          const chosenBaseMoves = totals[0];
           const selectedRingOptions = Array(RING_COUNT).fill(null);
           let runningMoves = chosenBaseMoves;
 
@@ -202,6 +202,8 @@
             sharedSpoke: candidate.sharedSpoke,
             minMoveSum: candidate.minMoveSum,
             baseMoves: chosenBaseMoves,
+            extraBurnMoves: level.targetMoves - chosenBaseMoves,
+            targetMoves: level.targetMoves,
             selectedRingOptions,
           });
         });
@@ -245,20 +247,46 @@
             return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${cwMoves} CW` };
           });
         }, [level]);
-        const exactSolutionParts = useMemo(() => {
+        const exactSolutionPlan = useMemo(() => {
           if (!levelSolution?.hasExactTargetSolution || !levelSolution.exactTargetPlan?.selectedRingOptions) {
-            return [];
+            return { heading: "", parts: [] };
           }
 
-          return BUTTON_ORDER.map((ringIndex) => {
+          const ringParts = BUTTON_ORDER.map((ringIndex) => {
             const ringOption = levelSolution.exactTargetPlan.selectedRingOptions[ringIndex];
             const directionText = ringOption.distance === 0 ? "0" : `${ringOption.distance} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
             return {
               label: RING_LABELS[ringIndex],
               color: COLORS[ringIndex],
               text: `${RING_LABELS[ringIndex]}: ${directionText}`,
+              plannedMoves: ringOption.distance,
             };
           });
+
+          const burnMoves = levelSolution.exactTargetPlan.extraBurnMoves ?? 0;
+          const parts = [...ringParts];
+          let heading = `Exact ${level.targetMoves}-move solution`;
+
+          if (burnMoves > 0) {
+            const burnPairCount = burnMoves / 2;
+            parts.push({
+              label: "burn",
+              color: "#eab308",
+              text: `Any ring: ${burnPairCount} CW + ${burnPairCount} CCW`,
+              plannedMoves: burnMoves,
+            });
+            heading = `Target-move plan (includes burn moves)`;
+          }
+
+          const plannedMoveSum = parts.reduce((sum, part) => sum + (part.plannedMoves || 0), 0);
+          const expectedTarget = levelSolution.exactTargetPlan.targetMoves ?? level.targetMoves;
+          if (plannedMoveSum !== expectedTarget) {
+            console.warn(
+              `Exact solution display mismatch for level ${level.id}: planned=${plannedMoveSum}, target=${expectedTarget}.`
+            );
+          }
+
+          return { heading, parts };
         }, [levelSolution]);
 
         useEffect(() => {
@@ -489,12 +517,12 @@
               <div className="mt-4 max-w-lg mx-auto px-4 text-center text-sm font-medium text-zinc-300">
                 {levelSolution.hasExactTargetSolution ? (
                   <>
-                    <p className="text-emerald-300 mb-2">Exact {level.targetMoves}-move solution</p>
+                    <p className="text-emerald-300 mb-2">{exactSolutionPlan.heading}</p>
                     <p>
-                      {exactSolutionParts.map((part, index) => (
+                      {exactSolutionPlan.parts.map((part, index) => (
                         <React.Fragment key={part.label}>
                           <span style={{ color: part.color }}>{part.text}</span>
-                          {index < exactSolutionParts.length - 1 && <span className="text-zinc-300">, </span>}
+                          {index < exactSolutionPlan.parts.length - 1 && <span className="text-zinc-300">, </span>}
                         </React.Fragment>
                       ))}
                     </p>
