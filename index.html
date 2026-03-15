@@ -92,14 +92,20 @@
       const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation }) {
         return (
           <g>
-            <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS}>
-              <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 1.5px ${COLORS[ringIndex]}40)` }} />
-              {config.dimpleAngles.map((angle, dimpleIndex) => (
-                <g key={`dimple-${ringIndex}-${dimpleIndex}`} transform={`rotate(${angle})`} mask="url(#gapMask)">
-                  <circle cx="0" cy={-config.markerRadius} r={config.dimpleRadius} fill={BOARD_BACKGROUND} />
-                  <circle cx="0" cy={-config.markerRadius + 0.6} r={config.dimpleRadius * 0.72} fill="rgba(0, 0, 0, 0.28)" />
-                  <circle cx="0" cy={-config.markerRadius - 0.6} r={config.dimpleRadius * 0.48} fill="rgba(255, 255, 255, 0.12)" />
-                </g>
+            <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS} mask="url(#gapMask)">
+              <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth="16" fill="none" />
+              {config.markerAngles.map((angle, markerIndex) => (
+                <line
+                  key={`marker-${ringIndex}-${markerIndex}`}
+                  x1="0"
+                  y1={-config.markerInnerRadius}
+                  x2="0"
+                  y2={-config.markerOuterRadius}
+                  transform={`rotate(${angle})`}
+                  stroke="rgba(255, 255, 255, 0.62)"
+                  strokeWidth={config.markerStrokeWidth}
+                  strokeLinecap="round"
+                />
               ))}
             </g>
           </g>
@@ -256,12 +262,14 @@
         const outerRingRenderConfig = useMemo(() => {
           return OUTER_RING_INDICES.map((ringIndex) => {
             const cycle = level.ringCycles[ringIndex];
+            const radius = 10 + 22 * ringIndex;
             return {
               ringIndex,
-              radius: 10 + 22 * ringIndex,
-              markerRadius: 10 + 22 * ringIndex - 8,
-              dimpleRadius: cycle > 18 ? 3.6 : cycle > 12 ? 4 : 4.5,
-              dimpleAngles: Array.from({ length: cycle }, (_, dimpleIndex) => (360 / cycle) * dimpleIndex),
+              radius,
+              markerInnerRadius: radius - 8,
+              markerOuterRadius: radius - 4.5,
+              markerStrokeWidth: cycle > 18 ? 2.2 : 2.5,
+              markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
             };
           });
         }, [level]);
@@ -570,7 +578,7 @@
                       <strong className="text-white">The Catch:</strong> You must reach alignment in <span className="text-emerald-400 font-bold">exactly</span> the number of moves specified.
                     </p>
                     <p>
-                      <strong className="text-indigo-400">Granularity:</strong> The center always has 8 states. Outer rings can have different counts, shown by the faint marker dots around each ring.
+                      <strong className="text-indigo-400">Granularity:</strong> The center always has 8 states. Outer rings can have different counts, shown by the marker ticks around each ring.
                     </p>
                     <p>When aligned at the right count, tap the center dot to fire the ball.</p>
                   </div>
