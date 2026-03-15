@@ -88,6 +88,20 @@
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * normalizeState(state, cycleLength);
       const GAP_HALF_WIDTH = 6;
       const RING_TRANSFORM_CLASS = "transition-transform duration-300 ease-in-out";
+      const hexToRgb = (hex) => {
+        const normalized = hex.replace("#", "");
+        const intValue = Number.parseInt(normalized, 16);
+        return {
+          r: (intValue >> 16) & 255,
+          g: (intValue >> 8) & 255,
+          b: intValue & 255,
+        };
+      };
+      const markerStrokeForRing = (hexColor) => {
+        const { r, g, b } = hexToRgb(hexColor);
+        const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+        return luminance > 0.58 ? "rgba(15, 23, 42, 0.42)" : "rgba(248, 250, 252, 0.5)";
+      };
 
       const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation }) {
         return (
@@ -102,7 +116,7 @@
                   x2="0"
                   y2={-config.markerOuterRadius}
                   transform={`rotate(${angle})`}
-                  stroke="rgba(255, 255, 255, 0.62)"
+                  stroke={config.markerStrokeColor}
                   strokeWidth={config.markerStrokeWidth}
                   strokeLinecap="round"
                 />
@@ -266,8 +280,9 @@
             return {
               ringIndex,
               radius,
-              markerInnerRadius: radius - 8,
-              markerOuterRadius: radius - 4.5,
+              markerInnerRadius: radius - 2.4,
+              markerOuterRadius: radius + 2.4,
+              markerStrokeColor: markerStrokeForRing(COLORS[ringIndex]),
               markerStrokeWidth: cycle > 18 ? 2.2 : 2.5,
               markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
             };
