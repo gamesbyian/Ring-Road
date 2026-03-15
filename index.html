@@ -1,0 +1,266 @@
+import React, { useState, useEffect } from 'react';
+
+// Icons for the UI
+const RotateCcwIcon = ({ color }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+    <path d="M3 3v5h5"/>
+  </svg>
+);
+
+const RotateCwIcon = ({ color }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+    <path d="M21 3v5h-5"/>
+  </svg>
+);
+
+const UndoIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 14 4 9l5-5"/>
+    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+    <path d="M3 3v5h5"/>
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="16" x2="12" y2="12"/>
+    <line x1="12" y1="8" x2="12.01" y2="8"/>
+  </svg>
+);
+
+// Level configurations
+const LEVELS = [
+  { id: 1,  targetMoves: 8,  initial: [0, 0, 0, 0, 0, 0, 0] },
+  { id: 2,  targetMoves: 15, initial: [0, 0, 0, 2, 2, 2, 2] },
+  { id: 3,  targetMoves: 14, initial: [7, 7, 0, 0, 1, 1, 2] },
+  { id: 4,  targetMoves: 12, initial: [0, 2, 4, 6, 1, 3, 5] },
+  { id: 5,  targetMoves: 12, initial: [1, 6, 3, 0, 5, 2, 4] },
+  { id: 6,  targetMoves: 12, initial: [4, 1, 5, 2, 6, 0, 3] },
+  { id: 7,  targetMoves: 12, initial: [6, 3, 0, 4, 1, 5, 2] },
+  { id: 8,  targetMoves: 12, initial: [2, 5, 1, 6, 3, 0, 4] },
+  { id: 9,  targetMoves: 20, initial: [3, 0, 5, 1, 6, 2, 4] },
+  { id: 10, targetMoves: 20, initial: [5, 1, 4, 0, 3, 6, 2] },
+  { id: 11, targetMoves: 20, initial: [0, 4, 1, 5, 2, 6, 3] },
+  { id: 12, targetMoves: 20, initial: [6, 2, 5, 1, 4, 0, 3] },
+  { id: 13, targetMoves: 20, initial: [2, 6, 3, 0, 4, 1, 5] },
+  { id: 14, targetMoves: 28, initial: [4, 0, 6, 2, 5, 1, 3] },
+  { id: 15, targetMoves: 28, initial: [1, 5, 2, 6, 3, 0, 4] },
+  { id: 16, targetMoves: 28, initial: [5, 2, 0, 4, 1, 6, 3] },
+  { id: 17, targetMoves: 28, initial: [3, 6, 1, 5, 0, 4, 2] },
+  { id: 18, targetMoves: 28, initial: [0, 5, 3, 1, 6, 2, 4] },
+  { id: 19, targetMoves: 36, initial: [6, 1, 4, 0, 3, 5, 2] },
+  { id: 20, targetMoves: 36, initial: [2, 4, 0, 6, 1, 5, 3] },
+  { id: 21, targetMoves: 36, initial: [4, 2, 6, 1, 5, 3, 0] },
+  { id: 22, targetMoves: 36, initial: [1, 6, 2, 5, 0, 3, 4] },
+  { id: 23, targetMoves: 44, initial: [3, 0, 5, 2, 6, 1, 4] }
+];
+
+const COLORS = ['#8b5cf6', '#4f46e5', '#3b82f6', '#22c55e', '#eab308', '#f97316', '#ef4444'];
+const BUTTON_ORDER = [6, 5, 4, 3, 2, 1, 0];
+
+export default function App() {
+  const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
+  const [rotations, setRotations] = useState(LEVELS[0].initial);
+  const [moves, setMoves] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [ballFired, setBallFired] = useState(false);
+  const [showWinModal, setShowWinModal] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(true);
+  const [message, setMessage] = useState('');
+
+  const level = LEVELS[currentLevelIndex];
+  const baseAngle = ((rotations[0] % 8) + 8) % 8;
+  const isAligned = rotations.every(r => ((r % 8) + 8) % 8 === baseAngle);
+
+  // Generate dynamic favicon on mount using Level 4's layout
+  useEffect(() => {
+    const layout = [0, 2, 4, 6, 1, 3, 5]; 
+    const svgString = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360">
+        <defs>
+          <mask id="faviconMask">
+            <rect x="0" y="0" width="360" height="360" fill="white" />
+            <rect x="174" y="0" width="12" height="190" fill="black" />
+          </mask>
+        </defs>
+        <g transform="translate(180, 180)">
+          ${COLORS.map((color, i) => {
+            const rot = layout[i] * 45;
+            if (i === 0) {
+              return `<g transform="rotate(${rot})"><circle cx="0" cy="0" r="18" fill="${color}" mask="url(#faviconMask)"/></g>`;
+            }
+            const radius = 10 + 22 * i;
+            return `<g transform="rotate(${rot})"><circle cx="0" cy="0" r="${radius}" stroke="${color}" stroke-width="16" fill="none" mask="url(#faviconMask)"/></g>`;
+          }).join('')}
+        </g>
+      </svg>
+    `;
+    
+    const encoded = btoa(svgString);
+    const url = `data:image/svg+xml;base64,${encoded}`;
+    
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = url;
+  }, []);
+
+  useEffect(() => {
+    setRotations([...level.initial]);
+    setMoves(0);
+    setHistory([]);
+    setBallFired(false);
+    setShowWinModal(false);
+  }, [currentLevelIndex, level]);
+
+  const handleRotate = (index, direction) => {
+    if (ballFired || showWinModal || showGuideModal) return;
+    const newRotations = [...rotations];
+    newRotations[index] += direction;
+    setRotations(newRotations);
+    setHistory([...history, { index, direction }]);
+    setMoves(moves + 1);
+  };
+
+  const undoMove = () => {
+    if (history.length === 0 || ballFired || showWinModal || showGuideModal) return;
+    const lastMove = history[history.length - 1];
+    const newRotations = [...rotations];
+    newRotations[lastMove.index] -= lastMove.direction;
+    setRotations(newRotations);
+    setHistory(history.slice(0, -1));
+    setMoves(moves - 1);
+  };
+
+  const restartLevel = () => {
+    setRotations([...level.initial]);
+    setMoves(0);
+    setHistory([]);
+  };
+
+  const handleDotClick = () => {
+    if (ballFired || showWinModal || showGuideModal) return;
+    if (isAligned) {
+      if (moves === level.targetMoves) {
+        setBallFired(true);
+        setTimeout(() => setShowWinModal(true), 700);
+      } else if (moves < level.targetMoves) {
+        const diff = level.targetMoves - moves;
+        showMessage(`Aligned! But you need to burn ${diff} more move${diff !== 1 ? 's' : ''}.`);
+      } else {
+        const diff = moves - level.targetMoves;
+        showMessage(`Aligned! But you are ${diff} move${diff !== 1 ? 's' : ''} over the target.`);
+      }
+    } else {
+      showMessage("Align all gaps with the center notch first!");
+    }
+  };
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-900 text-zinc-100 flex flex-col items-center justify-center p-4 select-none">
+      <div className="w-full max-w-lg flex justify-between items-center mb-6 px-2">
+        <div className="flex items-center gap-4">
+          <div>
+            <h1 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">Ring Road</h1>
+            <p className="text-sm text-zinc-400 font-medium">Level {level.id} of {LEVELS.length}</p>
+          </div>
+          <button onClick={() => setShowGuideModal(true)} className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors bg-zinc-800/80 px-2.5 py-1.5 rounded">
+            <InfoIcon /><span>Guide</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="w-full max-w-lg flex justify-between items-center mb-8 px-2">
+        <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? 'text-red-400' : moves === level.targetMoves ? 'text-emerald-400' : 'text-zinc-300'}`}>
+          Moves: {moves} / {level.targetMoves}
+        </div>
+        <div className="flex gap-2">
+          <button onClick={undoMove} disabled={history.length === 0} className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 p-2 rounded-md transition-colors text-sm"><UndoIcon /> Undo</button>
+          <button onClick={restartLevel} className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 p-2 rounded-md transition-colors text-sm"><RefreshIcon /> Reset</button>
+        </div>
+      </div>
+
+      <div className="relative flex justify-center items-center">
+        {message && <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">{message}</div>}
+        <svg viewBox="0 0 360 360" className="w-full max-w-[400px] h-auto overflow-visible">
+          <defs>
+            <mask id="gapMask" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">
+              <rect x="-400" y="-400" width="800" height="800" fill="white" />
+              <rect x="-6" y="-400" width="12" height="390" fill="black" />
+            </mask>
+          </defs>
+          <g transform="translate(180, 180)">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <g key={`ring-${i}`} transform={`rotate(${rotations[i] * 45})`} className="transition-transform duration-300 ease-in-out">
+                <circle cx="0" cy="0" r={10 + 22 * i} stroke={COLORS[i]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 2px ${COLORS[i]}40)` }} />
+              </g>
+            ))}
+            <g transform={`rotate(${rotations[0] * 45})`} className="transition-transform duration-300 ease-in-out">
+              <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#gapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === level.targetMoves ? 'hover:opacity-80' : ''}`} />
+              {isAligned && moves === level.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
+              <circle cx="0" cy="-14" r="4" fill="#ffffff" className="pointer-events-none" style={{ filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.8))', transform: ballFired ? 'translateY(-200px)' : 'translateY(0)', transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-3 mt-12 max-w-lg mx-auto px-4">
+        {BUTTON_ORDER.map(i => (
+          <div key={`btn-${i}`} className="flex rounded-md overflow-hidden bg-zinc-800 shadow-lg" style={{ borderBottom: `2px solid ${COLORS[i]}` }}>
+            <button onClick={() => handleRotate(i, -1)} className="p-3 hover:bg-zinc-700 active:bg-zinc-600 transition-colors"><RotateCcwIcon color={COLORS[i]} /></button>
+            <button onClick={() => handleRotate(i, 1)} className="p-3 hover:bg-zinc-700 active:bg-zinc-600 transition-colors border-l border-white/5"><RotateCwIcon color={COLORS[i]} /></button>
+          </div>
+        ))}
+      </div>
+
+      {showGuideModal && (
+        <div className="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <h2 className="text-2xl font-bold text-white mb-6 text-center">How to Play Ring Road</h2>
+            <div className="space-y-4 text-zinc-300 text-sm mb-8 leading-relaxed">
+              <p><strong className="text-white">The Goal:</strong> Align the gaps in all rings and the center notch to create a straight "road" out from the center.</p>
+              <p><strong className="text-white">The Catch:</strong> You must reach alignment in <span className="text-emerald-400 font-bold">exactly</span> the number of moves specified. No more, no less.</p>
+              <p><strong className="text-indigo-400">Strategy:</strong> If the path is clear but your move count is too low, you’ll need to rotate rings a full 360° (8 moves) to burn through the excess.</p>
+              <p>When aligned at the right count, tap the center dot to fire the ball.</p>
+            </div>
+            <button onClick={() => setShowGuideModal(false)} className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-colors">Play</button>
+          </div>
+        </div>
+      )}
+
+      {showWinModal && (
+        <div className="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
+            <h2 className="text-3xl font-bold text-white mb-2">Level Complete!</h2>
+            <p className="text-zinc-400 mb-8">Aligned in exactly {moves} moves.</p>
+            <div className="flex flex-col gap-3">
+              {currentLevelIndex < LEVELS.length - 1 ? (
+                <button onClick={() => setCurrentLevelIndex(currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">Next Level</button>
+              ) : (
+                <div className="w-full py-3 bg-emerald-500 text-zinc-900 font-bold rounded-xl mb-2">Grand Master!</div>
+              )}
+              <button onClick={() => setShowWinModal(false)} className="w-full py-3 bg-zinc-800 text-zinc-200 font-medium rounded-xl hover:bg-zinc-700">Stay</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
