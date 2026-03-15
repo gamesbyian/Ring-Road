@@ -65,18 +65,18 @@
       );
 
       const LEVELS = [
-        { id: 1, targetMoves: 12, ringCycles: [8, 8, 4, 8, 12, 8, 16], initial: [3, 5, 1, 2, 7, 6, 9] },
+        { id: 1, targetMoves: 13, ringCycles: [8, 8, 4, 8, 12, 8, 16], initial: [3, 5, 1, 2, 7, 6, 9] },
         { id: 2, targetMoves: 18, ringCycles: [8, 16, 10, 24, 8, 12, 18], initial: [0, 11, 7, 13, 2, 4, 9] },
         { id: 3, targetMoves: 22, ringCycles: [8, 12, 8, 18, 6, 16, 24], initial: [6, 2, 5, 11, 4, 9, 17] },
-        { id: 4, targetMoves: 24, ringCycles: [8, 6, 12, 8, 16, 10, 20], initial: [1, 4, 9, 7, 3, 6, 11] },
+        { id: 4, targetMoves: 25, ringCycles: [8, 6, 12, 8, 16, 10, 20], initial: [1, 4, 9, 7, 3, 6, 11] },
         { id: 5, targetMoves: 28, ringCycles: [8, 12, 24, 8, 18, 10, 16], initial: [5, 3, 17, 6, 7, 9, 11] },
         { id: 6, targetMoves: 30, ringCycles: [8, 24, 12, 16, 20, 8, 6], initial: [3, 19, 5, 14, 9, 1, 4] },
-        { id: 7, targetMoves: 30, ringCycles: [8, 10, 16, 6, 24, 12, 8], initial: [2, 9, 4, 5, 14, 1, 6] },
+        { id: 7, targetMoves: 31, ringCycles: [8, 10, 16, 6, 24, 12, 8], initial: [2, 9, 4, 5, 14, 1, 6] },
         { id: 8, targetMoves: 32, ringCycles: [8, 20, 8, 12, 24, 6, 16], initial: [7, 15, 3, 10, 5, 2, 8] },
         { id: 9, targetMoves: 34, ringCycles: [8, 8, 20, 12, 16, 6, 24], initial: [4, 7, 13, 8, 1, 5, 19] },
-        { id: 10, targetMoves: 36, ringCycles: [8, 18, 24, 10, 12, 16, 8], initial: [6, 7, 21, 4, 11, 5, 3] },
+        { id: 10, targetMoves: 37, ringCycles: [8, 18, 24, 10, 12, 16, 8], initial: [6, 7, 21, 4, 11, 5, 3] },
         { id: 11, targetMoves: 40, ringCycles: [8, 16, 24, 12, 20, 18, 10], initial: [2, 13, 7, 9, 16, 11, 6] },
-        { id: 12, targetMoves: 44, ringCycles: [8, 24, 10, 16, 18, 12, 20], initial: [5, 21, 3, 8, 14, 7, 19] },
+        { id: 12, targetMoves: 45, ringCycles: [8, 24, 10, 16, 18, 12, 20], initial: [5, 21, 3, 8, 14, 7, 19] },
       ];
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
@@ -97,6 +97,158 @@
         return rotations.every((rotation, index) => spokeFromState(rotation, ringCycles[index]) === centerSpoke);
       };
 
+      const ringTargetStatesForSpoke = (cycleLength, sharedSpoke) => {
+        const states = [];
+        for (let state = 0; state < cycleLength; state += 1) {
+          if (spokeFromState(state, cycleLength) === sharedSpoke) {
+            states.push(state);
+          }
+        }
+        return states;
+      };
+
+      const solveLevelDeterministically = (level) => {
+        const candidateSpokePlans = [];
+
+        for (let sharedSpoke = 0; sharedSpoke < 8; sharedSpoke += 1) {
+          const ringOptions = [];
+          let minMoveSum = 0;
+          let validSpoke = true;
+
+          for (let ringIndex = 0; ringIndex < RING_COUNT; ringIndex += 1) {
+            const cycleLength = level.ringCycles[ringIndex];
+            const initialState = normalizeState(level.initial[ringIndex], cycleLength);
+            const targetStates = ringTargetStatesForSpoke(cycleLength, sharedSpoke);
+
+            if (targetStates.length === 0) {
+              validSpoke = false;
+              break;
+            }
+
+            const optionsByDistance = new Map();
+
+            targetStates.forEach((targetState) => {
+              const clockwiseSteps = normalizeState(targetState - initialState, cycleLength);
+              const counterClockwiseSteps = normalizeState(initialState - targetState, cycleLength);
+              const shortestDistance = Math.min(clockwiseSteps, counterClockwiseSteps);
+              const shortestDirection = clockwiseSteps <= counterClockwiseSteps ? 1 : -1;
+
+              if (!optionsByDistance.has(shortestDistance)) {
+                optionsByDistance.set(shortestDistance, {
+                  targetState,
+                  distance: shortestDistance,
+                  direction: shortestDirection,
+                });
+              }
+            });
+
+            const sortedOptions = [...optionsByDistance.values()].sort((a, b) => a.distance - b.distance || a.targetState - b.targetState);
+            ringOptions.push(sortedOptions);
+            minMoveSum += sortedOptions[0].distance;
+          }
+
+          if (validSpoke) {
+            candidateSpokePlans.push({ sharedSpoke, ringOptions, minMoveSum });
+          }
+        }
+
+        const bestMinPlan = candidateSpokePlans.reduce((best, candidate) => {
+          if (!best || candidate.minMoveSum < best.minMoveSum) {
+            return candidate;
+          }
+          return best;
+        }, null);
+
+        const solvedPlans = [];
+
+        candidateSpokePlans.forEach((candidate) => {
+          const dpByRing = [new Map([[0, null]])];
+
+          for (let ringIndex = 0; ringIndex < RING_COUNT; ringIndex += 1) {
+            const previous = dpByRing[ringIndex];
+            const next = new Map();
+
+            previous.forEach((_, partialMoves) => {
+              candidate.ringOptions[ringIndex].forEach((option) => {
+                const nextMoves = partialMoves + option.distance;
+                if (nextMoves <= level.targetMoves && !next.has(nextMoves)) {
+                  next.set(nextMoves, { previousMoves: partialMoves, option });
+                }
+              });
+            });
+
+            dpByRing.push(next);
+          }
+
+          const totals = [...dpByRing[RING_COUNT].keys()]
+            .filter((baseMoves) => baseMoves <= level.targetMoves && (level.targetMoves - baseMoves) % 2 === 0)
+            .sort((a, b) => b - a);
+
+          if (totals.length === 0) {
+            return;
+          }
+
+          const chosenBaseMoves = totals[0];
+          const selectedRingOptions = Array(RING_COUNT).fill(null);
+          let runningMoves = chosenBaseMoves;
+
+          for (let ringIndex = RING_COUNT; ringIndex > 0; ringIndex -= 1) {
+            const step = dpByRing[ringIndex].get(runningMoves);
+            selectedRingOptions[ringIndex - 1] = step.option;
+            runningMoves = step.previousMoves;
+          }
+
+          const exactMoveSequence = [];
+          const fillerMovePairs = (level.targetMoves - chosenBaseMoves) / 2;
+
+          for (let i = 0; i < fillerMovePairs; i += 1) {
+            exactMoveSequence.push({ ringIndex: 0, direction: 1 });
+            exactMoveSequence.push({ ringIndex: 0, direction: -1 });
+          }
+
+          BUTTON_ORDER.forEach((ringIndex) => {
+            const ringPlan = selectedRingOptions[ringIndex];
+            for (let step = 0; step < ringPlan.distance; step += 1) {
+              exactMoveSequence.push({ ringIndex, direction: ringPlan.direction });
+            }
+          });
+
+          solvedPlans.push({
+            sharedSpoke: candidate.sharedSpoke,
+            minMoveSum: candidate.minMoveSum,
+            baseMoves: chosenBaseMoves,
+            exactMoveSequence,
+          });
+        });
+
+        solvedPlans.sort((a, b) => a.baseMoves - b.baseMoves || a.sharedSpoke - b.sharedSpoke);
+
+        return {
+          minimumMovesToAlignment: bestMinPlan ? bestMinPlan.minMoveSum : Infinity,
+          hasExactTargetSolution: solvedPlans.length > 0,
+          exactTargetPlan: solvedPlans[0] || null,
+        };
+      };
+
+      const ALL_LEVEL_SOLUTIONS = LEVELS.map((level) => solveLevelDeterministically(level));
+
+      const formatSequenceSegments = (sequence) => {
+        if (sequence.length === 0) return "Already aligned.";
+        const segments = [];
+        sequence.forEach((move) => {
+          const last = segments[segments.length - 1];
+          if (last && last.ringIndex === move.ringIndex && last.direction === move.direction) {
+            last.count += 1;
+          } else {
+            segments.push({ ...move, count: 1 });
+          }
+        });
+
+        return segments
+          .map((segment) => `${RING_LABELS[segment.ringIndex]} ${segment.direction === 1 ? "CW" : "CCW"} ×${segment.count}`)
+          .join(", ");
+      };
+
 
       function App() {
         const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
@@ -110,6 +262,7 @@
         const [showSolutionHint, setShowSolutionHint] = useState(false);
 
         const level = LEVELS[currentLevelIndex];
+        const levelSolution = ALL_LEVEL_SOLUTIONS[currentLevelIndex];
         const isAligned = areAllRingsAligned(rotations, level.ringCycles);
         const solutionHintParts = useMemo(() => {
           return BUTTON_ORDER.map((ringIndex) => {
@@ -129,12 +282,27 @@
             return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${cwMoves} CW` };
           });
         }, [level]);
+        const exactSolutionText = useMemo(() => {
+          if (!levelSolution?.hasExactTargetSolution || !levelSolution.exactTargetPlan) {
+            return "No exact target solution exists for this level.";
+          }
+          return formatSequenceSegments(levelSolution.exactTargetPlan.exactMoveSequence);
+        }, [levelSolution]);
 
         useEffect(() => {
           if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT || level.ringCycles[0] !== CENTER_CYCLE) {
             throw new Error(`Invalid level ${level.id}: expected 7 rings with center cycle 8.`);
           }
         }, [level]);
+
+        useEffect(() => {
+          LEVELS.forEach((levelEntry, index) => {
+            const analysis = ALL_LEVEL_SOLUTIONS[index];
+            if (!analysis.hasExactTargetSolution) {
+              throw new Error(`Level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} is unreachable.`);
+            }
+          });
+        }, []);
 
         useEffect(() => {
           const layout = [0, 6, 2, 4, 1, 3, 5];
@@ -252,6 +420,7 @@
               <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
                 Moves: {moves} / {level.targetMoves}
               </div>
+              <div className="text-xs text-zinc-400">Min align: {levelSolution.minimumMovesToAlignment}</div>
               <div className="flex gap-2">
                 <button onClick={undoMove} disabled={history.length === 0} className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 p-2 rounded-md transition-colors text-sm">
                   <UndoIcon /> Undo
@@ -347,12 +516,22 @@
 
             {showSolutionHint && (
               <div className="mt-4 max-w-lg mx-auto px-4 text-center text-sm font-medium text-zinc-300">
-                {solutionHintParts.map((part, index) => (
-                  <React.Fragment key={part.label}>
-                    <span style={{ color: part.color }}>{part.label}: {part.text}</span>
-                    {index < solutionHintParts.length - 1 && <span className="text-zinc-300">, </span>}
-                  </React.Fragment>
-                ))}
+                {levelSolution.hasExactTargetSolution ? (
+                  <>
+                    <p className="text-emerald-300 mb-2">Exact {level.targetMoves}-move solution sequence</p>
+                    <p>{exactSolutionText}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-amber-300 mb-2">Per-ring reset hint (not target-move solution)</p>
+                    {solutionHintParts.map((part, index) => (
+                      <React.Fragment key={part.label}>
+                        <span style={{ color: part.color }}>{part.label}: {part.text}</span>
+                        {index < solutionHintParts.length - 1 && <span className="text-zinc-300">, </span>}
+                      </React.Fragment>
+                    ))}
+                  </>
+                )}
               </div>
             )}
 
