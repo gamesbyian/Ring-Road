@@ -456,22 +456,7 @@
                     const ringRotation = rotationAngle(rotations[i], cycle);
                     return (
                       <g key={`outer-${i}`}>
-                        {Array.from({ length: cycle }).map((_, markerIndex) => {
-                          const angle = (360 / cycle) * markerIndex;
-                          const markerSize = cycle > 18 ? 1.2 : cycle > 12 ? 1.4 : 1.7;
-                          return (
-                            <circle
-                              key={`marker-${i}-${markerIndex}`}
-                              cx="0"
-                              cy={-markerRadius}
-                              r={markerSize}
-                              fill="rgba(255,255,255,0.35)"
-                              transform={`rotate(${angle})`}
-                              style={{ filter: "drop-shadow(0 0 1px rgba(255,255,255,0.2))" }}
-                            />
-                          );
-                        })}
-                        <g transform={`rotate(${rotationAngle(rotations[i], cycle)})`} className="transition-transform duration-300 ease-in-out">
+                        <g transform={`rotate(${ringRotation})`} className="transition-transform duration-300 ease-in-out">
                           <circle cx="0" cy="0" r={radius} stroke={COLORS[i]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 2px ${COLORS[i]}40)` }} />
                           {Array.from({ length: cycle }).map((_, dimpleIndex) => {
                             const angle = (360 / cycle) * dimpleIndex;
