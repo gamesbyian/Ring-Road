@@ -80,6 +80,7 @@
       ];
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
+      const BOARD_BACKGROUND = "#18181b";
       const BUTTON_ORDER = [6, 5, 4, 3, 2, 1, 0];
       const RING_LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 
@@ -452,7 +453,7 @@
                     const radius = 10 + 22 * i;
                     const cycle = level.ringCycles[i];
                     const markerRadius = radius - 8;
-                    const dimpleRadius = cycle > 18 ? 2.4 : cycle > 12 ? 2.8 : 3.2;
+                    const dimpleRadius = cycle > 18 ? 3.6 : cycle > 12 ? 4 : 4.5;
                     const ringRotation = rotationAngle(rotations[i], cycle);
                     return (
                       <g key={`outer-${i}`}>
@@ -467,18 +468,11 @@
                             }
 
                             return (
-                              <circle
-                                key={`dimple-${i}-${dimpleIndex}`}
-                                cx="0"
-                                cy={-markerRadius}
-                                r={dimpleRadius}
-                                fill="rgba(255, 255, 255, 0.72)"
-                                stroke="rgba(0, 0, 0, 0.4)"
-                                strokeWidth="1"
-                                mask="url(#gapMask)"
-                                transform={`rotate(${angle})`}
-                                style={{ filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 0.45))" }}
-                              />
+                              <g key={`dimple-${i}-${dimpleIndex}`} transform={`rotate(${angle})`} mask="url(#gapMask)">
+                                <circle cx="0" cy={-markerRadius} r={dimpleRadius} fill={BOARD_BACKGROUND} />
+                                <circle cx="0" cy={-markerRadius + 0.6} r={dimpleRadius * 0.72} fill="rgba(0, 0, 0, 0.28)" />
+                                <circle cx="0" cy={-markerRadius - 0.6} r={dimpleRadius * 0.48} fill="rgba(255, 255, 255, 0.12)" />
+                              </g>
                             );
                           })}
                         </g>
