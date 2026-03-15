@@ -65,18 +65,18 @@
       );
 
       const LEVELS = [
-        { id: 1, targetMoves: 13, ringCycles: [8, 8, 4, 8, 12, 8, 16], initial: [3, 5, 1, 2, 7, 6, 9] },
-        { id: 2, targetMoves: 18, ringCycles: [8, 16, 10, 24, 8, 12, 18], initial: [0, 11, 7, 13, 2, 4, 9] },
-        { id: 3, targetMoves: 22, ringCycles: [8, 12, 8, 18, 6, 16, 24], initial: [6, 2, 5, 11, 4, 9, 17] },
-        { id: 4, targetMoves: 25, ringCycles: [8, 6, 12, 8, 16, 10, 20], initial: [1, 4, 9, 7, 3, 6, 11] },
-        { id: 5, targetMoves: 28, ringCycles: [8, 12, 24, 8, 18, 10, 16], initial: [5, 3, 17, 6, 7, 9, 11] },
-        { id: 6, targetMoves: 30, ringCycles: [8, 24, 12, 16, 20, 8, 6], initial: [3, 19, 5, 14, 9, 1, 4] },
-        { id: 7, targetMoves: 31, ringCycles: [8, 10, 16, 6, 24, 12, 8], initial: [2, 9, 4, 5, 14, 1, 6] },
-        { id: 8, targetMoves: 32, ringCycles: [8, 20, 8, 12, 24, 6, 16], initial: [7, 15, 3, 10, 5, 2, 8] },
-        { id: 9, targetMoves: 34, ringCycles: [8, 8, 20, 12, 16, 6, 24], initial: [4, 7, 13, 8, 1, 5, 19] },
-        { id: 10, targetMoves: 37, ringCycles: [8, 18, 24, 10, 12, 16, 8], initial: [6, 7, 21, 4, 11, 5, 3] },
-        { id: 11, targetMoves: 40, ringCycles: [8, 16, 24, 12, 20, 18, 10], initial: [2, 13, 7, 9, 16, 11, 6] },
-        { id: 12, targetMoves: 45, ringCycles: [8, 24, 10, 16, 18, 12, 20], initial: [5, 21, 3, 8, 14, 7, 19] },
+        { id: 1, targetMoves: 9, ringCycles: [8, 8, 4, 8, 12, 8, 16], initial: [3, 5, 1, 2, 7, 6, 9] },
+        { id: 2, targetMoves: 14, ringCycles: [8, 16, 10, 24, 8, 12, 18], initial: [0, 11, 7, 13, 2, 4, 9] },
+        { id: 3, targetMoves: 16, ringCycles: [8, 12, 8, 18, 6, 16, 24], initial: [6, 2, 5, 11, 4, 9, 17] },
+        { id: 4, targetMoves: 17, ringCycles: [8, 6, 12, 8, 16, 10, 20], initial: [1, 4, 9, 7, 3, 6, 11] },
+        { id: 5, targetMoves: 20, ringCycles: [8, 12, 24, 8, 18, 10, 16], initial: [5, 3, 17, 6, 7, 9, 11] },
+        { id: 6, targetMoves: 20, ringCycles: [8, 24, 12, 16, 20, 8, 6], initial: [3, 19, 5, 14, 9, 1, 4] },
+        { id: 7, targetMoves: 21, ringCycles: [8, 10, 16, 6, 24, 12, 8], initial: [2, 9, 4, 5, 14, 1, 6] },
+        { id: 8, targetMoves: 21, ringCycles: [8, 20, 8, 12, 24, 6, 16], initial: [7, 15, 3, 10, 5, 2, 8] },
+        { id: 9, targetMoves: 23, ringCycles: [8, 8, 20, 12, 16, 6, 24], initial: [4, 7, 13, 8, 1, 5, 19] },
+        { id: 10, targetMoves: 23, ringCycles: [8, 18, 24, 10, 12, 16, 8], initial: [6, 7, 21, 4, 11, 5, 3] },
+        { id: 11, targetMoves: 24, ringCycles: [8, 16, 24, 12, 20, 18, 10], initial: [2, 13, 7, 9, 16, 11, 6] },
+        { id: 12, targetMoves: 27, ringCycles: [8, 24, 10, 16, 18, 12, 20], initial: [5, 21, 3, 8, 14, 7, 19] },
       ];
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
@@ -444,6 +444,7 @@
                     const radius = 10 + 22 * i;
                     const cycle = level.ringCycles[i];
                     const markerRadius = radius - 8;
+                    const dimpleRadius = 4;
                     return (
                       <g key={`outer-${i}`}>
                         {Array.from({ length: cycle }).map((_, markerIndex) => {
@@ -463,6 +464,22 @@
                         })}
                         <g transform={`rotate(${rotationAngle(rotations[i], cycle)})`} className="transition-transform duration-300 ease-in-out">
                           <circle cx="0" cy="0" r={radius} stroke={COLORS[i]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 2px ${COLORS[i]}40)` }} />
+                          {Array.from({ length: cycle }).map((_, dimpleIndex) => {
+                            const angle = (360 / cycle) * dimpleIndex;
+                            return (
+                              <circle
+                                key={`dimple-${i}-${dimpleIndex}`}
+                                cx="0"
+                                cy={-markerRadius}
+                                r={dimpleRadius}
+                                fill="rgba(0, 0, 0, 0.35)"
+                                stroke="rgba(255, 255, 255, 0.12)"
+                                strokeWidth="0.8"
+                                mask="url(#gapMask)"
+                                transform={`rotate(${angle})`}
+                              />
+                            );
+                          })}
                         </g>
                       </g>
                     );
