@@ -451,7 +451,8 @@
                   {OUTER_RING_INDICES.map((i) => {
                     const radius = 10 + 22 * i;
                     const cycle = level.ringCycles[i];
-                    const dimpleRadius = cycle > 18 ? 2 : cycle > 12 ? 2.3 : 2.7;
+                    const markerRadius = radius - 8;
+                    const dimpleRadius = cycle > 18 ? 2.4 : cycle > 12 ? 2.8 : 3.2;
                     const ringRotation = rotationAngle(rotations[i], cycle);
                     return (
                       <g key={`outer-${i}`}>
@@ -461,16 +462,23 @@
                             const angle = (360 / cycle) * dimpleIndex;
                             const absoluteAngle = angle + ringRotation;
 
-                            if (isAngleWithinRingGap(absoluteAngle, radius)) {
+                            if (isAngleWithinRingGap(absoluteAngle, markerRadius)) {
                               return null;
                             }
 
                             return (
-                              <g key={`dimple-${i}-${dimpleIndex}`} transform={`rotate(${angle})`}>
-                                <circle cx="0" cy={-radius} r={dimpleRadius} fill="rgba(0, 0, 0, 0.28)" mask="url(#gapMask)" />
-                                <circle cx="0" cy={-radius} r={dimpleRadius} fill="none" stroke="rgba(0, 0, 0, 0.38)" strokeWidth="0.8" mask="url(#gapMask)" />
-                                <circle cx="0" cy={-(radius + dimpleRadius * 0.34)} r={dimpleRadius * 0.48} fill="rgba(255, 255, 255, 0.18)" mask="url(#gapMask)" />
-                              </g>
+                              <circle
+                                key={`dimple-${i}-${dimpleIndex}`}
+                                cx="0"
+                                cy={-markerRadius}
+                                r={dimpleRadius}
+                                fill="rgba(255, 255, 255, 0.72)"
+                                stroke="rgba(0, 0, 0, 0.4)"
+                                strokeWidth="1"
+                                mask="url(#gapMask)"
+                                transform={`rotate(${angle})`}
+                                style={{ filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 0.45))" }}
+                              />
                             );
                           })}
                         </g>
