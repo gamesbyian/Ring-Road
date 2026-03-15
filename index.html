@@ -22,7 +22,7 @@
     <div id="root"></div>
 
     <script type="text/babel" data-presets="react">
-      const { useState, useEffect, useMemo } = React;
+      const { useState, useEffect, useMemo, useCallback } = React;
 
       const CENTER_CYCLE = 8;
       const RING_COUNT = 7;
@@ -87,13 +87,24 @@
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * normalizeState(state, cycleLength);
       const GAP_HALF_WIDTH = 6;
+      const RING_TRANSFORM_CLASS = "transition-transform duration-300 ease-in-out";
 
-      const isAngleWithinRingGap = (angleDegrees, radius) => {
-        const normalizedAngle = ((angleDegrees + 180) % 360) - 180;
-        const safeRadius = Math.max(radius, 1);
-        const halfGapAngle = (Math.asin(Math.min(1, GAP_HALF_WIDTH / safeRadius)) * 180) / Math.PI;
-        return Math.abs(normalizedAngle) <= halfGapAngle;
-      };
+      const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation }) {
+        return (
+          <g>
+            <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS}>
+              <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 1.5px ${COLORS[ringIndex]}40)` }} />
+              {config.dimpleAngles.map((angle, dimpleIndex) => (
+                <g key={`dimple-${ringIndex}-${dimpleIndex}`} transform={`rotate(${angle})`} mask="url(#gapMask)">
+                  <circle cx="0" cy={-config.markerRadius} r={config.dimpleRadius} fill={BOARD_BACKGROUND} />
+                  <circle cx="0" cy={-config.markerRadius + 0.6} r={config.dimpleRadius * 0.72} fill="rgba(0, 0, 0, 0.28)" />
+                  <circle cx="0" cy={-config.markerRadius - 0.6} r={config.dimpleRadius * 0.48} fill="rgba(255, 255, 255, 0.12)" />
+                </g>
+              ))}
+            </g>
+          </g>
+        );
+      });
 
       const spokeFromState = (state, cycleLength) => {
         const normalized = normalizeState(state, cycleLength);
@@ -242,6 +253,18 @@
         const level = LEVELS[currentLevelIndex];
         const levelSolution = ALL_LEVEL_SOLUTIONS[currentLevelIndex];
         const isAligned = areAllRingsAligned(rotations, level.ringCycles);
+        const outerRingRenderConfig = useMemo(() => {
+          return OUTER_RING_INDICES.map((ringIndex) => {
+            const cycle = level.ringCycles[ringIndex];
+            return {
+              ringIndex,
+              radius: 10 + 22 * ringIndex,
+              markerRadius: 10 + 22 * ringIndex - 8,
+              dimpleRadius: cycle > 18 ? 3.6 : cycle > 12 ? 4 : 4.5,
+              dimpleAngles: Array.from({ length: cycle }, (_, dimpleIndex) => (360 / cycle) * dimpleIndex),
+            };
+          });
+        }, [level]);
         const solutionHintParts = useMemo(() => {
           return BUTTON_ORDER.map((ringIndex) => {
             const cycle = level.ringCycles[ringIndex];
@@ -358,32 +381,36 @@
           setShowSolutionHint(false);
         }, [currentLevelIndex]);
 
-        const handleRotate = (index, direction) => {
+        const handleRotate = useCallback((index, direction) => {
           if (ballFired || showWinModal || showGuideModal) return;
-          const newRotations = [...rotations];
-          newRotations[index] = normalizeState(newRotations[index] + direction, level.ringCycles[index]);
-          setRotations(newRotations);
-          setHistory([...history, { index, direction }]);
-          setMoves(moves + 1);
-        };
+          setRotations((previousRotations) => {
+            const nextRotations = [...previousRotations];
+            nextRotations[index] = normalizeState(nextRotations[index] + direction, level.ringCycles[index]);
+            return nextRotations;
+          });
+          setHistory((previousHistory) => [...previousHistory, { index, direction }]);
+          setMoves((previousMoves) => previousMoves + 1);
+        }, [ballFired, showWinModal, showGuideModal, level]);
 
-        const undoMove = () => {
+        const undoMove = useCallback(() => {
           if (history.length === 0 || ballFired || showWinModal || showGuideModal) return;
           const lastMove = history[history.length - 1];
-          const newRotations = [...rotations];
-          newRotations[lastMove.index] = normalizeState(newRotations[lastMove.index] - lastMove.direction, level.ringCycles[lastMove.index]);
-          setRotations(newRotations);
-          setHistory(history.slice(0, -1));
-          setMoves(moves - 1);
-        };
+          setRotations((previousRotations) => {
+            const nextRotations = [...previousRotations];
+            nextRotations[lastMove.index] = normalizeState(nextRotations[lastMove.index] - lastMove.direction, level.ringCycles[lastMove.index]);
+            return nextRotations;
+          });
+          setHistory((previousHistory) => previousHistory.slice(0, -1));
+          setMoves((previousMoves) => previousMoves - 1);
+        }, [history, ballFired, showWinModal, showGuideModal, level]);
 
-        const restartLevel = () => {
+        const restartLevel = useCallback(() => {
           setRotations([...level.initial]);
           setMoves(0);
           setHistory([]);
           setBallFired(false);
           setMessage("");
-        };
+        }, [level]);
 
         const showMessage = (msg) => {
           setMessage(msg);
@@ -449,38 +476,16 @@
                   </mask>
                 </defs>
                 <g transform="translate(180, 180)">
-                  {OUTER_RING_INDICES.map((i) => {
-                    const radius = 10 + 22 * i;
-                    const cycle = level.ringCycles[i];
-                    const markerRadius = radius - 8;
-                    const dimpleRadius = cycle > 18 ? 3.6 : cycle > 12 ? 4 : 4.5;
-                    const ringRotation = rotationAngle(rotations[i], cycle);
-                    return (
-                      <g key={`outer-${i}`}>
-                        <g transform={`rotate(${ringRotation})`} className="transition-transform duration-300 ease-in-out">
-                          <circle cx="0" cy="0" r={radius} stroke={COLORS[i]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 2px ${COLORS[i]}40)` }} />
-                          {Array.from({ length: cycle }).map((_, dimpleIndex) => {
-                            const angle = (360 / cycle) * dimpleIndex;
-                            const absoluteAngle = angle + ringRotation;
+                  {outerRingRenderConfig.map((config) => (
+                    <OuterRing
+                      key={`outer-${config.ringIndex}`}
+                      ringIndex={config.ringIndex}
+                      config={config}
+                      ringRotation={rotationAngle(rotations[config.ringIndex], level.ringCycles[config.ringIndex])}
+                    />
+                  ))}
 
-                            if (isAngleWithinRingGap(absoluteAngle, markerRadius)) {
-                              return null;
-                            }
-
-                            return (
-                              <g key={`dimple-${i}-${dimpleIndex}`} transform={`rotate(${angle})`} mask="url(#gapMask)">
-                                <circle cx="0" cy={-markerRadius} r={dimpleRadius} fill={BOARD_BACKGROUND} />
-                                <circle cx="0" cy={-markerRadius + 0.6} r={dimpleRadius * 0.72} fill="rgba(0, 0, 0, 0.28)" />
-                                <circle cx="0" cy={-markerRadius - 0.6} r={dimpleRadius * 0.48} fill="rgba(255, 255, 255, 0.12)" />
-                              </g>
-                            );
-                          })}
-                        </g>
-                      </g>
-                    );
-                  })}
-
-                  <g transform={`rotate(${rotationAngle(rotations[0], CENTER_CYCLE)})`} className="transition-transform duration-300 ease-in-out">
+                  <g transform={`rotate(${rotationAngle(rotations[0], CENTER_CYCLE)})`} className={RING_TRANSFORM_CLASS}>
                     <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#gapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === level.targetMoves ? "hover:opacity-80" : ""}`} />
                     {isAligned && moves === level.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
                     <circle
