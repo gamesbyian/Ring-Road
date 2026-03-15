@@ -100,7 +100,7 @@
       const markerStrokeForRing = (hexColor) => {
         const { r, g, b } = hexToRgb(hexColor);
         const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-        return luminance > 0.58 ? "rgba(15, 23, 42, 0.42)" : "rgba(248, 250, 252, 0.5)";
+        return luminance > 0.58 ? "rgba(15, 23, 42, 0.378)" : "rgba(248, 250, 252, 0.45)";
       };
 
       const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation }) {
@@ -283,7 +283,7 @@
               markerInnerRadius: radius - 2.4,
               markerOuterRadius: radius + 2.4,
               markerStrokeColor: markerStrokeForRing(COLORS[ringIndex]),
-              markerStrokeWidth: cycle > 18 ? 2.2 : 2.5,
+              markerStrokeWidth: cycle > 18 ? 1.1 : 1.25,
               markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
             };
           });
