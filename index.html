@@ -22,7 +22,7 @@
     <div id="root"></div>
 
     <script type="text/babel" data-presets="react">
-      const { useState, useEffect } = React;
+      const { useState, useEffect, useRef, useMemo } = React;
 
       const CENTER_CYCLE = 8;
       const RING_COUNT = 7;
@@ -81,6 +81,7 @@
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
       const BUTTON_ORDER = [6, 5, 4, 3, 2, 1, 0];
+      const RING_LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * normalizeState(state, cycleLength);
@@ -106,9 +107,30 @@
         const [showWinModal, setShowWinModal] = useState(false);
         const [showGuideModal, setShowGuideModal] = useState(true);
         const [message, setMessage] = useState("");
+        const [movesTapCount, setMovesTapCount] = useState(0);
+        const [showSolutionHint, setShowSolutionHint] = useState(false);
+        const movesCounterRef = useRef(null);
 
         const level = LEVELS[currentLevelIndex];
         const isAligned = areAllRingsAligned(rotations, level.ringCycles);
+        const solutionHintParts = useMemo(() => {
+          return BUTTON_ORDER.map((ringIndex) => {
+            const cycle = level.ringCycles[ringIndex];
+            const initial = normalizeState(level.initial[ringIndex], cycle);
+            let ccwMoves = initial;
+            let cwMoves = (cycle - initial) % cycle;
+
+            if (ccwMoves === cwMoves) {
+              cwMoves = cycle - ccwMoves;
+            }
+
+            if (ccwMoves <= cwMoves) {
+              return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${ccwMoves}${ccwMoves === 0 ? "" : " CCW"}` };
+            }
+
+            return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${cwMoves} CW` };
+          });
+        }, [level]);
 
         useEffect(() => {
           if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT || level.ringCycles[0] !== CENTER_CYCLE) {
@@ -158,7 +180,32 @@
           setBallFired(false);
           setShowWinModal(false);
           setMessage("");
+          setMovesTapCount(0);
+          setShowSolutionHint(false);
         }, [currentLevelIndex]);
+
+        useEffect(() => {
+          const handlePointerDown = (event) => {
+            const clickedMoves = movesCounterRef.current && movesCounterRef.current.contains(event.target);
+            if (!clickedMoves) {
+              setMovesTapCount(0);
+              setShowSolutionHint(false);
+              return;
+            }
+
+            setMovesTapCount((previous) => {
+              const next = previous + 1;
+              if (next >= 3) {
+                setShowSolutionHint(true);
+                return 0;
+              }
+              return next;
+            });
+          };
+
+          document.addEventListener("pointerdown", handlePointerDown, true);
+          return () => document.removeEventListener("pointerdown", handlePointerDown, true);
+        }, []);
 
         const handleRotate = (index, direction) => {
           if (ballFired || showWinModal || showGuideModal) return;
@@ -228,7 +275,7 @@
             </div>
 
             <div className="w-full max-w-lg flex justify-between items-center mb-8 px-2">
-              <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
+              <div ref={movesCounterRef} className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
                 Moves: {moves} / {level.targetMoves}
               </div>
               <div className="flex gap-2">
@@ -312,6 +359,17 @@
                 </div>
               ))}
             </div>
+
+            {showSolutionHint && (
+              <div className="mt-4 max-w-lg mx-auto px-4 text-center text-sm font-medium text-zinc-300">
+                {solutionHintParts.map((part, index) => (
+                  <React.Fragment key={part.label}>
+                    <span style={{ color: part.color }}>{part.label}: {part.text}</span>
+                    {index < solutionHintParts.length - 1 && <span className="text-zinc-300">, </span>}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
 
             {showGuideModal && (
               <div className="fixed inset-0 bg-zinc-950/80 flex items-center justify-center z-50 p-4" style={{ backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}>
