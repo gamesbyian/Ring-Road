@@ -85,6 +85,14 @@
 
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * normalizeState(state, cycleLength);
+      const GAP_HALF_WIDTH = 6;
+
+      const isAngleWithinRingGap = (angleDegrees, radius) => {
+        const normalizedAngle = ((angleDegrees + 180) % 360) - 180;
+        const safeRadius = Math.max(radius, 1);
+        const halfGapAngle = (Math.asin(Math.min(1, GAP_HALF_WIDTH / safeRadius)) * 180) / Math.PI;
+        return Math.abs(normalizedAngle) <= halfGapAngle;
+      };
 
       const spokeFromState = (state, cycleLength) => {
         const normalized = normalizeState(state, cycleLength);
@@ -436,7 +444,7 @@
                 <defs>
                   <mask id="gapMask" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">
                     <rect x="-400" y="-400" width="800" height="800" fill="white" />
-                    <rect x="-6" y="-400" width="12" height="390" fill="black" />
+                    <rect x={-GAP_HALF_WIDTH} y="-400" width={GAP_HALF_WIDTH * 2} height="390" fill="black" />
                   </mask>
                 </defs>
                 <g transform="translate(180, 180)">
@@ -444,7 +452,8 @@
                     const radius = 10 + 22 * i;
                     const cycle = level.ringCycles[i];
                     const markerRadius = radius - 8;
-                    const dimpleRadius = 4;
+                    const dimpleRadius = cycle > 18 ? 2.4 : cycle > 12 ? 2.8 : 3.2;
+                    const ringRotation = rotationAngle(rotations[i], cycle);
                     return (
                       <g key={`outer-${i}`}>
                         {Array.from({ length: cycle }).map((_, markerIndex) => {
@@ -466,17 +475,24 @@
                           <circle cx="0" cy="0" r={radius} stroke={COLORS[i]} strokeWidth="16" fill="none" mask="url(#gapMask)" style={{ filter: `drop-shadow(0 0 2px ${COLORS[i]}40)` }} />
                           {Array.from({ length: cycle }).map((_, dimpleIndex) => {
                             const angle = (360 / cycle) * dimpleIndex;
+                            const absoluteAngle = angle + ringRotation;
+
+                            if (isAngleWithinRingGap(absoluteAngle, markerRadius)) {
+                              return null;
+                            }
+
                             return (
                               <circle
                                 key={`dimple-${i}-${dimpleIndex}`}
                                 cx="0"
                                 cy={-markerRadius}
                                 r={dimpleRadius}
-                                fill="rgba(0, 0, 0, 0.35)"
-                                stroke="rgba(255, 255, 255, 0.12)"
-                                strokeWidth="0.8"
+                                fill="rgba(255, 255, 255, 0.72)"
+                                stroke="rgba(0, 0, 0, 0.4)"
+                                strokeWidth="1"
                                 mask="url(#gapMask)"
                                 transform={`rotate(${angle})`}
+                                style={{ filter: "drop-shadow(0 0 1px rgba(0, 0, 0, 0.45))" }}
                               />
                             );
                           })}
