@@ -131,7 +131,7 @@
               const clockwiseSteps = normalizeState(targetState - initialState, cycleLength);
               const counterClockwiseSteps = normalizeState(initialState - targetState, cycleLength);
               const shortestDistance = Math.min(clockwiseSteps, counterClockwiseSteps);
-              const shortestDirection = clockwiseSteps <= counterClockwiseSteps ? 1 : -1;
+              const shortestDirection = clockwiseSteps < counterClockwiseSteps ? 1 : -1;
 
               if (!optionsByDistance.has(shortestDistance)) {
                 optionsByDistance.set(shortestDistance, {
@@ -198,26 +198,11 @@
             runningMoves = step.previousMoves;
           }
 
-          const exactMoveSequence = [];
-          const fillerMovePairs = (level.targetMoves - chosenBaseMoves) / 2;
-
-          for (let i = 0; i < fillerMovePairs; i += 1) {
-            exactMoveSequence.push({ ringIndex: 0, direction: 1 });
-            exactMoveSequence.push({ ringIndex: 0, direction: -1 });
-          }
-
-          BUTTON_ORDER.forEach((ringIndex) => {
-            const ringPlan = selectedRingOptions[ringIndex];
-            for (let step = 0; step < ringPlan.distance; step += 1) {
-              exactMoveSequence.push({ ringIndex, direction: ringPlan.direction });
-            }
-          });
-
           solvedPlans.push({
             sharedSpoke: candidate.sharedSpoke,
             minMoveSum: candidate.minMoveSum,
             baseMoves: chosenBaseMoves,
-            exactMoveSequence,
+            selectedRingOptions,
           });
         });
 
@@ -231,24 +216,6 @@
       };
 
       const ALL_LEVEL_SOLUTIONS = LEVELS.map((level) => solveLevelDeterministically(level));
-
-      const formatSequenceSegments = (sequence) => {
-        if (sequence.length === 0) return "Already aligned.";
-        const segments = [];
-        sequence.forEach((move) => {
-          const last = segments[segments.length - 1];
-          if (last && last.ringIndex === move.ringIndex && last.direction === move.direction) {
-            last.count += 1;
-          } else {
-            segments.push({ ...move, count: 1 });
-          }
-        });
-
-        return segments
-          .map((segment) => `${RING_LABELS[segment.ringIndex]} ${segment.direction === 1 ? "CW" : "CCW"} ×${segment.count}`)
-          .join(", ");
-      };
-
 
       function App() {
         const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
@@ -271,10 +238,6 @@
             let ccwMoves = initial;
             let cwMoves = (cycle - initial) % cycle;
 
-            if (ccwMoves === cwMoves) {
-              cwMoves = cycle - ccwMoves;
-            }
-
             if (ccwMoves <= cwMoves) {
               return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${ccwMoves}${ccwMoves === 0 ? "" : " CCW"}` };
             }
@@ -282,11 +245,20 @@
             return { label: RING_LABELS[ringIndex], color: COLORS[ringIndex], text: `${cwMoves} CW` };
           });
         }, [level]);
-        const exactSolutionText = useMemo(() => {
-          if (!levelSolution?.hasExactTargetSolution || !levelSolution.exactTargetPlan) {
-            return "No exact target solution exists for this level.";
+        const exactSolutionParts = useMemo(() => {
+          if (!levelSolution?.hasExactTargetSolution || !levelSolution.exactTargetPlan?.selectedRingOptions) {
+            return [];
           }
-          return formatSequenceSegments(levelSolution.exactTargetPlan.exactMoveSequence);
+
+          return BUTTON_ORDER.map((ringIndex) => {
+            const ringOption = levelSolution.exactTargetPlan.selectedRingOptions[ringIndex];
+            const directionText = ringOption.distance === 0 ? "0" : `${ringOption.distance} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
+            return {
+              label: RING_LABELS[ringIndex],
+              color: COLORS[ringIndex],
+              text: `${RING_LABELS[ringIndex]}: ${directionText}`,
+            };
+          });
         }, [levelSolution]);
 
         useEffect(() => {
@@ -420,7 +392,6 @@
               <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
                 Moves: {moves} / {level.targetMoves}
               </div>
-              <div className="text-xs text-zinc-400">Min align: {levelSolution.minimumMovesToAlignment}</div>
               <div className="flex gap-2">
                 <button onClick={undoMove} disabled={history.length === 0} className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 p-2 rounded-md transition-colors text-sm">
                   <UndoIcon /> Undo
@@ -518,8 +489,15 @@
               <div className="mt-4 max-w-lg mx-auto px-4 text-center text-sm font-medium text-zinc-300">
                 {levelSolution.hasExactTargetSolution ? (
                   <>
-                    <p className="text-emerald-300 mb-2">Exact {level.targetMoves}-move solution sequence</p>
-                    <p>{exactSolutionText}</p>
+                    <p className="text-emerald-300 mb-2">Exact {level.targetMoves}-move solution</p>
+                    <p>
+                      {exactSolutionParts.map((part, index) => (
+                        <React.Fragment key={part.label}>
+                          <span style={{ color: part.color }}>{part.text}</span>
+                          {index < exactSolutionParts.length - 1 && <span className="text-zinc-300">, </span>}
+                        </React.Fragment>
+                      ))}
+                    </p>
                   </>
                 ) : (
                   <>
