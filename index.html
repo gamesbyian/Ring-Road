@@ -112,6 +112,7 @@
       // Level entries intentionally separate gameplay content fields from authoring assertions:
       // - Gameplay content: id, targetMoves, ringCycles, initial
       // - Authoring assertions (validation-only): authoring.requireWrapInIntendedPlan
+      // Acceptance rule for new levels: choose the intended exact solution vector first, derive initial states + targetMoves from it, validate with the solver, and normally accept only when exactIntendedSolutionVectorCount === 1 (treat >1 as a design-warning unless intentionally ambiguous).
       const CAMPAIGN_LEVELS = [
         { id: 1, targetMoves: 11, ringCycles: [3, 5, 3, 5, 7, 3, 5], initial: [2, 2, 1, 2, 4, 0, 2], authoring: { requireWrapInIntendedPlan: false } },
         { id: 2, targetMoves: 11, ringCycles: [5, 7, 13, 3, 2, 11, 2], initial: [0, 5, 8, 2, 0, 2, 0], authoring: { requireWrapInIntendedPlan: false } },
@@ -785,25 +786,29 @@
             </div>
 
             {showGuideModal && (
-              <div className="fixed inset-0 bg-zinc-950/80 flex items-center justify-center z-50 p-4" style={{ backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}>
-                <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-2xl max-w-md w-full">
-                  <h2 className="text-2xl font-bold text-white mb-6 text-center">How to Play Ring Road</h2>
-                  <div className="space-y-4 text-zinc-300 text-sm mb-8 leading-relaxed">
-                    <p>
-                      <strong className="text-white">The Goal:</strong> Align the gaps in all rings and the center notch to create one straight radial road.
-                    </p>
-                    <p>
-                      <strong className="text-white">The Catch:</strong> You must reach alignment in <span className="text-emerald-400 font-bold">exactly</span> the number of moves specified.
-                    </p>
-                    <p>
-                      <strong className="text-indigo-400">Granularity:</strong> Rings can have different numbers of orientations, shown by the marker ticks around each ring.
-                    </p>
-                    <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing direction for extra steps will not solve the level.</p>
-                    <p>Some solutions require a longer continuous route, with a ring turning past a full rotation. When aligned at the exact count, tap the center dot to fire the ball.</p>
+              <div className="fixed inset-0 bg-zinc-950/80 flex items-center justify-center z-50 p-6 sm:p-8" style={{ backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}>
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[calc(100vh-4.5rem)] sm:max-h-[calc(100vh-6rem)] flex flex-col overflow-hidden">
+                  <div className="flex-1 overflow-y-auto px-6 pt-6 pb-5 sm:px-8 sm:pt-8">
+                    <h2 className="text-2xl font-bold text-white mb-6 text-center">How to Play Ring Road</h2>
+                    <div className="space-y-4 text-zinc-300 text-sm leading-relaxed">
+                      <p>
+                        <strong className="text-white">The Goal:</strong> Align the gaps in all rings and the center notch to create one straight radial road.
+                      </p>
+                      <p>
+                        <strong className="text-white">The Catch:</strong> You must reach alignment in <span className="text-emerald-400 font-bold">exactly</span> the number of moves specified.
+                      </p>
+                      <p>
+                        <strong className="text-indigo-400">Granularity:</strong> Rings can have different numbers of orientations, shown by the marker ticks around each ring.
+                      </p>
+                      <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing direction for extra steps will not solve the level.</p>
+                      <p>Some solutions require a longer continuous route, with a ring turning past a full rotation. When aligned at the exact count, tap the center dot to fire the ball.</p>
+                    </div>
                   </div>
-                  <button onClick={() => setShowGuideModal(false)} className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-colors">
-                    Play
-                  </button>
+                  <div className="px-6 pb-6 pt-4 sm:px-8 sm:pb-8 border-t border-zinc-800 bg-zinc-900">
+                    <button onClick={() => setShowGuideModal(false)} className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-colors">
+                      Play
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
