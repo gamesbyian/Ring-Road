@@ -291,7 +291,7 @@
       // - Logical truth is shared-spoke identity in center-ring coordinates: a level is solved when every ring maps to the same spoke.
       // - The solver and win checks reason about spoke agreement, not an absolute screen angle like "up".
       // - Levels should be authored angle-agnostic around spoke structure and exact per-ring move allocations.
-      // - boardOrientationState applies a full-board render rotation on load/restart for visual freshness only.
+      // - boardOrientationState applies a full-board render rotation when entering a level for visual freshness only.
       //   It does not alter solvability, intended vectors, or the underlying shared-spoke solution space.
       // - Internal shared-spoke choice and cosmetic board orientation are different axes; do not conflate them.
       // - Keep board rotation for this abstract radial presentation unless future angle-sensitive UI makes random orientation confusing.
@@ -599,10 +599,8 @@
         }, [history, ballFired, showWinModal, showGuideModal]);
 
         const restartLevel = useCallback(() => {
-          const nextState = prepareLevelState(level);
           setIsLevelReady(false);
-          setRotations(nextState.rotations);
-          setBoardOrientationState(nextState.boardOrientationState);
+          setRotations([...level.initial]);
           setMoves(0);
           setHistory([]);
           setBallFired(false);
