@@ -87,6 +87,10 @@
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * state;
       const GAP_HALF_WIDTH = 6;
+      const RING_STROKE_WIDTH = 16 * 1.17;
+      const RING_RADIUS_BASE = 8.64;
+      const RING_RADIUS_STEP = 22 * 1.17;
+      const DOT_CENTER_OFFSET = 13;
       const RING_TRANSFORM_CLASS = "transition-transform duration-300 ease-in-out";
       const hexToRgb = (hex) => {
         const normalized = hex.replace("#", "");
@@ -107,7 +111,7 @@
         return (
           <g>
             <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS} mask="url(#gapMask)">
-              <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth="16" fill="none" />
+              <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth={RING_STROKE_WIDTH} fill="none" />
               {config.markerAngles.map((angle, markerIndex) => (
                 <circle
                   key={`marker-${ringIndex}-${markerIndex}`}
@@ -274,7 +278,7 @@
         const outerRingRenderConfig = useMemo(() => {
           return OUTER_RING_INDICES.map((ringIndex) => {
             const cycle = level.ringCycles[ringIndex];
-            const radius = 10 + 22 * ringIndex;
+            const radius = RING_RADIUS_BASE + RING_RADIUS_STEP * ringIndex;
             return {
               ringIndex,
               radius,
@@ -480,10 +484,11 @@
             <div className="w-full max-w-lg flex justify-between items-center mb-1.5 px-2">
               <div className="w-full flex items-center justify-between gap-4">
                 <h1 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">Ring Road</h1>
-                <div className="flex items-center gap-2 text-sm text-zinc-400 font-medium text-right whitespace-nowrap">
+                <div className="flex items-center gap-2 text-sm font-medium text-right whitespace-nowrap" style={{ color: BOARD_BACKGROUND }}>
                   <button
                     onClick={goToPreviousLevel}
-                    className="w-7 h-7 rounded-full bg-white text-black leading-none text-lg font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    className="rounded-full bg-white leading-none text-sm font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    style={{ width: "21px", height: "21px", color: BOARD_BACKGROUND }}
                     aria-label="Previous level"
                   >
                     -
@@ -493,7 +498,8 @@
                   </p>
                   <button
                     onClick={goToNextLevel}
-                    className="w-7 h-7 rounded-full bg-white text-black leading-none text-lg font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    className="rounded-full bg-white leading-none text-sm font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    style={{ width: "21px", height: "21px", color: BOARD_BACKGROUND }}
                     aria-label="Next level"
                   >
                     +
@@ -502,7 +508,7 @@
               </div>
             </div>
 
-            <div className="w-full max-w-lg flex justify-between items-center mb-3 px-2">
+            <div className="w-full max-w-lg flex justify-between items-center mb-[0.3rem] px-2">
               <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
                 Moves: {moves} / {level.targetMoves}
               </div>
@@ -545,7 +551,7 @@
                     {isAligned && moves === level.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
                     <circle
                       cx="0"
-                      cy="-14"
+                      cy={-DOT_CENTER_OFFSET}
                       r="4"
                       fill="#ffffff"
                       className="pointer-events-none"
@@ -561,7 +567,7 @@
               </svg>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-3 max-w-lg mx-auto px-4">
+            <div className="flex flex-wrap justify-center gap-3 mt-[0.45rem] max-w-lg mx-auto px-4">
               {BUTTON_ORDER.map((i) => (
                 <div key={`btn-${i}`} className="flex rounded-md overflow-hidden bg-zinc-800 shadow-lg" style={{ borderBottom: `2px solid ${COLORS[i]}` }}>
                   <button onClick={() => handleRotate(i, -1)} className="p-3 hover:bg-zinc-700 active:bg-zinc-600 transition-colors">
