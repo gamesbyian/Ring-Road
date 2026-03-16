@@ -87,8 +87,16 @@
       // Over-360 is an intended design tool:
       // - A valid directed move can be baseDirectionalDistance + k * cycleLength, with k >= 1 for wrapped plans.
       // - Wraps must be continuous one-direction movement, not CW/CCW cancellation padding.
-      // - Preferred handcrafted levels have at least one exact intended vector and usually exactly one.
+      // - Preferred handcrafted levels should have exactly one exact intended solution vector.
+      // - Multiple exact vectors are a design warning unless that ambiguity is explicitly intentional.
+      // - Uniqueness is judged by full per-ring move allocation (targetState + direction + moveCount + wraps), not only final alignment.
       // - Legacy burn-pair diagnostics remain legacy-only and should not drive level validity.
+      //
+      // Practical wrap-level heuristic (guideline, not a rule):
+      // - Start from a clean exact intended vector, then add one full-turn wrap to one ring by default.
+      // - Prefer a ring with a small/moderate base directional distance; small-cycle rings are often strong candidates.
+      // - Keep targetMoves only modestly above the no-wrap minimum so the wrapped move is structurally required, not decorative.
+      // - One wrapped ring is usually more readable than many; always recheck exact-vector uniqueness after adding wraps.
       const NORMAL_LEVELS = [
         { id: 1, targetMoves: 10, ringCycles: [8, 8, 1, 12, 3, 6, 10], initial: [0, 3, 0, 4, 0, 2, 9], requireWrapInIntendedPlan: false },
         { id: 2, targetMoves: 11, ringCycles: [8, 2, 5, 4, 16, 8, 12], initial: [1, 0, 2, 0, 12, 3, 1], requireWrapInIntendedPlan: false },
@@ -211,7 +219,9 @@
       // - Backtracking/burn-pair padding (CW then CCW cancellation) is never part of a valid intended solution.
       // - Over-360 motion is valid only when staying in one chosen direction for that ring:
       //   moveCount = baseDirectionalDistance + k * cycleLength, k >= 0.
-      // - For generator/validation workflows, prefer levels with exactly one exact directed solution vector.
+      // - For generator/validation workflows, prefer exactly one exact directed solution vector.
+      // - Treat multiple exact vectors as a design warning unless intentional.
+      // - Vector uniqueness is by full per-ring allocation, not just shared final alignment.
       const optionDedupKey = (option) => {
         // Distinct solution vectors are identified by each ring's allocated moveCount/wraps/targetState,
         // plus direction for non-zero movement. Zero-move allocations are direction-agnostic.
@@ -825,7 +835,7 @@
                     <p>
                       <strong className="text-indigo-400">Granularity:</strong> The center and outer rings can have different orientation counts depending on mode, shown by the marker ticks around each ring.
                     </p>
-                    <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing just to spend moves will not solve the level.</p>
+                    <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing direction for extra steps will not solve the level.</p>
                     <p>Some solutions require a longer continuous route, with a ring turning past a full rotation. When aligned at the exact count, tap the center dot to fire the ball.</p>
                   </div>
                   <button onClick={() => setShowGuideModal(false)} className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-colors">
