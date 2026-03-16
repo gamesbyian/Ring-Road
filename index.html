@@ -29,6 +29,8 @@
 
       const MODE_NORMAL = "normal";
       const MODE_PRIMES = "primes";
+      const DEV_VALIDATION = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      const DEBUG_DIAGNOSTICS = DEV_VALIDATION;
 
       const RotateCcwIcon = ({ color }) => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -189,6 +191,13 @@
       // - Over-360 motion is valid only when staying in one chosen direction for that ring:
       //   moveCount = baseDirectionalDistance + k * cycleLength, k >= 0.
       // - For generator/validation workflows, prefer levels with exactly one exact directed solution vector.
+      const optionDedupKey = (option) => {
+        // Distinct solution vectors are identified by each ring's allocated moveCount/wraps/targetState,
+        // plus direction for non-zero movement. Zero-move allocations are direction-agnostic.
+        const directionKey = option.moveCount === 0 ? "stationary" : option.direction;
+        return `${option.targetState}|${directionKey}|${option.moveCount}|${option.wraps}`;
+      };
+
       const solveLevelDeterministically = (level) => {
         const candidateSpokes = [];
         const centerCycle = level.ringCycles[0];
@@ -208,7 +217,7 @@
               break;
             }
 
-            const options = [];
+            const optionsByKey = new Map();
 
             targetStates.forEach((targetState) => {
               const baseClockwise = normalizeState(targetState - initialState, cycleLength);
@@ -226,7 +235,7 @@
                   if (moveCount > level.targetMoves) {
                     break;
                   }
-                  options.push({
+                  const option = {
                     targetState,
                     direction,
                     moveCount,
@@ -234,10 +243,16 @@
                     baseDirectionalDistance,
                     wraps,
                     isZeroMove: moveCount === 0,
-                  });
+                  };
+                  const dedupKey = optionDedupKey(option);
+                  if (!optionsByKey.has(dedupKey)) {
+                    optionsByKey.set(dedupKey, option);
+                  }
                 }
               });
             });
+
+            const options = [...optionsByKey.values()];
 
             if (!options.length) {
               validSpoke = false;
@@ -260,7 +275,10 @@
           return best;
         }, null);
 
-        let exactPlanCount = 0;
+        // Counts unique exact move-allocation vectors across all rings for this level target.
+        // Two vectors are distinct when any ring differs in targetState, moveCount, wraps,
+        // or (for non-zero movement) direction.
+        let exactSolutionVectorCount = 0;
         let firstExactPlan = null;
 
         candidateSpokes.forEach((candidate) => {
@@ -291,7 +309,7 @@
           }
 
           const spokeExactPlanCount = countDpByRing[RING_COUNT].get(level.targetMoves) || 0;
-          exactPlanCount += spokeExactPlanCount;
+          exactSolutionVectorCount += spokeExactPlanCount;
 
           if (!firstExactPlan && spokeExactPlanCount > 0) {
             const selectedRingOptions = Array(RING_COUNT).fill(null);
@@ -338,11 +356,13 @@
 
         return {
           minimumMovesToAlignment: bestMinimumPlan ? bestMinimumPlan.minimumDirectedMoves : Infinity,
-          hasExactIntendedSolution: exactPlanCount > 0,
+          hasExactIntendedSolution: exactSolutionVectorCount > 0,
           exactIntendedPlan: firstExactPlan,
-          exactIntendedSolutionVectorCount: exactPlanCount,
-          hasMultipleExactIntendedSolutions: exactPlanCount > 1,
-          solvableOnlyWithBurnPadding: exactPlanCount === 0 && hasOldBurnPairFallback,
+          // Uniqueness is based on exact per-ring move-allocation vectors, not only final alignment.
+          exactIntendedSolutionVectorCount: exactSolutionVectorCount,
+          hasMultipleExactIntendedSolutions: exactSolutionVectorCount > 1,
+          // Legacy-analysis only: never used for gameplay validity, reveal text, or win checks.
+          legacyBurnPaddingOnlyDiagnostic: exactSolutionVectorCount === 0 && hasOldBurnPairFallback,
         };
       };
 
@@ -392,7 +412,7 @@
           const ringParts = BUTTON_ORDER.map((ringIndex) => {
             const ringOption = levelSolution.exactIntendedPlan.selectedRingOptions[ringIndex];
             const directionText = ringOption.moveCount === 0 ? "0" : `${ringOption.moveCount} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
-            const wrapText = ringOption.wraps > 0 ? ` (${ringOption.wraps} extra full turn${ringOption.wraps === 1 ? "" : "s"})` : "";
+            const wrapText = ringOption.wraps > 0 ? ` (${ringOption.wraps} additional full turn${ringOption.wraps === 1 ? "" : "s"})` : "";
             return {
               label: RING_LABELS[ringIndex],
               color: COLORS[ringIndex],
@@ -408,7 +428,7 @@
           }
 
           return {
-            heading: `Exact intended ${level.targetMoves}-move solution`,
+            heading: `${level.targetMoves}-move solution plan`,
             parts: ringParts,
           };
         }, [level, levelSolution]);
@@ -452,13 +472,17 @@
             levelsForMode.forEach((levelEntry, index) => {
               const analysis = ALL_LEVEL_SOLUTIONS_BY_MODE[modeKey][index];
               if (!analysis.hasExactIntendedSolution) {
-                throw new Error(`Mode=${modeKey} level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} has no exact intended directed solution.`);
+                const message = `Mode=${modeKey} level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} has no exact intended directed solution vector.`;
+                if (DEV_VALIDATION) {
+                  throw new Error(message);
+                }
+                console.error(`[Validation] ${message}`);
               }
               if (analysis.hasMultipleExactIntendedSolutions) {
-                console.warn(`Mode=${modeKey} level ${levelEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended solution vectors.`);
+                console.warn(`[Validation] Mode=${modeKey} level ${levelEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended move-allocation vectors.`);
               }
-              if (analysis.solvableOnlyWithBurnPadding) {
-                console.warn(`Mode=${modeKey} level ${levelEntry.id} would only have worked under legacy burn-pair padding.`);
+              if (analysis.legacyBurnPaddingOnlyDiagnostic) {
+                console.warn(`[Validation] Mode=${modeKey} level ${levelEntry.id} would only have worked under legacy burn-pair padding.`);
               }
             });
           });
@@ -593,7 +617,7 @@
               showMessage(`Aligned, but not at the target move count. ${diff} more move${diff !== 1 ? "s" : ""} needed.`);
             } else {
               const diff = moves - level.targetMoves;
-              showMessage(`Aligned! But you are ${diff} move${diff !== 1 ? "s" : ""} over the target.`);
+              showMessage(`Aligned, but ${diff} move${diff !== 1 ? "s" : ""} over target.`);
             }
           } else {
             showMessage("Align all gaps with the center notch first!");
@@ -721,12 +745,12 @@
                         </React.Fragment>
                       ))}
                     </p>
-                    {levelSolution.hasMultipleExactIntendedSolutions && (
+                    {DEBUG_DIAGNOSTICS && levelSolution.hasMultipleExactIntendedSolutions && (
                       <p className="text-amber-300 mt-2">Diagnostic: {levelSolution.exactIntendedSolutionVectorCount} exact intended solution vectors exist for this level.</p>
                     )}
                   </>
                 ) : (
-                  <p className="text-amber-300">No exact intended {level.targetMoves}-move solution was found for this level.</p>
+                  DEBUG_DIAGNOSTICS ? <p className="text-amber-300">Diagnostic: no exact {level.targetMoves}-move solution vector found for this level.</p> : null
                 )}
               </div>
             )}
@@ -770,8 +794,8 @@
                     <p>
                       <strong className="text-indigo-400">Granularity:</strong> The center and outer rings can have different orientation counts depending on mode, shown by the marker ticks around each ring.
                     </p>
-                    <p><strong className="text-white">Route Discipline:</strong> Every counted move should contribute to your intended route. Cancellation padding is not part of the puzzle model.</p>
-                    <p>Some solutions require continuing in one direction past a full turn. When aligned at the exact count, tap the center dot to fire the ball.</p>
+                    <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing just to spend moves will not solve the level.</p>
+                    <p>Some solutions require a longer continuous route, with a ring turning past a full rotation. When aligned at the exact count, tap the center dot to fire the ball.</p>
                   </div>
                   <button onClick={() => setShowGuideModal(false)} className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-colors">
                     Play
