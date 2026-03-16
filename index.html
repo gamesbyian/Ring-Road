@@ -73,7 +73,7 @@
         </svg>
       );
 
-      // Level-authoring workflow (construct from intended solution first, not from random starts):
+      // Puzzle-authoring workflow (construct from intended solution first, not from random starts):
       //   1) Pick legal prime-only ring cycle counts.
       //   2) Pick a shared solved spoke `s` that every ring can align to.
       //   3) Choose the intended exact directed move allocation per ring (direction + moveCount).
@@ -84,10 +84,10 @@
       //   6) Run solver validation and inspect exact-solution-vector count / ambiguity diagnostics.
       //
       // Procedural solvability trick (same construction, non-random-first):
-      // - To guarantee solvability for generated levels, do not generate random initial states and then hope a good exact plan exists.
+      // - To guarantee solvability for generated puzzles, do not generate random initial states and then hope a good exact plan exists.
       // - Instead, use this same constructive pipeline (cycle counts -> shared spoke -> exact directed move allocation -> derived target/initial states),
       //   then set targetMoves from that allocation.
-      // - This guarantees at least one valid exact directed solution vector because the level was built from a known intended vector.
+      // - This guarantees at least one valid exact directed solution vector because the puzzle was built from a known intended vector.
       // - It does not guarantee uniqueness by itself; solver validation must still check for alternate exact vectors / ambiguity.
       //
       // Prime relationships are intentionally constrained, so exact-vector uniqueness checks matter.
@@ -95,25 +95,25 @@
       // Over-360 is an intended design tool:
       // - A valid directed move can be baseDirectionalDistance + k * cycleLength, with k >= 1 for wrapped plans.
       // - Wraps are continuous one-direction movement on the same ring.
-      // - Preferred handcrafted levels should have exactly one exact intended solution vector.
+      // - Preferred handcrafted puzzles should have exactly one exact intended solution vector.
       // - Multiple exact vectors are a design warning unless that ambiguity is explicitly intentional.
       // - Uniqueness is judged by full per-ring move allocation (targetState + direction + moveCount + wraps), not only final alignment.
       //
-      // Practical wrap-level heuristic (guideline, not a rule):
+      // Practical wrap-puzzle heuristic (guideline, not a rule):
       // - Start from a clean exact intended vector, then add one full-turn wrap to one ring by default.
       // - Prefer a ring with a small/moderate base directional distance; small-cycle rings are often strong candidates.
       // - Keep targetMoves only modestly above the no-wrap minimum so the wrapped move is structurally required, not decorative.
       // - One wrapped ring is usually more readable than many; always recheck exact-vector uniqueness after adding wraps.
       //
       // Campaign vs generator note:
-      // - Authored campaign levels are curated outputs of this same construct-from-solution method.
+      // - Authored campaign puzzles are curated outputs of this same construct-from-solution method.
       // - Future generators should use the same construction path, then filter candidates with solver/validation uniqueness criteria.
       // ===== Prime-only campaign data =====
-      // Level entries intentionally separate gameplay content fields from authoring assertions:
+      // Puzzle entries intentionally separate gameplay content fields from authoring assertions:
       // - Gameplay content: id, targetMoves, ringCycles, initial
       // - Authoring assertions (validation-only): authoring.requireWrapInIntendedPlan
-      // Acceptance rule for new levels: choose the intended exact solution vector first, derive initial states + targetMoves from it, validate with the solver, and normally accept only when exactIntendedSolutionVectorCount === 1 (treat >1 as a design-warning unless intentionally ambiguous).
-      const CAMPAIGN_LEVELS = [
+      // Acceptance rule for new puzzles: choose the intended exact solution vector first, derive initial states + targetMoves from it, validate with the solver, and normally accept only when exactIntendedSolutionVectorCount === 1 (treat >1 as a design-warning unless intentionally ambiguous).
+      const CAMPAIGN_PUZZLES = [
         { id: 1, targetMoves: 11, ringCycles: [3, 5, 3, 5, 7, 3, 5], initial: [2, 2, 1, 2, 4, 0, 2], authoring: { requireWrapInIntendedPlan: false } },
         { id: 2, targetMoves: 11, ringCycles: [5, 7, 13, 3, 2, 11, 2], initial: [0, 5, 8, 2, 0, 2, 0], authoring: { requireWrapInIntendedPlan: false } },
         { id: 3, targetMoves: 12, ringCycles: [2, 3, 5, 2, 5, 13, 19], initial: [0, 0, 3, 0, 3, 10, 5], authoring: { requireWrapInIntendedPlan: false } },
@@ -157,16 +157,16 @@
         const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
         return luminance > 0.58 ? "rgba(15, 23, 42, 0.378)" : "rgba(248, 250, 252, 0.45)";
       };
-      const randomBoardOrientation = (level) => Math.floor(Math.random() * level.ringCycles[CENTER_RING_INDEX]);
+      const randomBoardOrientation = (puzzle) => Math.floor(Math.random() * puzzle.ringCycles[CENTER_RING_INDEX]);
 
-      const prepareLevelState = (level) => ({
-        rotations: [...level.initial],
-        boardOrientationState: randomBoardOrientation(level),
+      const preparePuzzleState = (puzzle) => ({
+        rotations: [...puzzle.initial],
+        boardOrientationState: randomBoardOrientation(puzzle),
       });
 
-      const buildOuterRingRenderConfig = (level) => {
+      const buildOuterRingRenderConfig = (puzzle) => {
         return OUTER_RING_INDICES.map((ringIndex) => {
-          const cycle = level.ringCycles[ringIndex];
+          const cycle = puzzle.ringCycles[ringIndex];
           const radius = RING_RADIUS_BASE + RING_RADIUS_STEP * ringIndex;
           return {
             ringIndex,
@@ -180,13 +180,13 @@
       };
 
       const EMPTY_EXACT_SOLUTION_PLAN = { heading: "", parts: [] };
-      const buildExactSolutionPlan = (level, levelSolution) => {
-        if (!levelSolution?.hasExactIntendedSolution || !levelSolution.exactIntendedPlan?.selectedRingOptions) {
+      const buildExactSolutionPlan = (puzzle, puzzleSolution) => {
+        if (!puzzleSolution?.hasExactIntendedSolution || !puzzleSolution.exactIntendedPlan?.selectedRingOptions) {
           return EMPTY_EXACT_SOLUTION_PLAN;
         }
 
         const ringParts = BUTTON_ORDER.map((ringIndex) => {
-          const ringOption = levelSolution.exactIntendedPlan.selectedRingOptions[ringIndex];
+          const ringOption = puzzleSolution.exactIntendedPlan.selectedRingOptions[ringIndex];
           const directionText = ringOption.moveCount === 0 ? "0" : `${ringOption.moveCount} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
           const wrapText = ringOption.wraps > 0 ? ` (${ringOption.wraps} additional full turn${ringOption.wraps === 1 ? "" : "s"})` : "";
           return {
@@ -198,13 +198,13 @@
         });
 
         const plannedMoveSum = ringParts.reduce((sum, part) => sum + (part.plannedMoves || 0), 0);
-        const expectedTarget = levelSolution.exactIntendedPlan.targetMoves ?? level.targetMoves;
+        const expectedTarget = puzzleSolution.exactIntendedPlan.targetMoves ?? puzzle.targetMoves;
         if (plannedMoveSum !== expectedTarget) {
-          console.warn(`Exact intended solution display mismatch for level ${level.id}: planned=${plannedMoveSum}, target=${expectedTarget}.`);
+          console.warn(`Exact intended solution display mismatch for puzzle ${puzzle.id}: planned=${plannedMoveSum}, target=${expectedTarget}.`);
         }
 
         return {
-          heading: `${level.targetMoves}-move solution plan`,
+          heading: `${puzzle.targetMoves}-move solution plan`,
           parts: ringParts,
         };
       };
@@ -222,42 +222,42 @@
       };
 
       // ===== Validation helpers =====
-      const validateLevelCycleConstraints = (level) => {
-        if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT) {
-          throw new Error(`Invalid level ${level.id}: expected ${RING_COUNT} rings and ${RING_COUNT} initial states.`);
+      const validatePuzzleCycleConstraints = (puzzle) => {
+        if (puzzle.ringCycles.length !== RING_COUNT || puzzle.initial.length !== RING_COUNT) {
+          throw new Error(`Invalid puzzle ${puzzle.id}: expected ${RING_COUNT} rings and ${RING_COUNT} initial states.`);
         }
 
-        const centerRingCycle = level.ringCycles[CENTER_RING_INDEX];
+        const centerRingCycle = puzzle.ringCycles[CENTER_RING_INDEX];
         if (!isPrime(centerRingCycle) || centerRingCycle > MAX_CENTER_RING_CYCLE) {
-          throw new Error(`Invalid level ${level.id}: center ring cycle must be prime and <= ${MAX_CENTER_RING_CYCLE}.`);
+          throw new Error(`Invalid puzzle ${puzzle.id}: center ring cycle must be prime and <= ${MAX_CENTER_RING_CYCLE}.`);
         }
 
-        const firstOuterRingCycle = level.ringCycles[FIRST_OUTER_RING_INDEX];
+        const firstOuterRingCycle = puzzle.ringCycles[FIRST_OUTER_RING_INDEX];
         if (!isPrime(firstOuterRingCycle) || firstOuterRingCycle > MAX_FIRST_OUTER_RING_CYCLE) {
-          throw new Error(`Invalid level ${level.id}: first outer ring cycle must be prime and <= ${MAX_FIRST_OUTER_RING_CYCLE}.`);
+          throw new Error(`Invalid puzzle ${puzzle.id}: first outer ring cycle must be prime and <= ${MAX_FIRST_OUTER_RING_CYCLE}.`);
         }
 
-        const remainingOuterCycles = level.ringCycles.slice(FIRST_OUTER_RING_INDEX + 1);
+        const remainingOuterCycles = puzzle.ringCycles.slice(FIRST_OUTER_RING_INDEX + 1);
         if (remainingOuterCycles.some((cycleLength) => !isPrime(cycleLength) || cycleLength > MAX_REMAINING_OUTER_RING_CYCLE)) {
-          throw new Error(`Invalid level ${level.id}: remaining outer ring cycles must be prime and <= ${MAX_REMAINING_OUTER_RING_CYCLE}.`);
+          throw new Error(`Invalid puzzle ${puzzle.id}: remaining outer ring cycles must be prime and <= ${MAX_REMAINING_OUTER_RING_CYCLE}.`);
         }
       };
 
-      const validateCampaignSolutions = (levels, analyses) => {
-        levels.forEach((levelEntry, index) => {
+      const validateCampaignSolutions = (puzzles, analyses) => {
+        puzzles.forEach((puzzleEntry, index) => {
           const analysis = analyses[index];
           if (!analysis.hasExactIntendedSolution) {
-            const message = `Level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} has no exact intended directed solution vector.`;
+            const message = `Puzzle ${puzzleEntry.id} targetMoves=${puzzleEntry.targetMoves} has no exact intended directed solution vector.`;
             if (DEV_VALIDATION) {
               throw new Error(message);
             }
             console.error(`[Validation] ${message}`);
           }
           if (analysis.hasMultipleExactIntendedSolutions) {
-            console.warn(`[Validation] Level ${levelEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended move-allocation vectors.`);
+            console.warn(`[Validation] Puzzle ${puzzleEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended move-allocation vectors.`);
           }
-          if (levelEntry.authoring?.requireWrapInIntendedPlan && !analysis.exactPlanUsesWraps) {
-            const wrapMessage = `Level ${levelEntry.id} requires a wrapped ring in its intended authoring plan, but solver's exact plan has no wrapped ring.`;
+          if (puzzleEntry.authoring?.requireWrapInIntendedPlan && !analysis.exactPlanUsesWraps) {
+            const wrapMessage = `Puzzle ${puzzleEntry.id} requires a wrapped ring in its intended authoring plan, but solver's exact plan has no wrapped ring.`;
             if (DEV_VALIDATION) {
               throw new Error(wrapMessage);
             }
@@ -288,10 +288,10 @@
 
 
       // Puzzle-model note:
-      // - Logical truth is shared-spoke identity in center-ring coordinates: a level is solved when every ring maps to the same spoke.
+      // - Logical truth is shared-spoke identity in center-ring coordinates: a puzzle is solved when every ring maps to the same spoke.
       // - The solver and win checks reason about spoke agreement, not an absolute screen angle like "up".
-      // - Levels should be authored angle-agnostic around spoke structure and exact per-ring move allocations.
-      // - boardOrientationState applies a full-board render rotation when entering a level for visual freshness only.
+      // - Puzzles should be authored angle-agnostic around spoke structure and exact per-ring move allocations.
+      // - boardOrientationState applies a full-board render rotation when entering a puzzle for visual freshness only.
       //   It does not alter solvability, intended vectors, or the underlying shared-spoke solution space.
       // - Internal shared-spoke choice and cosmetic board orientation are different axes; do not conflate them.
       // - Keep board rotation for this abstract radial presentation unless future angle-sensitive UI makes random orientation confusing.
@@ -333,17 +333,17 @@
         return `${option.targetState}|${directionKey}|${option.moveCount}|${option.wraps}`;
       };
 
-      const solveLevelDeterministically = (level) => {
+      const solvePuzzleDeterministically = (puzzle) => {
         const candidateSpokes = [];
-        const centerCycle = level.ringCycles[0];
+        const centerCycle = puzzle.ringCycles[0];
 
         for (let sharedSpoke = 0; sharedSpoke < centerCycle; sharedSpoke += 1) {
           const ringDirectedOptions = [];
           let validSpoke = true;
 
           for (let ringIndex = 0; ringIndex < RING_COUNT; ringIndex += 1) {
-            const cycleLength = level.ringCycles[ringIndex];
-            const initialState = normalizeState(level.initial[ringIndex], cycleLength);
+            const cycleLength = puzzle.ringCycles[ringIndex];
+            const initialState = normalizeState(puzzle.initial[ringIndex], cycleLength);
             const targetStates = ringTargetStatesForSpoke(cycleLength, sharedSpoke, centerCycle);
 
             if (targetStates.length === 0) {
@@ -363,10 +363,10 @@
               }
 
               directionSeeds.forEach(({ direction, baseDirectionalDistance }) => {
-                const maxWraps = Math.floor((level.targetMoves - baseDirectionalDistance) / cycleLength);
+                const maxWraps = Math.floor((puzzle.targetMoves - baseDirectionalDistance) / cycleLength);
                 for (let wraps = 0; wraps <= maxWraps; wraps += 1) {
                   const moveCount = baseDirectionalDistance + wraps * cycleLength;
-                  if (moveCount > level.targetMoves) {
+                  if (moveCount > puzzle.targetMoves) {
                     break;
                   }
                   const option = {
@@ -401,7 +401,7 @@
           }
         }
 
-        // Counts unique exact move-allocation vectors across all rings for this level target.
+        // Counts unique exact move-allocation vectors across all rings for this puzzle target.
         // Two vectors are distinct when any ring differs in targetState, moveCount, wraps,
         // or (for non-zero movement) direction.
         let exactSolutionVectorCount = 0;
@@ -420,7 +420,7 @@
             previousCounts.forEach((count, partialMoves) => {
               candidate.ringDirectedOptions[ringIndex].forEach((option) => {
                 const nextMoves = partialMoves + option.moveCount;
-                if (nextMoves > level.targetMoves) {
+                if (nextMoves > puzzle.targetMoves) {
                   return;
                 }
                 nextCounts.set(nextMoves, (nextCounts.get(nextMoves) || 0) + count);
@@ -434,12 +434,12 @@
             pathDpByRing.push(nextPaths);
           }
 
-          const spokeExactPlanCount = countDpByRing[RING_COUNT].get(level.targetMoves) || 0;
+          const spokeExactPlanCount = countDpByRing[RING_COUNT].get(puzzle.targetMoves) || 0;
           exactSolutionVectorCount += spokeExactPlanCount;
 
           if (!firstExactPlan && spokeExactPlanCount > 0) {
             const selectedRingOptions = Array(RING_COUNT).fill(null);
-            let runningMoves = level.targetMoves;
+            let runningMoves = puzzle.targetMoves;
 
             for (let ringIndex = RING_COUNT; ringIndex > 0; ringIndex -= 1) {
               const step = pathDpByRing[ringIndex].get(runningMoves);
@@ -453,7 +453,7 @@
             if (selectedRingOptions.every(Boolean) && runningMoves === 0) {
               firstExactPlan = {
                 sharedSpoke: candidate.sharedSpoke,
-                targetMoves: level.targetMoves,
+                targetMoves: puzzle.targetMoves,
                 selectedRingOptions,
               };
             }
@@ -472,21 +472,21 @@
         };
       };
 
-      const buildCampaign = (levels) => {
-        levels.forEach((level) => validateLevelCycleConstraints(level));
-        const solutions = levels.map((level) => solveLevelDeterministically(level));
-        validateCampaignSolutions(levels, solutions);
-        return { levels, solutions };
+      const buildCampaign = (puzzles) => {
+        puzzles.forEach((puzzle) => validatePuzzleCycleConstraints(puzzle));
+        const solutions = puzzles.map((puzzle) => solvePuzzleDeterministically(puzzle));
+        validateCampaignSolutions(puzzles, solutions);
+        return { puzzles, solutions };
       };
 
-      const CAMPAIGN = buildCampaign(CAMPAIGN_LEVELS);
+      const CAMPAIGN = buildCampaign(CAMPAIGN_PUZZLES);
 
       // ===== React app =====
 
       function App() {
-        const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
-        const [rotations, setRotations] = useState(() => [...CAMPAIGN.levels[0].initial]);
-        const [boardOrientationState, setBoardOrientationState] = useState(() => randomBoardOrientation(CAMPAIGN.levels[0]));
+        const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
+        const [rotations, setRotations] = useState(() => [...CAMPAIGN.puzzles[0].initial]);
+        const [boardOrientationState, setBoardOrientationState] = useState(() => randomBoardOrientation(CAMPAIGN.puzzles[0]));
         const [moves, setMoves] = useState(0);
         const [history, setHistory] = useState([]);
         const [ballFired, setBallFired] = useState(false);
@@ -494,14 +494,14 @@
         const [showGuideModal, setShowGuideModal] = useState(true);
         const [message, setMessage] = useState("");
         const [showSolutionHint, setShowSolutionHint] = useState(false);
-        const [isLevelReady, setIsLevelReady] = useState(false);
-        const levelReadyFrameRef = useRef(null);
+        const [isPuzzleReady, setIsPuzzleReady] = useState(false);
+        const puzzleReadyFrameRef = useRef(null);
 
-        const level = CAMPAIGN.levels[currentLevelIndex];
-        const levelSolution = CAMPAIGN.solutions[currentLevelIndex];
-        const isAligned = areAllRingsAligned(rotations, level.ringCycles);
-        const outerRingRenderConfig = useMemo(() => buildOuterRingRenderConfig(level), [level]);
-        const exactSolutionPlan = useMemo(() => buildExactSolutionPlan(level, levelSolution), [level, levelSolution]);
+        const puzzle = CAMPAIGN.puzzles[currentPuzzleIndex];
+        const puzzleSolution = CAMPAIGN.solutions[currentPuzzleIndex];
+        const isAligned = areAllRingsAligned(rotations, puzzle.ringCycles);
+        const outerRingRenderConfig = useMemo(() => buildOuterRingRenderConfig(puzzle), [puzzle]);
+        const exactSolutionPlan = useMemo(() => buildExactSolutionPlan(puzzle, puzzleSolution), [puzzle, puzzleSolution]);
 
         useEffect(() => {
           const svgString = `
@@ -514,7 +514,7 @@
               </defs>
               <g transform="translate(180, 180)">
                 ${COLORS.map((color, i) => {
-                  const cycle = level.ringCycles[i];
+                  const cycle = puzzle.ringCycles[i];
                   const rot = (FAVICON_RING_LAYOUT[i] * 360) / cycle;
                   if (i === 0) {
                     return `<g transform="rotate(${rot})"><circle cx="0" cy="0" r="18" fill="${color}" mask="url(#faviconMask)"/></g>`;
@@ -535,36 +535,36 @@
           }
           link.href = url;
           return () => URL.revokeObjectURL(url);
-        }, [level]);
+        }, [puzzle]);
 
 
-        const scheduleLevelReadyNextFrame = useCallback(() => {
-          if (levelReadyFrameRef.current) {
-            cancelAnimationFrame(levelReadyFrameRef.current);
+        const schedulePuzzleReadyNextFrame = useCallback(() => {
+          if (puzzleReadyFrameRef.current) {
+            cancelAnimationFrame(puzzleReadyFrameRef.current);
           }
-          levelReadyFrameRef.current = requestAnimationFrame(() => {
-            setIsLevelReady(true);
-            levelReadyFrameRef.current = null;
+          puzzleReadyFrameRef.current = requestAnimationFrame(() => {
+            setIsPuzzleReady(true);
+            puzzleReadyFrameRef.current = null;
           });
         }, []);
 
         useEffect(() => {
-          scheduleLevelReadyNextFrame();
+          schedulePuzzleReadyNextFrame();
           return () => {
-            if (levelReadyFrameRef.current) {
-              cancelAnimationFrame(levelReadyFrameRef.current);
-              levelReadyFrameRef.current = null;
+            if (puzzleReadyFrameRef.current) {
+              cancelAnimationFrame(puzzleReadyFrameRef.current);
+              puzzleReadyFrameRef.current = null;
             }
           };
-        }, [currentLevelIndex, scheduleLevelReadyNextFrame]);
+        }, [currentPuzzleIndex, schedulePuzzleReadyNextFrame]);
 
-        const loadLevel = useCallback((nextLevelIndex) => {
-          const safeLevelIndex = ((nextLevelIndex % CAMPAIGN.levels.length) + CAMPAIGN.levels.length) % CAMPAIGN.levels.length;
-          const nextLevel = CAMPAIGN.levels[safeLevelIndex];
-          const nextState = prepareLevelState(nextLevel);
+        const loadPuzzle = useCallback((nextPuzzleIndex) => {
+          const safePuzzleIndex = ((nextPuzzleIndex % CAMPAIGN.puzzles.length) + CAMPAIGN.puzzles.length) % CAMPAIGN.puzzles.length;
+          const nextPuzzle = CAMPAIGN.puzzles[safePuzzleIndex];
+          const nextState = preparePuzzleState(nextPuzzle);
 
-          setIsLevelReady(false);
-          setCurrentLevelIndex(safeLevelIndex);
+          setIsPuzzleReady(false);
+          setCurrentPuzzleIndex(safePuzzleIndex);
           setRotations(nextState.rotations);
           setBoardOrientationState(nextState.boardOrientationState);
           setMoves(0);
@@ -598,25 +598,25 @@
           setMoves((previousMoves) => previousMoves - 1);
         }, [history, ballFired, showWinModal, showGuideModal]);
 
-        const restartLevel = useCallback(() => {
-          setIsLevelReady(false);
-          setRotations([...level.initial]);
+        const restartPuzzle = useCallback(() => {
+          setIsPuzzleReady(false);
+          setRotations([...puzzle.initial]);
           setMoves(0);
           setHistory([]);
           setBallFired(false);
           setMessage("");
           setShowWinModal(false);
           setShowSolutionHint(false);
-          scheduleLevelReadyNextFrame();
-        }, [level, scheduleLevelReadyNextFrame]);
+          schedulePuzzleReadyNextFrame();
+        }, [puzzle, schedulePuzzleReadyNextFrame]);
 
-        const goToPreviousLevel = useCallback(() => {
-          loadLevel(currentLevelIndex - 1);
-        }, [loadLevel, currentLevelIndex]);
+        const goToPreviousPuzzle = useCallback(() => {
+          loadPuzzle(currentPuzzleIndex - 1);
+        }, [loadPuzzle, currentPuzzleIndex]);
 
-        const goToNextLevel = useCallback(() => {
-          loadLevel(currentLevelIndex + 1);
-        }, [loadLevel, currentLevelIndex]);
+        const goToNextPuzzle = useCallback(() => {
+          loadPuzzle(currentPuzzleIndex + 1);
+        }, [loadPuzzle, currentPuzzleIndex]);
 
         const showMessage = (msg) => {
           setMessage(msg);
@@ -626,14 +626,14 @@
         const handleDotClick = () => {
           if (ballFired || showWinModal || showGuideModal) return;
           if (isAligned) {
-            if (moves === level.targetMoves) {
+            if (moves === puzzle.targetMoves) {
               setBallFired(true);
               setTimeout(() => setShowWinModal(true), 700);
-            } else if (moves < level.targetMoves) {
-              const diff = level.targetMoves - moves;
+            } else if (moves < puzzle.targetMoves) {
+              const diff = puzzle.targetMoves - moves;
               showMessage(`Aligned, but not at the target move count. ${diff} more move${diff !== 1 ? "s" : ""} needed.`);
             } else {
-              const diff = moves - level.targetMoves;
+              const diff = moves - puzzle.targetMoves;
               showMessage(`Aligned, but ${diff} move${diff !== 1 ? "s" : ""} over target.`);
             }
           } else {
@@ -648,21 +648,21 @@
                 <h1 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">Ring Road</h1>
                 <div className="flex items-center gap-2 text-sm font-medium text-right whitespace-nowrap text-zinc-100">
                   <button
-                    onClick={goToPreviousLevel}
+                    onClick={goToPreviousPuzzle}
                     className="rounded-full bg-white leading-none text-sm font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
                     style={{ width: "21px", height: "21px", color: BOARD_BACKGROUND }}
-                    aria-label="Previous level"
+                    aria-label="Previous puzzle"
                   >
                     -
                   </button>
                   <p>
-                    Level {level.id} of {CAMPAIGN.levels.length}
+                    Puzzle {puzzle.id} of {CAMPAIGN.puzzles.length}
                   </p>
                   <button
-                    onClick={goToNextLevel}
+                    onClick={goToNextPuzzle}
                     className="rounded-full bg-white leading-none text-sm font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
                     style={{ width: "21px", height: "21px", color: BOARD_BACKGROUND }}
-                    aria-label="Next level"
+                    aria-label="Next puzzle"
                   >
                     +
                   </button>
@@ -671,14 +671,14 @@
             </div>
 
             <div className="w-full max-w-lg flex justify-between items-center mb-[0.3rem] px-2">
-              <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
-                Moves: {moves} / {level.targetMoves}
+              <div className={`text-lg font-mono font-semibold ${moves > puzzle.targetMoves ? "text-red-400" : moves === puzzle.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
+                Moves: {moves} / {puzzle.targetMoves}
               </div>
               <div className="flex gap-2">
                 <button onClick={undoMove} disabled={history.length === 0} className="flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 p-2 rounded-md transition-colors text-sm" aria-label="Undo">
                   <UndoIcon />
                 </button>
-                <button onClick={restartLevel} className="flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 p-2 rounded-md transition-colors text-sm" aria-label="Reset level">
+                <button onClick={restartPuzzle} className="flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 p-2 rounded-md transition-colors text-sm" aria-label="Reset puzzle">
                   <XIcon />
                 </button>
               </div>
@@ -686,7 +686,7 @@
 
             <div className="relative flex justify-center items-center z-20">
               {message && <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">{message}</div>}
-              {isLevelReady ? (
+              {isPuzzleReady ? (
               <svg viewBox="0 0 360 360" className="w-full max-w-[400px] h-auto overflow-visible">
                 <defs>
                   <mask id="gapMask" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">
@@ -699,20 +699,20 @@
                     <circle cx="0" cy="-16" r={GAP_HALF_WIDTH} fill="black" />
                   </mask>
                 </defs>
-                <g transform={`translate(180, 180) rotate(${rotationAngle(boardOrientationState, level.ringCycles[0])})`}>
+                <g transform={`translate(180, 180) rotate(${rotationAngle(boardOrientationState, puzzle.ringCycles[0])})`}>
                   {outerRingRenderConfig.map((config) => (
                     <OuterRing
                       key={`outer-${config.ringIndex}`}
                       ringIndex={config.ringIndex}
                       config={config}
-                      ringRotation={rotationAngle(rotations[config.ringIndex], level.ringCycles[config.ringIndex])}
+                      ringRotation={rotationAngle(rotations[config.ringIndex], puzzle.ringCycles[config.ringIndex])}
                       transformClass={RING_TRANSFORM_CLASS}
                     />
                   ))}
 
-                  <g transform={`rotate(${rotationAngle(rotations[0], level.ringCycles[0])})`} className={RING_TRANSFORM_CLASS}>
-                    <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#centerGapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === level.targetMoves ? "hover:opacity-80" : ""}`} />
-                    {isAligned && moves === level.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
+                  <g transform={`rotate(${rotationAngle(rotations[0], puzzle.ringCycles[0])})`} className={RING_TRANSFORM_CLASS}>
+                    <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#centerGapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === puzzle.targetMoves ? "hover:opacity-80" : ""}`} />
+                    {isAligned && moves === puzzle.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
                     <circle
                       cx="0"
                       cy={-DOT_CENTER_OFFSET}
@@ -751,7 +751,7 @@
 
             {showSolutionHint && (
               <div className="mt-4 max-w-lg mx-auto px-4 text-center text-sm font-medium text-zinc-300">
-                {levelSolution.hasExactIntendedSolution ? (
+                {puzzleSolution.hasExactIntendedSolution ? (
                   <>
                     <p className="text-emerald-300 mb-2">{exactSolutionPlan.heading}</p>
                     <p>
@@ -762,12 +762,12 @@
                         </React.Fragment>
                       ))}
                     </p>
-                    {DEBUG_DIAGNOSTICS && levelSolution.hasMultipleExactIntendedSolutions && (
-                      <p className="text-amber-300 mt-2">Diagnostic: {levelSolution.exactIntendedSolutionVectorCount} exact intended solution vectors exist for this level.</p>
+                    {DEBUG_DIAGNOSTICS && puzzleSolution.hasMultipleExactIntendedSolutions && (
+                      <p className="text-amber-300 mt-2">Diagnostic: {puzzleSolution.exactIntendedSolutionVectorCount} exact intended solution vectors exist for this puzzle.</p>
                     )}
                   </>
                 ) : (
-                  DEBUG_DIAGNOSTICS ? <p className="text-amber-300">Diagnostic: no exact {level.targetMoves}-move solution vector found for this level.</p> : null
+                  DEBUG_DIAGNOSTICS ? <p className="text-amber-300">Diagnostic: no exact {puzzle.targetMoves}-move solution vector found for this puzzle.</p> : null
                 )}
               </div>
             )}
@@ -803,7 +803,7 @@
                       <p>
                         <strong className="text-indigo-400">Granularity:</strong> Rings can have different numbers of orientations, shown by the marker ticks around each ring.
                       </p>
-                      <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing direction for extra steps will not solve the level.</p>
+                      <p><strong className="text-white">Route Discipline:</strong> Every move should matter. Reversing direction for extra steps will not solve the puzzle.</p>
                       <p>Some solutions require a longer continuous route, with a ring turning past a full rotation. When aligned at the exact count, tap the center dot to fire the ball.</p>
                     </div>
                   </div>
@@ -819,12 +819,12 @@
             {showWinModal && (
               <div className="fixed inset-0 bg-zinc-950/80 flex items-center justify-center z-50 p-4" style={{ backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}>
                 <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
-                  <h2 className="text-3xl font-bold text-white mb-2">Level Complete!</h2>
+                  <h2 className="text-3xl font-bold text-white mb-2">Puzzle Complete!</h2>
                   <p className="text-zinc-400 mb-8">Aligned in exactly {moves} moves.</p>
                   <div className="flex flex-col gap-3">
-                    {currentLevelIndex < CAMPAIGN.levels.length - 1 ? (
-                      <button onClick={() => loadLevel(currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
-                        Next Level
+                    {currentPuzzleIndex < CAMPAIGN.puzzles.length - 1 ? (
+                      <button onClick={() => loadPuzzle(currentPuzzleIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
+                        Next Puzzle
                       </button>
                     ) : (
                       <div className="w-full py-3 bg-emerald-500 text-zinc-900 font-bold rounded-xl mb-2">Grand Master!</div>
