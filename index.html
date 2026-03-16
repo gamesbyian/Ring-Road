@@ -24,12 +24,19 @@
     <script type="text/babel" data-presets="react">
       const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
+      // ===== Core configuration =====
       const RING_COUNT = 7;
       const OUTER_RING_INDICES = [1, 2, 3, 4, 5, 6];
+      const CENTER_RING_INDEX = 0;
+      const FIRST_OUTER_RING_INDEX = 1;
+      const MAX_CENTER_RING_CYCLE = 5;
+      const MAX_FIRST_OUTER_RING_CYCLE = 11;
+      const MAX_REMAINING_OUTER_RING_CYCLE = 19;
 
       const DEV_VALIDATION = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
       const DEBUG_DIAGNOSTICS = DEV_VALIDATION;
 
+      // ===== SVG icon helpers =====
       const RotateCcwIcon = ({ color }) => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
@@ -91,26 +98,32 @@
       // - Prefer a ring with a small/moderate base directional distance; small-cycle rings are often strong candidates.
       // - Keep targetMoves only modestly above the no-wrap minimum so the wrapped move is structurally required, not decorative.
       // - One wrapped ring is usually more readable than many; always recheck exact-vector uniqueness after adding wraps.
-      const LEVELS = [
-        { id: 1, targetMoves: 11, ringCycles: [3, 5, 3, 5, 7, 3, 5], initial: [2, 2, 1, 2, 4, 0, 2], requireWrapInIntendedPlan: false },
-        { id: 2, targetMoves: 11, ringCycles: [5, 7, 13, 3, 2, 11, 2], initial: [0, 5, 8, 2, 0, 2, 0], requireWrapInIntendedPlan: false },
-        { id: 3, targetMoves: 12, ringCycles: [2, 3, 5, 2, 5, 13, 19], initial: [0, 0, 3, 0, 3, 10, 5], requireWrapInIntendedPlan: false },
-        { id: 4, targetMoves: 13, ringCycles: [2, 2, 5, 17, 17, 13, 7], initial: [0, 0, 0, 0, 6, 6, 1], requireWrapInIntendedPlan: false },
-        { id: 5, targetMoves: 17, ringCycles: [2, 5, 5, 13, 19, 2, 17], initial: [0, 4, 2, 5, 6, 0, 15], requireWrapInIntendedPlan: false },
-        { id: 6, targetMoves: 10, ringCycles: [3, 2, 7, 13, 5, 11, 11], initial: [0, 0, 0, 3, 0, 10, 7], requireWrapInIntendedPlan: true },
-        { id: 7, targetMoves: 12, ringCycles: [3, 2, 13, 5, 11, 17, 2], initial: [0, 0, 12, 0, 2, 11, 0], requireWrapInIntendedPlan: true },
-        { id: 8, targetMoves: 16, ringCycles: [5, 11, 11, 19, 3, 3, 19], initial: [2, 4, 0, 0, 0, 0, 5], requireWrapInIntendedPlan: true },
-        { id: 9, targetMoves: 17, ringCycles: [3, 5, 17, 5, 17, 11, 13], initial: [0, 0, 5, 2, 16, 9, 10], requireWrapInIntendedPlan: true },
-        { id: 10, targetMoves: 17, ringCycles: [3, 3, 19, 3, 7, 17, 17], initial: [0, 1, 17, 0, 0, 2, 13], requireWrapInIntendedPlan: true },
-        { id: 11, targetMoves: 20, ringCycles: [3, 2, 17, 13, 13, 7, 19], initial: [1, 0, 13, 2, 4, 6, 13], requireWrapInIntendedPlan: true },
-        { id: 12, targetMoves: 21, ringCycles: [3, 5, 17, 19, 5, 11, 19], initial: [1, 0, 13, 13, 2, 3, 17], requireWrapInIntendedPlan: true },
+      // ===== Prime-only campaign data =====
+      // Level entries intentionally separate gameplay content fields from authoring assertions:
+      // - Gameplay content: id, targetMoves, ringCycles, initial
+      // - Authoring assertions (validation-only): authoring.requireWrapInIntendedPlan
+      const CAMPAIGN_LEVELS = [
+        { id: 1, targetMoves: 11, ringCycles: [3, 5, 3, 5, 7, 3, 5], initial: [2, 2, 1, 2, 4, 0, 2], authoring: { requireWrapInIntendedPlan: false } },
+        { id: 2, targetMoves: 11, ringCycles: [5, 7, 13, 3, 2, 11, 2], initial: [0, 5, 8, 2, 0, 2, 0], authoring: { requireWrapInIntendedPlan: false } },
+        { id: 3, targetMoves: 12, ringCycles: [2, 3, 5, 2, 5, 13, 19], initial: [0, 0, 3, 0, 3, 10, 5], authoring: { requireWrapInIntendedPlan: false } },
+        { id: 4, targetMoves: 13, ringCycles: [2, 2, 5, 17, 17, 13, 7], initial: [0, 0, 0, 0, 6, 6, 1], authoring: { requireWrapInIntendedPlan: false } },
+        { id: 5, targetMoves: 17, ringCycles: [2, 5, 5, 13, 19, 2, 17], initial: [0, 4, 2, 5, 6, 0, 15], authoring: { requireWrapInIntendedPlan: false } },
+        { id: 6, targetMoves: 10, ringCycles: [3, 2, 7, 13, 5, 11, 11], initial: [0, 0, 0, 3, 0, 10, 7], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 7, targetMoves: 12, ringCycles: [3, 2, 13, 5, 11, 17, 2], initial: [0, 0, 12, 0, 2, 11, 0], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 8, targetMoves: 16, ringCycles: [5, 11, 11, 19, 3, 3, 19], initial: [2, 4, 0, 0, 0, 0, 5], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 9, targetMoves: 17, ringCycles: [3, 5, 17, 5, 17, 11, 13], initial: [0, 0, 5, 2, 16, 9, 10], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 10, targetMoves: 17, ringCycles: [3, 3, 19, 3, 7, 17, 17], initial: [0, 1, 17, 0, 0, 2, 13], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 11, targetMoves: 20, ringCycles: [3, 2, 17, 13, 13, 7, 19], initial: [1, 0, 13, 2, 4, 6, 13], authoring: { requireWrapInIntendedPlan: true } },
+        { id: 12, targetMoves: 21, ringCycles: [3, 5, 17, 19, 5, 11, 19], initial: [1, 0, 13, 13, 2, 3, 17], authoring: { requireWrapInIntendedPlan: true } },
       ];
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
       const BOARD_BACKGROUND = "#18181b";
       const BUTTON_ORDER = [6, 5, 4, 3, 2, 1, 0];
       const RING_LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
+      const FAVICON_RING_LAYOUT = [0, 6, 2, 4, 1, 3, 5];
 
+      // ===== Puzzle-model helpers =====
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
       const rotationAngle = (state, cycleLength) => (360 / cycleLength) * state;
       const GAP_HALF_WIDTH = 6;
@@ -133,6 +146,57 @@
         const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
         return luminance > 0.58 ? "rgba(15, 23, 42, 0.378)" : "rgba(248, 250, 252, 0.45)";
       };
+      const randomBoardOrientation = (level) => Math.floor(Math.random() * level.ringCycles[CENTER_RING_INDEX]);
+
+      const prepareLevelState = (level) => ({
+        rotations: [...level.initial],
+        boardOrientationState: randomBoardOrientation(level),
+      });
+
+      const buildOuterRingRenderConfig = (level) => {
+        return OUTER_RING_INDICES.map((ringIndex) => {
+          const cycle = level.ringCycles[ringIndex];
+          const radius = RING_RADIUS_BASE + RING_RADIUS_STEP * ringIndex;
+          return {
+            ringIndex,
+            radius,
+            markerRadius: radius,
+            markerDotRadius: 1.58,
+            markerStrokeColor: markerStrokeForRing(COLORS[ringIndex]),
+            markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
+          };
+        });
+      };
+
+      const EMPTY_EXACT_SOLUTION_PLAN = { heading: "", parts: [] };
+      const buildExactSolutionPlan = (level, levelSolution) => {
+        if (!levelSolution?.hasExactIntendedSolution || !levelSolution.exactIntendedPlan?.selectedRingOptions) {
+          return EMPTY_EXACT_SOLUTION_PLAN;
+        }
+
+        const ringParts = BUTTON_ORDER.map((ringIndex) => {
+          const ringOption = levelSolution.exactIntendedPlan.selectedRingOptions[ringIndex];
+          const directionText = ringOption.moveCount === 0 ? "0" : `${ringOption.moveCount} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
+          const wrapText = ringOption.wraps > 0 ? ` (${ringOption.wraps} additional full turn${ringOption.wraps === 1 ? "" : "s"})` : "";
+          return {
+            label: RING_LABELS[ringIndex],
+            color: COLORS[ringIndex],
+            text: `${RING_LABELS[ringIndex]}: ${directionText}${wrapText}`,
+            plannedMoves: ringOption.moveCount,
+          };
+        });
+
+        const plannedMoveSum = ringParts.reduce((sum, part) => sum + (part.plannedMoves || 0), 0);
+        const expectedTarget = levelSolution.exactIntendedPlan.targetMoves ?? level.targetMoves;
+        if (plannedMoveSum !== expectedTarget) {
+          console.warn(`Exact intended solution display mismatch for level ${level.id}: planned=${plannedMoveSum}, target=${expectedTarget}.`);
+        }
+
+        return {
+          heading: `${level.targetMoves}-move solution plan`,
+          parts: ringParts,
+        };
+      };
 
       const isPrime = (value) => {
         if (value < 2) {
@@ -144,6 +208,54 @@
           }
         }
         return true;
+      };
+
+      // ===== Validation helpers =====
+      const validateLevelCycleConstraints = (level) => {
+        if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT) {
+          throw new Error(`Invalid level ${level.id}: expected ${RING_COUNT} rings and ${RING_COUNT} initial states.`);
+        }
+
+        const centerRingCycle = level.ringCycles[CENTER_RING_INDEX];
+        if (!isPrime(centerRingCycle) || centerRingCycle > MAX_CENTER_RING_CYCLE) {
+          throw new Error(`Invalid level ${level.id}: center ring cycle must be prime and <= ${MAX_CENTER_RING_CYCLE}.`);
+        }
+
+        const firstOuterRingCycle = level.ringCycles[FIRST_OUTER_RING_INDEX];
+        if (!isPrime(firstOuterRingCycle) || firstOuterRingCycle > MAX_FIRST_OUTER_RING_CYCLE) {
+          throw new Error(`Invalid level ${level.id}: first outer ring cycle must be prime and <= ${MAX_FIRST_OUTER_RING_CYCLE}.`);
+        }
+
+        const remainingOuterCycles = level.ringCycles.slice(FIRST_OUTER_RING_INDEX + 1);
+        if (remainingOuterCycles.some((cycleLength) => !isPrime(cycleLength) || cycleLength > MAX_REMAINING_OUTER_RING_CYCLE)) {
+          throw new Error(`Invalid level ${level.id}: remaining outer ring cycles must be prime and <= ${MAX_REMAINING_OUTER_RING_CYCLE}.`);
+        }
+      };
+
+      const validateCampaignSolutions = (levels, analyses) => {
+        levels.forEach((levelEntry, index) => {
+          const analysis = analyses[index];
+          if (!analysis.hasExactIntendedSolution) {
+            const message = `Level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} has no exact intended directed solution vector.`;
+            if (DEV_VALIDATION) {
+              throw new Error(message);
+            }
+            console.error(`[Validation] ${message}`);
+          }
+          if (analysis.hasMultipleExactIntendedSolutions) {
+            console.warn(`[Validation] Level ${levelEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended move-allocation vectors.`);
+          }
+          if (levelEntry.authoring?.requireWrapInIntendedPlan && !analysis.exactPlanUsesWraps) {
+            const wrapMessage = `Level ${levelEntry.id} requires a wrapped ring in its intended authoring plan, but solver's exact plan has no wrapped ring.`;
+            if (DEV_VALIDATION) {
+              throw new Error(wrapMessage);
+            }
+            console.warn(`[Validation] ${wrapMessage}`);
+          }
+          if (analysis.legacyBurnPaddingOnlyDiagnostic) {
+            console.warn(`[Validation] Level ${levelEntry.id} would only have worked under legacy burn-pair padding.`);
+          }
+        });
       };
 
       const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation, transformClass }) {
@@ -206,6 +318,7 @@
       // - For generator/validation workflows, prefer exactly one exact directed solution vector.
       // - Treat multiple exact vectors as a design warning unless intentional.
       // - Vector uniqueness is by full per-ring allocation, not just shared final alignment.
+      // ===== Exact-solution analysis =====
       const optionDedupKey = (option) => {
         // Distinct solution vectors are identified by each ring's allocated moveCount/wraps/targetState,
         // plus direction for non-zero movement. Zero-move allocations are direction-agnostic.
@@ -384,12 +497,14 @@
         };
       };
 
-      const ALL_LEVEL_SOLUTIONS = LEVELS.map((level) => solveLevelDeterministically(level));
+      const ALL_LEVEL_SOLUTIONS = CAMPAIGN_LEVELS.map((level) => solveLevelDeterministically(level));
+
+      // ===== React app =====
 
       function App() {
         const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
-        const [rotations, setRotations] = useState([...LEVELS[0].initial]);
-        const [boardOrientationState, setBoardOrientationState] = useState(() => Math.floor(Math.random() * LEVELS[0].ringCycles[0]));
+        const [rotations, setRotations] = useState(() => [...CAMPAIGN_LEVELS[0].initial]);
+        const [boardOrientationState, setBoardOrientationState] = useState(() => randomBoardOrientation(CAMPAIGN_LEVELS[0]));
         const [moves, setMoves] = useState(0);
         const [history, setHistory] = useState([]);
         const [ballFired, setBallFired] = useState(false);
@@ -400,98 +515,21 @@
         const [isLevelReady, setIsLevelReady] = useState(false);
         const levelReadyFrameRef = useRef(null);
 
-        const levels = LEVELS;
-        const level = levels[currentLevelIndex];
+        const level = CAMPAIGN_LEVELS[currentLevelIndex];
         const levelSolution = ALL_LEVEL_SOLUTIONS[currentLevelIndex];
         const isAligned = areAllRingsAligned(rotations, level.ringCycles);
-        const outerRingRenderConfig = useMemo(() => {
-          return OUTER_RING_INDICES.map((ringIndex) => {
-            const cycle = level.ringCycles[ringIndex];
-            const radius = RING_RADIUS_BASE + RING_RADIUS_STEP * ringIndex;
-            return {
-              ringIndex,
-              radius,
-              markerRadius: radius,
-              markerDotRadius: 1.58,
-              markerStrokeColor: markerStrokeForRing(COLORS[ringIndex]),
-              markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
-            };
-          });
-        }, [level]);
-        const exactSolutionPlan = useMemo(() => {
-          if (!levelSolution?.hasExactIntendedSolution || !levelSolution.exactIntendedPlan?.selectedRingOptions) {
-            return { heading: "", parts: [] };
-          }
-
-          const ringParts = BUTTON_ORDER.map((ringIndex) => {
-            const ringOption = levelSolution.exactIntendedPlan.selectedRingOptions[ringIndex];
-            const directionText = ringOption.moveCount === 0 ? "0" : `${ringOption.moveCount} ${ringOption.direction === 1 ? "CW" : "CCW"}`;
-            const wrapText = ringOption.wraps > 0 ? ` (${ringOption.wraps} additional full turn${ringOption.wraps === 1 ? "" : "s"})` : "";
-            return {
-              label: RING_LABELS[ringIndex],
-              color: COLORS[ringIndex],
-              text: `${RING_LABELS[ringIndex]}: ${directionText}${wrapText}`,
-              plannedMoves: ringOption.moveCount,
-            };
-          });
-
-          const plannedMoveSum = ringParts.reduce((sum, part) => sum + (part.plannedMoves || 0), 0);
-          const expectedTarget = levelSolution.exactIntendedPlan.targetMoves ?? level.targetMoves;
-          if (plannedMoveSum !== expectedTarget) {
-            console.warn(`Exact intended solution display mismatch for level ${level.id}: planned=${plannedMoveSum}, target=${expectedTarget}.`);
-          }
-
-          return {
-            heading: `${level.targetMoves}-move solution plan`,
-            parts: ringParts,
-          };
-        }, [level, levelSolution]);
+        const outerRingRenderConfig = useMemo(() => buildOuterRingRenderConfig(level), [level]);
+        const exactSolutionPlan = useMemo(() => buildExactSolutionPlan(level, levelSolution), [level, levelSolution]);
 
         useEffect(() => {
-          if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT) {
-            throw new Error(`Invalid level ${level.id}: expected ${RING_COUNT} rings and ${RING_COUNT} initial states.`);
-          }
-
-          if (!isPrime(level.ringCycles[0]) || level.ringCycles[0] > 5) {
-            throw new Error(`Invalid level ${level.id}: center cycle must be prime and <= 5.`);
-          }
-          if (!isPrime(level.ringCycles[1]) || level.ringCycles[1] > 11) {
-            throw new Error(`Invalid level ${level.id}: indigo ring cycle must be prime and <= 11.`);
-          }
-          const otherOuterCycles = level.ringCycles.slice(2);
-          if (otherOuterCycles.some((cycleLength) => !isPrime(cycleLength) || cycleLength > 19)) {
-            throw new Error(`Invalid level ${level.id}: blue/green/yellow/orange/red cycles must be prime and <= 19.`);
-          }
+          validateLevelCycleConstraints(level);
         }, [level]);
 
         useEffect(() => {
-          levels.forEach((levelEntry, index) => {
-            const analysis = ALL_LEVEL_SOLUTIONS[index];
-            if (!analysis.hasExactIntendedSolution) {
-              const message = `Level ${levelEntry.id} targetMoves=${levelEntry.targetMoves} has no exact intended directed solution vector.`;
-              if (DEV_VALIDATION) {
-                throw new Error(message);
-              }
-              console.error(`[Validation] ${message}`);
-            }
-            if (analysis.hasMultipleExactIntendedSolutions) {
-              console.warn(`[Validation] Level ${levelEntry.id} has ${analysis.exactIntendedSolutionVectorCount} exact intended move-allocation vectors.`);
-            }
-            if (levelEntry.requireWrapInIntendedPlan && !analysis.exactPlanUsesWraps) {
-              const wrapMessage = `Level ${levelEntry.id} is tagged requireWrapInIntendedPlan but solver's exact plan has no wrapped ring.`;
-              if (DEV_VALIDATION) {
-                throw new Error(wrapMessage);
-              }
-              console.warn(`[Validation] ${wrapMessage}`);
-            }
-            if (analysis.legacyBurnPaddingOnlyDiagnostic) {
-              console.warn(`[Validation] Level ${levelEntry.id} would only have worked under legacy burn-pair padding.`);
-            }
-          });
-        }, [levels]);
+          validateCampaignSolutions(CAMPAIGN_LEVELS, ALL_LEVEL_SOLUTIONS);
+        }, []);
 
         useEffect(() => {
-          const layout = [0, 6, 2, 4, 1, 3, 5];
           const svgString = `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360">
               <defs>
@@ -503,7 +541,7 @@
               <g transform="translate(180, 180)">
                 ${COLORS.map((color, i) => {
                   const cycle = level.ringCycles[i];
-                  const rot = (layout[i] * 360) / cycle;
+                  const rot = (FAVICON_RING_LAYOUT[i] * 360) / cycle;
                   if (i === 0) {
                     return `<g transform="rotate(${rot})"><circle cx="0" cy="0" r="18" fill="${color}" mask="url(#faviconMask)"/></g>`;
                   }
@@ -543,20 +581,21 @@
         }, [currentLevelIndex]);
 
         const loadLevel = useCallback((nextLevelIndex) => {
-          const safeLevelIndex = ((nextLevelIndex % levels.length) + levels.length) % levels.length;
-          const nextLevel = levels[safeLevelIndex];
+          const safeLevelIndex = ((nextLevelIndex % CAMPAIGN_LEVELS.length) + CAMPAIGN_LEVELS.length) % CAMPAIGN_LEVELS.length;
+          const nextLevel = CAMPAIGN_LEVELS[safeLevelIndex];
+          const nextState = prepareLevelState(nextLevel);
 
           setIsLevelReady(false);
           setCurrentLevelIndex(safeLevelIndex);
-          setRotations([...nextLevel.initial]);
-          setBoardOrientationState(Math.floor(Math.random() * nextLevel.ringCycles[0]));
+          setRotations(nextState.rotations);
+          setBoardOrientationState(nextState.boardOrientationState);
           setMoves(0);
           setHistory([]);
           setBallFired(false);
           setShowWinModal(false);
           setShowSolutionHint(false);
           setMessage("");
-        }, [levels]);
+        }, []);
 
         const handleRotate = useCallback((index, direction) => {
           if (ballFired || showWinModal || showGuideModal) return;
@@ -582,9 +621,10 @@
         }, [history, ballFired, showWinModal, showGuideModal]);
 
         const restartLevel = useCallback(() => {
+          const nextState = prepareLevelState(level);
           setIsLevelReady(false);
-          setRotations([...level.initial]);
-          setBoardOrientationState(Math.floor(Math.random() * level.ringCycles[0]));
+          setRotations(nextState.rotations);
+          setBoardOrientationState(nextState.boardOrientationState);
           setMoves(0);
           setHistory([]);
           setBallFired(false);
@@ -639,7 +679,7 @@
                     -
                   </button>
                   <p>
-                    Level {level.id} of {levels.length}
+                    Level {level.id} of {CAMPAIGN_LEVELS.length}
                   </p>
                   <button
                     onClick={goToNextLevel}
@@ -801,7 +841,7 @@
                   <h2 className="text-3xl font-bold text-white mb-2">Level Complete!</h2>
                   <p className="text-zinc-400 mb-8">Aligned in exactly {moves} moves.</p>
                   <div className="flex flex-col gap-3">
-                    {currentLevelIndex < levels.length - 1 ? (
+                    {currentLevelIndex < CAMPAIGN_LEVELS.length - 1 ? (
                       <button onClick={() => loadLevel(currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
                         Next Level
                       </button>
