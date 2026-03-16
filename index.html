@@ -83,6 +83,13 @@
       //   5) Set targetMoves to the sum of intended per-ring moveCount values.
       //   6) Run solver validation and inspect exact-solution-vector count / ambiguity diagnostics.
       //
+      // Procedural solvability trick (same construction, non-random-first):
+      // - To guarantee solvability for generated levels, do not generate random initial states and then hope a good exact plan exists.
+      // - Instead, use this same constructive pipeline (cycle counts -> shared spoke -> exact directed move allocation -> derived target/initial states),
+      //   then set targetMoves from that allocation.
+      // - This guarantees at least one valid exact directed solution vector because the level was built from a known intended vector.
+      // - It does not guarantee uniqueness by itself; solver validation must still check for alternate exact vectors / ambiguity.
+      //
       // Prime relationships are intentionally constrained, so exact-vector uniqueness checks matter.
       //
       // Over-360 is an intended design tool:
@@ -97,6 +104,10 @@
       // - Prefer a ring with a small/moderate base directional distance; small-cycle rings are often strong candidates.
       // - Keep targetMoves only modestly above the no-wrap minimum so the wrapped move is structurally required, not decorative.
       // - One wrapped ring is usually more readable than many; always recheck exact-vector uniqueness after adding wraps.
+      //
+      // Campaign vs generator note:
+      // - Authored campaign levels are curated outputs of this same construct-from-solution method.
+      // - Future generators should use the same construction path, then filter candidates with solver/validation uniqueness criteria.
       // ===== Prime-only campaign data =====
       // Level entries intentionally separate gameplay content fields from authoring assertions:
       // - Gameplay content: id, targetMoves, ringCycles, initial
@@ -327,7 +338,6 @@
 
         for (let sharedSpoke = 0; sharedSpoke < centerCycle; sharedSpoke += 1) {
           const ringDirectedOptions = [];
-          let minimumDirectedMoves = 0;
           let validSpoke = true;
 
           for (let ringIndex = 0; ringIndex < RING_COUNT; ringIndex += 1) {
@@ -382,21 +392,13 @@
               break;
             }
 
-            minimumDirectedMoves += Math.min(...options.map((option) => option.moveCount));
             ringDirectedOptions.push(options.sort((a, b) => a.moveCount - b.moveCount || a.targetState - b.targetState || b.direction - a.direction || a.wraps - b.wraps));
           }
 
           if (validSpoke) {
-            candidateSpokes.push({ sharedSpoke, ringDirectedOptions, minimumDirectedMoves });
+            candidateSpokes.push({ sharedSpoke, ringDirectedOptions });
           }
         }
-
-        const bestMinimumPlan = candidateSpokes.reduce((best, candidate) => {
-          if (!best || candidate.minimumDirectedMoves < best.minimumDirectedMoves) {
-            return candidate;
-          }
-          return best;
-        }, null);
 
         // Counts unique exact move-allocation vectors across all rings for this level target.
         // Two vectors are distinct when any ring differs in targetState, moveCount, wraps,
@@ -460,7 +462,6 @@
         const exactPlanUsesWraps = Boolean(firstExactPlan?.selectedRingOptions?.some((option) => option.wraps > 0));
 
         return {
-          minimumMovesToAlignment: bestMinimumPlan ? bestMinimumPlan.minimumDirectedMoves : Infinity,
           hasExactIntendedSolution: exactSolutionVectorCount > 0,
           exactIntendedPlan: firstExactPlan,
           exactPlanUsesWraps,
@@ -470,14 +471,21 @@
         };
       };
 
-      const ALL_LEVEL_SOLUTIONS = CAMPAIGN_LEVELS.map((level) => solveLevelDeterministically(level));
+      const buildCampaign = (levels) => {
+        levels.forEach((level) => validateLevelCycleConstraints(level));
+        const solutions = levels.map((level) => solveLevelDeterministically(level));
+        validateCampaignSolutions(levels, solutions);
+        return { levels, solutions };
+      };
+
+      const CAMPAIGN = buildCampaign(CAMPAIGN_LEVELS);
 
       // ===== React app =====
 
       function App() {
         const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
-        const [rotations, setRotations] = useState(() => [...CAMPAIGN_LEVELS[0].initial]);
-        const [boardOrientationState, setBoardOrientationState] = useState(() => randomBoardOrientation(CAMPAIGN_LEVELS[0]));
+        const [rotations, setRotations] = useState(() => [...CAMPAIGN.levels[0].initial]);
+        const [boardOrientationState, setBoardOrientationState] = useState(() => randomBoardOrientation(CAMPAIGN.levels[0]));
         const [moves, setMoves] = useState(0);
         const [history, setHistory] = useState([]);
         const [ballFired, setBallFired] = useState(false);
@@ -488,19 +496,11 @@
         const [isLevelReady, setIsLevelReady] = useState(false);
         const levelReadyFrameRef = useRef(null);
 
-        const level = CAMPAIGN_LEVELS[currentLevelIndex];
-        const levelSolution = ALL_LEVEL_SOLUTIONS[currentLevelIndex];
+        const level = CAMPAIGN.levels[currentLevelIndex];
+        const levelSolution = CAMPAIGN.solutions[currentLevelIndex];
         const isAligned = areAllRingsAligned(rotations, level.ringCycles);
         const outerRingRenderConfig = useMemo(() => buildOuterRingRenderConfig(level), [level]);
         const exactSolutionPlan = useMemo(() => buildExactSolutionPlan(level, levelSolution), [level, levelSolution]);
-
-        useEffect(() => {
-          validateLevelCycleConstraints(level);
-        }, [level]);
-
-        useEffect(() => {
-          validateCampaignSolutions(CAMPAIGN_LEVELS, ALL_LEVEL_SOLUTIONS);
-        }, []);
 
         useEffect(() => {
           const svgString = `
@@ -554,8 +554,8 @@
         }, [currentLevelIndex]);
 
         const loadLevel = useCallback((nextLevelIndex) => {
-          const safeLevelIndex = ((nextLevelIndex % CAMPAIGN_LEVELS.length) + CAMPAIGN_LEVELS.length) % CAMPAIGN_LEVELS.length;
-          const nextLevel = CAMPAIGN_LEVELS[safeLevelIndex];
+          const safeLevelIndex = ((nextLevelIndex % CAMPAIGN.levels.length) + CAMPAIGN.levels.length) % CAMPAIGN.levels.length;
+          const nextLevel = CAMPAIGN.levels[safeLevelIndex];
           const nextState = prepareLevelState(nextLevel);
 
           setIsLevelReady(false);
@@ -652,7 +652,7 @@
                     -
                   </button>
                   <p>
-                    Level {level.id} of {CAMPAIGN_LEVELS.length}
+                    Level {level.id} of {CAMPAIGN.levels.length}
                   </p>
                   <button
                     onClick={goToNextLevel}
@@ -814,7 +814,7 @@
                   <h2 className="text-3xl font-bold text-white mb-2">Level Complete!</h2>
                   <p className="text-zinc-400 mb-8">Aligned in exactly {moves} moves.</p>
                   <div className="flex flex-col gap-3">
-                    {currentLevelIndex < CAMPAIGN_LEVELS.length - 1 ? (
+                    {currentLevelIndex < CAMPAIGN.levels.length - 1 ? (
                       <button onClick={() => loadLevel(currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
                         Next Level
                       </button>
