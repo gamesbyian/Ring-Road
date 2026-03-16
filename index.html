@@ -65,18 +65,18 @@
       );
 
       const LEVELS = [
-        { id: 1, targetMoves: 9, ringCycles: [8, 8, 4, 8, 12, 8, 16], initial: [3, 5, 1, 2, 7, 6, 9] },
-        { id: 2, targetMoves: 14, ringCycles: [8, 16, 10, 24, 8, 12, 18], initial: [0, 11, 7, 13, 2, 4, 9] },
-        { id: 3, targetMoves: 16, ringCycles: [8, 12, 8, 18, 6, 16, 24], initial: [6, 2, 5, 11, 4, 9, 17] },
-        { id: 4, targetMoves: 17, ringCycles: [8, 6, 12, 8, 16, 10, 20], initial: [1, 4, 9, 7, 3, 6, 11] },
-        { id: 5, targetMoves: 20, ringCycles: [8, 12, 24, 8, 18, 10, 16], initial: [5, 3, 17, 6, 7, 9, 11] },
-        { id: 6, targetMoves: 20, ringCycles: [8, 24, 12, 16, 20, 8, 6], initial: [3, 19, 5, 14, 9, 1, 4] },
-        { id: 7, targetMoves: 21, ringCycles: [8, 10, 16, 6, 24, 12, 8], initial: [2, 9, 4, 5, 14, 1, 6] },
-        { id: 8, targetMoves: 21, ringCycles: [8, 20, 8, 12, 24, 6, 16], initial: [7, 15, 3, 10, 5, 2, 8] },
-        { id: 9, targetMoves: 23, ringCycles: [8, 8, 20, 12, 16, 6, 24], initial: [4, 7, 13, 8, 1, 5, 19] },
-        { id: 10, targetMoves: 23, ringCycles: [8, 18, 24, 10, 12, 16, 8], initial: [6, 7, 21, 4, 11, 5, 3] },
-        { id: 11, targetMoves: 24, ringCycles: [8, 16, 24, 12, 20, 18, 10], initial: [2, 13, 7, 9, 16, 11, 6] },
-        { id: 12, targetMoves: 27, ringCycles: [8, 24, 10, 16, 18, 12, 20], initial: [5, 21, 3, 8, 14, 7, 19] },
+        { id: 1, targetMoves: 13, ringCycles: [8, 8, 12, 4, 5, 6, 10], initial: [3, 4, 1, 3, 3, 1, 1] },
+        { id: 2, targetMoves: 12, ringCycles: [8, 5, 8, 3, 12, 16, 14], initial: [1, 0, 6, 2, 4, 1, 3] },
+        { id: 3, targetMoves: 12, ringCycles: [8, 2, 10, 8, 15, 5, 16], initial: [5, 1, 2, 1, 4, 1, 0] },
+        { id: 4, targetMoves: 16, ringCycles: [8, 7, 6, 12, 4, 3, 8], initial: [4, 6, 2, 3, 1, 1, 4] },
+        { id: 5, targetMoves: 18, ringCycles: [8, 1, 5, 10, 16, 12, 6], initial: [5, 0, 4, 5, 12, 8, 1] },
+        { id: 6, targetMoves: 13, ringCycles: [8, 8, 2, 5, 6, 14, 12], initial: [2, 3, 1, 2, 0, 13, 8] },
+        { id: 7, targetMoves: 24, ringCycles: [8, 3, 12, 16, 8, 10, 5], initial: [4, 0, 4, 9, 3, 6, 3] },
+        { id: 8, targetMoves: 18, ringCycles: [8, 6, 4, 7, 12, 5, 15], initial: [4, 3, 3, 1, 3, 2, 4] },
+        { id: 9, targetMoves: 9, ringCycles: [8, 5, 3, 6, 10, 16, 12], initial: [0, 0, 0, 3, 4, 15, 11] },
+        { id: 10, targetMoves: 15, ringCycles: [8, 4, 8, 5, 14, 2, 16], initial: [5, 1, 3, 0, 6, 0, 14] },
+        { id: 11, targetMoves: 20, ringCycles: [8, 8, 1, 12, 3, 6, 10], initial: [4, 2, 0, 6, 2, 4, 5] },
+        { id: 12, targetMoves: 18, ringCycles: [8, 2, 5, 4, 16, 8, 12], initial: [3, 1, 0, 0, 7, 4, 9] },
       ];
 
       const COLORS = ["#8b5cf6", "#4f46e5", "#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"];
@@ -262,6 +262,7 @@
       function App() {
         const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
         const [rotations, setRotations] = useState([...LEVELS[0].initial]);
+        const [boardOrientationSpoke, setBoardOrientationSpoke] = useState(() => Math.floor(Math.random() * 8));
         const [moves, setMoves] = useState(0);
         const [history, setHistory] = useState([]);
         const [ballFired, setBallFired] = useState(false);
@@ -348,6 +349,17 @@
           if (level.ringCycles.length !== RING_COUNT || level.initial.length !== RING_COUNT || level.ringCycles[0] !== CENTER_CYCLE) {
             throw new Error(`Invalid level ${level.id}: expected 7 rings with center cycle 8.`);
           }
+
+          const outerCycles = level.ringCycles.slice(1);
+          if (outerCycles.some((cycleLength) => cycleLength > 16)) {
+            throw new Error(`Invalid level ${level.id}: outer rings must have <= 16 orientations.`);
+          }
+          if (level.ringCycles[1] > 8) {
+            throw new Error(`Invalid level ${level.id}: indigo ring must have <= 8 orientations.`);
+          }
+          if (level.ringCycles[2] > 12) {
+            throw new Error(`Invalid level ${level.id}: blue ring must have <= 12 orientations.`);
+          }
         }, [level]);
 
         useEffect(() => {
@@ -396,13 +408,14 @@
 
         useEffect(() => {
           setRotations([...level.initial]);
+          setBoardOrientationSpoke(Math.floor(Math.random() * 8));
           setMoves(0);
           setHistory([]);
           setBallFired(false);
           setShowWinModal(false);
           setMessage("");
           setShowSolutionHint(false);
-        }, [currentLevelIndex]);
+        }, [currentLevelIndex, level]);
 
         const handleRotate = useCallback((index, direction) => {
           if (ballFired || showWinModal || showGuideModal) return;
@@ -503,7 +516,7 @@
                     <circle cx="0" cy="-16" r={GAP_HALF_WIDTH} fill="black" />
                   </mask>
                 </defs>
-                <g transform="translate(180, 180)">
+                <g transform={`translate(180, 180) rotate(${boardOrientationSpoke * 45})`}>
                   {outerRingRenderConfig.map((config) => (
                     <OuterRing
                       key={`outer-${config.ringIndex}`}
