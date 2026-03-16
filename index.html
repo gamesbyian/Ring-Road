@@ -109,16 +109,13 @@
             <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS} mask="url(#gapMask)">
               <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth="16" fill="none" />
               {config.markerAngles.map((angle, markerIndex) => (
-                <line
+                <circle
                   key={`marker-${ringIndex}-${markerIndex}`}
-                  x1="0"
-                  y1={-config.markerInnerRadius}
-                  x2="0"
-                  y2={-config.markerOuterRadius}
+                  cx="0"
+                  cy={-config.markerRadius}
+                  r={config.markerDotRadius}
                   transform={`rotate(${angle})`}
-                  stroke={config.markerStrokeColor}
-                  strokeWidth={config.markerStrokeWidth}
-                  strokeLinecap="round"
+                  fill={config.markerStrokeColor}
                 />
               ))}
             </g>
@@ -281,10 +278,9 @@
             return {
               ringIndex,
               radius,
-              markerInnerRadius: radius - 2.4,
-              markerOuterRadius: radius + 2.4,
+              markerRadius: radius,
+              markerDotRadius: 1.58,
               markerStrokeColor: markerStrokeForRing(COLORS[ringIndex]),
-              markerStrokeWidth: cycle > 18 ? 1.1 : 1.25,
               markerAngles: Array.from({ length: cycle }, (_, markerIndex) => (360 / cycle) * markerIndex),
             };
           });
@@ -448,6 +444,14 @@
           setMessage("");
         }, [level]);
 
+        const goToPreviousLevel = useCallback(() => {
+          setCurrentLevelIndex((previous) => (previous - 1 + LEVELS.length) % LEVELS.length);
+        }, []);
+
+        const goToNextLevel = useCallback(() => {
+          setCurrentLevelIndex((previous) => (previous + 1) % LEVELS.length);
+        }, []);
+
         const showMessage = (msg) => {
           setMessage(msg);
           setTimeout(() => setMessage(""), 3000);
@@ -476,13 +480,29 @@
             <div className="w-full max-w-lg flex justify-between items-center mb-3 px-2">
               <div className="w-full flex items-center justify-between gap-4">
                 <h1 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">Ring Road</h1>
-                <p className="text-sm text-zinc-400 font-medium text-right whitespace-nowrap">
-                  Level {level.id} of {LEVELS.length}
-                </p>
+                <div className="flex items-center gap-2 text-sm text-zinc-400 font-medium text-right whitespace-nowrap">
+                  <button
+                    onClick={goToPreviousLevel}
+                    className="w-7 h-7 rounded-full bg-white text-black leading-none text-lg font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    aria-label="Previous level"
+                  >
+                    -
+                  </button>
+                  <p>
+                    Level {level.id} of {LEVELS.length}
+                  </p>
+                  <button
+                    onClick={goToNextLevel}
+                    className="w-7 h-7 rounded-full bg-white text-black leading-none text-lg font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
+                    aria-label="Next level"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="w-full max-w-lg flex justify-between items-center mb-6 px-2">
+            <div className="w-full max-w-lg flex justify-between items-center mb-3 px-2">
               <div className={`text-lg font-mono font-semibold ${moves > level.targetMoves ? "text-red-400" : moves === level.targetMoves ? "text-emerald-400" : "text-zinc-300"}`}>
                 Moves: {moves} / {level.targetMoves}
               </div>
@@ -496,7 +516,7 @@
               </div>
             </div>
 
-            <div className="relative flex justify-center items-center">
+            <div className="relative flex justify-center items-center z-20">
               {message && <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">{message}</div>}
               <svg viewBox="0 0 360 360" className="w-full max-w-[400px] h-auto overflow-visible">
                 <defs>
@@ -531,9 +551,9 @@
                       className="pointer-events-none"
                       style={{
                         filter: "drop-shadow(0 0 3px rgba(255,255,255,0.8))",
-                        transform: ballFired ? "translateY(-200px)" : "translateY(0)",
-                        transition: "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
-                        WebkitTransition: "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
+                        transform: ballFired ? "translateY(-130vh)" : "translateY(0)",
+                        transition: ballFired ? "transform 0.9s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+                        WebkitTransition: ballFired ? "transform 0.9s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
                       }}
                     />
                   </g>
@@ -541,7 +561,7 @@
               </svg>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-12 max-w-lg mx-auto px-4">
+            <div className="flex flex-wrap justify-center gap-3 mt-6 max-w-lg mx-auto px-4">
               {BUTTON_ORDER.map((i) => (
                 <div key={`btn-${i}`} className="flex rounded-md overflow-hidden bg-zinc-800 shadow-lg" style={{ borderBottom: `2px solid ${COLORS[i]}` }}>
                   <button onClick={() => handleRotate(i, -1)} className="p-3 hover:bg-zinc-700 active:bg-zinc-600 transition-colors">
