@@ -85,7 +85,7 @@
       const RING_LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 
       const normalizeState = (state, cycleLength) => ((state % cycleLength) + cycleLength) % cycleLength;
-      const rotationAngle = (state, cycleLength) => (360 / cycleLength) * normalizeState(state, cycleLength);
+      const rotationAngle = (state, cycleLength) => (360 / cycleLength) * state;
       const GAP_HALF_WIDTH = 6;
       const RING_TRANSFORM_CLASS = "transition-transform duration-300 ease-in-out";
       const hexToRgb = (hex) => {
@@ -408,7 +408,7 @@
           if (ballFired || showWinModal || showGuideModal) return;
           setRotations((previousRotations) => {
             const nextRotations = [...previousRotations];
-            nextRotations[index] = normalizeState(nextRotations[index] + direction, level.ringCycles[index]);
+            nextRotations[index] += direction;
             return nextRotations;
           });
           setHistory((previousHistory) => [...previousHistory, { index, direction }]);
@@ -420,7 +420,7 @@
           const lastMove = history[history.length - 1];
           setRotations((previousRotations) => {
             const nextRotations = [...previousRotations];
-            nextRotations[lastMove.index] = normalizeState(nextRotations[lastMove.index] - lastMove.direction, level.ringCycles[lastMove.index]);
+            nextRotations[lastMove.index] -= lastMove.direction;
             return nextRotations;
           });
           setHistory((previousHistory) => previousHistory.slice(0, -1));
@@ -497,6 +497,11 @@
                     <rect x="-400" y="-400" width="800" height="800" fill="white" />
                     <rect x={-GAP_HALF_WIDTH} y="-400" width={GAP_HALF_WIDTH * 2} height="390" fill="black" />
                   </mask>
+                  <mask id="centerGapMask" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">
+                    <rect x="-400" y="-400" width="800" height="800" fill="white" />
+                    <rect x={-GAP_HALF_WIDTH} y="-400" width={GAP_HALF_WIDTH * 2} height="384" fill="black" />
+                    <circle cx="0" cy="-16" r={GAP_HALF_WIDTH} fill="black" />
+                  </mask>
                 </defs>
                 <g transform="translate(180, 180)">
                   {outerRingRenderConfig.map((config) => (
@@ -509,7 +514,7 @@
                   ))}
 
                   <g transform={`rotate(${rotationAngle(rotations[0], CENTER_CYCLE)})`} className={RING_TRANSFORM_CLASS}>
-                    <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#gapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === level.targetMoves ? "hover:opacity-80" : ""}`} />
+                    <circle cx="0" cy="0" r="18" fill={COLORS[0]} mask="url(#centerGapMask)" onClick={handleDotClick} className={`cursor-pointer transition-opacity ${isAligned && moves === level.targetMoves ? "hover:opacity-80" : ""}`} />
                     {isAligned && moves === level.targetMoves && !ballFired && <circle cx="0" cy="0" r="18" fill="none" stroke="white" strokeWidth="2" className="animate-ping opacity-50 pointer-events-none" />}
                     <circle
                       cx="0"
