@@ -22,7 +22,7 @@
     <div id="root"></div>
 
     <script type="text/babel" data-presets="react">
-      const { useState, useEffect, useMemo, useCallback } = React;
+      const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
       const RING_COUNT = 7;
       const OUTER_RING_INDICES = [1, 2, 3, 4, 5, 6];
@@ -141,10 +141,10 @@
         return true;
       };
 
-      const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation }) {
+      const OuterRing = React.memo(function OuterRing({ ringIndex, config, ringRotation, transformClass }) {
         return (
           <g>
-            <g transform={`rotate(${ringRotation})`} className={RING_TRANSFORM_CLASS} mask="url(#gapMask)">
+            <g transform={`rotate(${ringRotation})`} className={transformClass} mask="url(#gapMask)">
               <circle cx="0" cy="0" r={config.radius} stroke={COLORS[ringIndex]} strokeWidth={RING_STROKE_WIDTH} fill="none" />
               {config.markerAngles.map((angle, markerIndex) => (
                 <circle
@@ -311,6 +311,8 @@
         const [showGuideModal, setShowGuideModal] = useState(true);
         const [message, setMessage] = useState("");
         const [showSolutionHint, setShowSolutionHint] = useState(false);
+        const [isLevelReady, setIsLevelReady] = useState(false);
+        const levelReadyFrameRef = useRef(null);
 
         const levels = LEVELS_BY_MODE[mode];
         const level = levels[currentLevelIndex];
@@ -466,16 +468,40 @@
           return () => URL.revokeObjectURL(url);
         }, [level]);
 
+
         useEffect(() => {
-          setRotations([...level.initial]);
-          setBoardOrientationState(Math.floor(Math.random() * level.ringCycles[0]));
+          if (levelReadyFrameRef.current) {
+            cancelAnimationFrame(levelReadyFrameRef.current);
+          }
+          levelReadyFrameRef.current = requestAnimationFrame(() => {
+            setIsLevelReady(true);
+            levelReadyFrameRef.current = null;
+          });
+          return () => {
+            if (levelReadyFrameRef.current) {
+              cancelAnimationFrame(levelReadyFrameRef.current);
+              levelReadyFrameRef.current = null;
+            }
+          };
+        }, [mode, currentLevelIndex]);
+
+        const loadLevel = useCallback((nextMode, nextLevelIndex) => {
+          const nextLevels = LEVELS_BY_MODE[nextMode];
+          const safeLevelIndex = ((nextLevelIndex % nextLevels.length) + nextLevels.length) % nextLevels.length;
+          const nextLevel = nextLevels[safeLevelIndex];
+
+          setIsLevelReady(false);
+          setMode(nextMode);
+          setCurrentLevelIndex(safeLevelIndex);
+          setRotations([...nextLevel.initial]);
+          setBoardOrientationState(Math.floor(Math.random() * nextLevel.ringCycles[0]));
           setMoves(0);
           setHistory([]);
           setBallFired(false);
           setShowWinModal(false);
-          setMessage("");
           setShowSolutionHint(false);
-        }, [currentLevelIndex, level]);
+          setMessage("");
+        }, []);
 
         const handleRotate = useCallback((index, direction) => {
           if (ballFired || showWinModal || showGuideModal) return;
@@ -501,6 +527,7 @@
         }, [history, ballFired, showWinModal, showGuideModal, level]);
 
         const restartLevel = useCallback(() => {
+          setIsLevelReady(false);
           setRotations([...level.initial]);
           setBoardOrientationState(Math.floor(Math.random() * level.ringCycles[0]));
           setMoves(0);
@@ -512,12 +539,12 @@
         }, [level]);
 
         const goToPreviousLevel = useCallback(() => {
-          setCurrentLevelIndex((previous) => (previous - 1 + levels.length) % levels.length);
-        }, [levels.length]);
+          loadLevel(mode, currentLevelIndex - 1);
+        }, [loadLevel, mode, currentLevelIndex]);
 
         const goToNextLevel = useCallback(() => {
-          setCurrentLevelIndex((previous) => (previous + 1) % levels.length);
-        }, [levels.length]);
+          loadLevel(mode, currentLevelIndex + 1);
+        }, [loadLevel, mode, currentLevelIndex]);
 
         const showMessage = (msg) => {
           setMessage(msg);
@@ -547,7 +574,7 @@
             <div className="w-full max-w-lg flex justify-between items-center mb-1.5 px-2">
               <div className="w-full flex items-center justify-between gap-4">
                 <h1 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">Ring Road</h1>
-                <div className="flex items-center gap-2 text-sm font-medium text-right whitespace-nowrap" style={{ color: BOARD_BACKGROUND }}>
+                <div className="flex items-center gap-2 text-sm font-medium text-right whitespace-nowrap text-zinc-100">
                   <button
                     onClick={goToPreviousLevel}
                     className="rounded-full bg-white leading-none text-sm font-bold flex items-center justify-center hover:bg-zinc-200 active:bg-zinc-300 transition-colors"
@@ -587,6 +614,7 @@
 
             <div className="relative flex justify-center items-center z-20">
               {message && <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">{message}</div>}
+              {isLevelReady ? (
               <svg viewBox="0 0 360 360" className="w-full max-w-[400px] h-auto overflow-visible">
                 <defs>
                   <mask id="gapMask" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">
@@ -606,6 +634,7 @@
                       ringIndex={config.ringIndex}
                       config={config}
                       ringRotation={rotationAngle(rotations[config.ringIndex], level.ringCycles[config.ringIndex])}
+                      transformClass={RING_TRANSFORM_CLASS}
                     />
                   ))}
 
@@ -628,6 +657,9 @@
                   </g>
                 </g>
               </svg>
+              ) : (
+                <div className="w-full max-w-[400px] h-[400px] flex items-center justify-center text-zinc-400 font-medium">Loading...</div>
+              )}
             </div>
 
             <div className="flex flex-wrap justify-center gap-3 mt-[0.45rem] max-w-lg mx-auto px-4">
@@ -677,17 +709,7 @@
               <button
                 onClick={() => {
                   const nextMode = mode === MODE_NORMAL ? MODE_PRIMES : MODE_NORMAL;
-                  setMode(nextMode);
-                  setCurrentLevelIndex(0);
-                  const nextLevel = LEVELS_BY_MODE[nextMode][0];
-                  setRotations([...nextLevel.initial]);
-                  setBoardOrientationState(Math.floor(Math.random() * nextLevel.ringCycles[0]));
-                  setMoves(0);
-                  setHistory([]);
-                  setBallFired(false);
-                  setShowWinModal(false);
-                  setShowSolutionHint(false);
-                  setMessage("");
+                  loadLevel(nextMode, 0);
                 }}
                 className="text-xs uppercase tracking-wide bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1.5 rounded-md transition-colors"
               >
@@ -738,7 +760,7 @@
                   <p className="text-zinc-400 mb-8">Aligned in exactly {moves} moves.</p>
                   <div className="flex flex-col gap-3">
                     {currentLevelIndex < levels.length - 1 ? (
-                      <button onClick={() => setCurrentLevelIndex(currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
+                      <button onClick={() => loadLevel(mode, currentLevelIndex + 1)} className="w-full py-3 bg-zinc-100 text-zinc-900 font-bold rounded-xl hover:bg-white">
                         Next Level
                       </button>
                     ) : (
