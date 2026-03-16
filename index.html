@@ -87,11 +87,10 @@
       //
       // Over-360 is an intended design tool:
       // - A valid directed move can be baseDirectionalDistance + k * cycleLength, with k >= 1 for wrapped plans.
-      // - Wraps must be continuous one-direction movement, not CW/CCW cancellation padding.
+      // - Wraps are continuous one-direction movement on the same ring.
       // - Preferred handcrafted levels should have exactly one exact intended solution vector.
       // - Multiple exact vectors are a design warning unless that ambiguity is explicitly intentional.
       // - Uniqueness is judged by full per-ring move allocation (targetState + direction + moveCount + wraps), not only final alignment.
-      // - Legacy burn-pair diagnostics remain legacy-only and should not drive level validity.
       //
       // Practical wrap-level heuristic (guideline, not a rule):
       // - Start from a clean exact intended vector, then add one full-turn wrap to one ring by default.
@@ -252,9 +251,6 @@
             }
             console.warn(`[Validation] ${wrapMessage}`);
           }
-          if (analysis.legacyBurnPaddingOnlyDiagnostic) {
-            console.warn(`[Validation] Level ${levelEntry.id} would only have worked under legacy burn-pair padding.`);
-          }
         });
       };
 
@@ -312,9 +308,8 @@
 
       // Solver design note:
       // - Valid plans are exact directed move vectors where every counted move is intentional.
-      // - Backtracking/burn-pair padding (CW then CCW cancellation) is never part of a valid intended solution.
-      // - Over-360 motion is valid only when staying in one chosen direction for that ring:
-      //   moveCount = baseDirectionalDistance + k * cycleLength, k >= 0.
+      // - Over-360 motion is valid when staying in one chosen direction for that ring:
+      //   moveCount = baseDirectionalDistance + wraps * cycleLength, wraps >= 0.
       // - For generator/validation workflows, prefer exactly one exact directed solution vector.
       // - Treat multiple exact vectors as a design warning unless intentional.
       // - Vector uniqueness is by full per-ring allocation, not just shared final alignment.
@@ -462,26 +457,6 @@
           }
         });
 
-        // Legacy-model diagnostic only: detects levels that would have needed synthetic cancellation padding.
-        const hasOldBurnPairFallback = candidateSpokes.some((candidate) => {
-          const reachable = [new Set([0])];
-          for (let ringIndex = 0; ringIndex < RING_COUNT; ringIndex += 1) {
-            const nextSet = new Set();
-            reachable[ringIndex].forEach((partialMoves) => {
-              candidate.ringDirectedOptions[ringIndex]
-                .filter((option) => option.wraps === 0)
-                .forEach((option) => {
-                  const nextMoves = partialMoves + option.baseDirectionalDistance;
-                  if (nextMoves <= level.targetMoves) {
-                    nextSet.add(nextMoves);
-                  }
-                });
-            });
-            reachable.push(nextSet);
-          }
-          return [...reachable[RING_COUNT]].some((moveCount) => moveCount < level.targetMoves && (level.targetMoves - moveCount) % 2 === 0);
-        });
-
         const exactPlanUsesWraps = Boolean(firstExactPlan?.selectedRingOptions?.some((option) => option.wraps > 0));
 
         return {
@@ -492,8 +467,6 @@
           // Uniqueness is based on exact per-ring move-allocation vectors, not only final alignment.
           exactIntendedSolutionVectorCount: exactSolutionVectorCount,
           hasMultipleExactIntendedSolutions: exactSolutionVectorCount > 1,
-          // Legacy-analysis only: never used for gameplay validity, reveal text, or win checks.
-          legacyBurnPaddingOnlyDiagnostic: exactSolutionVectorCount === 0 && hasOldBurnPairFallback,
         };
       };
 
