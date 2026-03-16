@@ -538,7 +538,7 @@
         }, [level]);
 
 
-        useEffect(() => {
+        const scheduleLevelReadyNextFrame = useCallback(() => {
           if (levelReadyFrameRef.current) {
             cancelAnimationFrame(levelReadyFrameRef.current);
           }
@@ -546,13 +546,17 @@
             setIsLevelReady(true);
             levelReadyFrameRef.current = null;
           });
+        }, []);
+
+        useEffect(() => {
+          scheduleLevelReadyNextFrame();
           return () => {
             if (levelReadyFrameRef.current) {
               cancelAnimationFrame(levelReadyFrameRef.current);
               levelReadyFrameRef.current = null;
             }
           };
-        }, [currentLevelIndex]);
+        }, [currentLevelIndex, scheduleLevelReadyNextFrame]);
 
         const loadLevel = useCallback((nextLevelIndex) => {
           const safeLevelIndex = ((nextLevelIndex % CAMPAIGN.levels.length) + CAMPAIGN.levels.length) % CAMPAIGN.levels.length;
@@ -605,7 +609,8 @@
           setMessage("");
           setShowWinModal(false);
           setShowSolutionHint(false);
-        }, [level]);
+          scheduleLevelReadyNextFrame();
+        }, [level, scheduleLevelReadyNextFrame]);
 
         const goToPreviousLevel = useCallback(() => {
           loadLevel(currentLevelIndex - 1);
