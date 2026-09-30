@@ -8,6 +8,7 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 | `testing.md` | Validation commands, what they protect, and finish-line expectations |
 | `periodic-repository-hygiene.md` | Recurring repository entropy-control procedure |
 | `agent-context-routes.json` | Routine agent-context files and byte budgets |
+| `3d-ring-renderer-plan.md` | Proposed dimensional renderer design and staged adoption plan; not current architecture until implemented |
 
 Design proposals may live in additional docs or PR branches. A proposal does not become current architecture merely by existing; update `architecture.md` when implementation changes.
 
