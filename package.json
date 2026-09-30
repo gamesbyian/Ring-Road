@@ -1,0 +1,16 @@
+{
+  "name": "ring-road",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "context": "node scripts/context.mjs",
+    "check:repo": "node scripts/check-repo.mjs",
+    "check:context": "node scripts/check-context-budget.mjs",
+    "check": "npm run check:repo && npm run check:context"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

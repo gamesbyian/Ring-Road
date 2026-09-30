@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "authorities": [
+    { "path": "AGENTS.md", "targetBytes": 6000, "compactAtBytes": 12000 },
+    { "path": "docs/README.md", "targetBytes": 4000, "compactAtBytes": 8000 },
+    { "path": "docs/architecture.md", "targetBytes": 9000, "compactAtBytes": 18000 },
+    { "path": "docs/testing.md", "targetBytes": 6000, "compactAtBytes": 12000 },
+    { "path": "docs/periodic-repository-hygiene.md", "targetBytes": 7000, "compactAtBytes": 14000 }
+  ]
+}
