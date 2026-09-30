@@ -1,66 +1,66 @@
 # Ring Road agent guide
 
-Compact router. Read only the authority needed for the task; do not load the whole repository by default.
+Compact router. Read only the authority needed for the task; do not load the archived prototype by default.
+
+## Current direction
+
+Ring Road is being rebuilt for production. The existing single-file app is a prototype/reference implementation.
+
+For production work, start with `docs/3d-ring-renderer-plan.md` and `docs/architecture.md`.
+
+Do not preserve prototype architecture merely for compatibility.
 
 ## Route by task
 
 | Task | Read first |
 |---|---|
-| Gameplay/code change | `docs/architecture.md`, then the relevant `index.html` region via `npm run context` |
-| Puzzle authoring / campaign data | `docs/architecture.md#puzzle-model-and-campaign`, then `npm run context -- --section=campaign` and `--section=solver` |
-| Renderer/UI/accessibility | `docs/architecture.md#rendering-and-ui`, then `npm run context -- --section=render` or `--section=app` |
-| Solver/alignment/exact-move behavior | `docs/architecture.md#solver-and-win-semantics`, then `npm run context -- --section=solver` |
-| Validation / red CI | `docs/testing.md`, then the failing script |
-| Repository hygiene | Execute `docs/periodic-repository-hygiene.md` from current `main` |
+| Production rebuild / implementation | `docs/3d-ring-renderer-plan.md`, then `docs/architecture.md` |
+| Gameplay/domain semantics | `docs/architecture.md`, production domain files/tests, then prototype only if parity evidence is needed |
+| Puzzle authoring / campaign | production content/domain validation, then archived prototype campaign only as reference |
+| Renderer/UI/accessibility | dimensional-renderer sections of `docs/3d-ring-renderer-plan.md`, then production render/UI code |
+| Solver/alignment/exact-move behavior | `docs/architecture.md#solver-and-win-semantics`, then production domain/solver tests |
+| Validation / red CI | `docs/testing.md`, then the failing script/test |
+| Repository hygiene | execute `docs/periodic-repository-hygiene.md` from current `main` |
 | Documentation ownership | `docs/README.md` |
 
-## Cheap discovery first
+## Prototype rule
 
-Do not open all of `index.html` merely to locate code.
+Once archived, prototype files are read-only reference material.
 
-```bash
-npm run context -- --list
-npm run context -- --section=campaign
-npm run context -- --section=solver
-npm run context -- --find=handleRotate
-```
+Use them to answer questions such as "what did the prototype do?" Do not route ordinary implementation work into them.
 
-Use `--find` for named symbols and `--section` for a logical subsystem. Escalate to the full file only when the task genuinely crosses several regions.
+If production intentionally differs from prototype behavior, encode the intended result in production tests and update current docs.
 
 ## Working rules
 
-1. Read current authority and implementation before editing. Chat summaries and old PR descriptions are context, not repository truth.
-2. Preserve the current zero-build, dependency-free local tooling unless a concrete need justifies changing it.
-3. Keep gameplay truth single-owned. Rendering must consume game state, not reinterpret puzzle rules.
-4. Puzzle changes must preserve structural validation and exact-move semantics.
-5. Prefer the smallest coherent change. Do adjacent work when required to close the loop, but avoid unrelated cleanup.
-6. Do not weaken checks to make CI green. Fix the violated invariant or deliberately update the owning rule.
-7. Keep mutable facts in one current authority. Replace stale claims rather than appending competing versions.
-8. Put chronology, experiments, and screenshots beside plans or in PR history; do not turn the current docs into diaries.
-9. Use branches/PRs for changes. Before push, run `npm run check`.
-10. Do not babysit GitHub Actions. Deterministic failures should be reproduced locally first.
+1. Read current plan/architecture and production implementation before editing.
+2. Treat prototype code as evidence, not architectural authority.
+3. Keep gameplay truth framework-independent and single-owned.
+4. Rendering consumes domain state and never redefines puzzle semantics.
+5. Prefer a clean production solution over compatibility scaffolding.
+6. Keep dependencies modest and justified by recurring value.
+7. Keep CI fast enough to use constantly.
+8. Do not weaken validation to make CI green.
+9. Keep mutable facts in one current authority; replace stale claims instead of appending competing ones.
+10. Use branches/PRs for changes and leave the repository at a safe handoff point.
 
-## Source invariants
+## Product invariants
 
-- `index.html` is currently the shipped application.
-- There are seven rings.
-- Ring rotation is discrete and cycle-driven.
-- Solved state is shared-spoke agreement, independent of cosmetic board orientation.
-- The move target is exact, not a maximum.
-- Continuous same-direction full wraps may be part of an intended exact solution.
-- Campaign puzzles should normally have one exact intended move-allocation vector; intentional ambiguity must be explicit.
-- The logical model, solver, rendering, and UI are distinct concerns even while they live in one file.
+- seven rings;
+- discrete cycle-driven rotation;
+- shared-spoke solved state;
+- cosmetic board orientation independent of solvability;
+- exact target move count;
+- continuous same-direction wraps may be required;
+- campaign puzzles normally have one exact intended move-allocation vector unless ambiguity is explicit;
+- mobile usability and immediate-feeling input are requirements.
 
 ## Verification
 
-Ordinary finish line:
+Use the production scripts defined by the rebuild as they are introduced.
 
-```bash
-npm run check
-```
-
-For browser-facing changes, also run the app and exercise the affected interaction manually on a narrow/mobile viewport.
+During the transition, run the existing repository checks as well. Browser-facing changes require direct interaction testing on a narrow/mobile viewport.
 
 ## Context budget
 
-`docs/agent-context-routes.json` owns the small set of files agents are expected to load routinely. `npm run check:context` fails only at generous maintenance triggers, not preferred target sizes. When a file crosses its trigger, compact duplicated or stale material back toward the target rather than merely raising the limit.
+Keep agent routing and current architecture compact. Archived prototype size does not count as ordinary agent context because agents should not load it unless reference behavior is specifically needed.

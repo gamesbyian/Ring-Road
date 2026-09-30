@@ -1,43 +1,38 @@
 # Ring Road architecture
 
-## Product shape
+## Current repository state
 
-Ring Road is a zero-build browser game currently shipped as one `index.html`. React, ReactDOM, Babel, and Tailwind are loaded from CDNs. The single-file form is deliberate for now: it keeps deployment trivial and avoids introducing a toolchain merely to reorganize code.
+Ring Road is entering a **production rebuild**.
 
-That does **not** mean the file is conceptually monolithic. Its named section comments define subsystem boundaries, and `scripts/context.mjs` exposes those regions cheaply.
+The existing single-file browser app is a proven prototype/reference implementation. It established the game rules, campaign behavior, interaction model, and early visual language, but it is no longer the architecture to preserve.
 
-## Puzzle model and campaign
+The production implementation is governed by `docs/3d-ring-renderer-plan.md`.
 
-The game has seven rings. Each puzzle supplies:
+Until the rebuild is complete, distinguish carefully between:
 
-- `id`
-- `targetMoves`
-- `ringCycles`
-- `initial`
-- optional validation-only `authoring` assertions
+- **prototype truth**: useful evidence about intended behavior;
+- **production truth**: code and tests in the new production source tree;
+- **plan authority**: the target architecture and migration sequence.
+
+When production and prototype disagree, do not silently copy either. Resolve the intended behavior explicitly and encode it in production tests/docs.
+
+## Canonical gameplay semantics
+
+These are product rules, not prototype implementation details.
+
+The game has seven independently rotatable concentric rings.
+
+Each puzzle defines:
+
+- an ID;
+- exact target move count;
+- per-ring cycle lengths;
+- per-ring initial logical states;
+- optional authoring/validation assertions.
 
 Cycle lengths are prime-constrained, with tighter limits toward the center.
 
-Puzzle authoring is constructive: choose a legal intended exact directed move vector and shared solved spoke, then derive starting states and the exact move target. Generated puzzles should use the same construct-from-solution approach rather than random-start-and-hope.
-
-Campaign data is current gameplay content. Authoring assertions are validation metadata, not runtime rules.
-
-## State ownership
-
-React state currently owns:
-
-- current puzzle index
-- ring rotations
-- cosmetic board orientation
-- move count
-- move history
-- ball-fired state
-- modal/message state
-- puzzle-ready rendering state
-
-`rotations` are logical ring states. `boardOrientationState` is cosmetic presentation only and must never affect solvability.
-
-Reset restores the puzzle's logical initial ring states while preserving the current puzzle's cosmetic board orientation.
+Puzzle authoring is constructive: choose an intended exact directed move vector and shared solved spoke, derive initial states and target moves, then validate.
 
 ## Solver and win semantics
 
@@ -45,66 +40,65 @@ Logical truth is shared-spoke identity in center-ring coordinates.
 
 A puzzle is aligned when every ring maps to the same shared spoke. Alignment is independent of absolute screen direction.
 
-The solver enumerates legal directed movement options per ring and counts exact move-allocation vectors whose total equals `targetMoves`. A legal directed option may include continuous same-direction full wraps:
+Legal directed movement may include continuous same-direction full wraps:
 
 ```
 moveCount = baseDirectionalDistance + wraps * cycleLength
 ```
 
-A completed puzzle requires both:
+Completion requires:
 
-1. all rings aligned on one shared spoke; and
-2. the current move count exactly equals `targetMoves`.
+1. shared-spoke alignment; and
+2. current move count exactly equal to the target.
 
-Reversing direction merely to waste moves is not part of the intended solution model.
+The production domain layer must own these semantics independently of React or rendering.
 
-## Rendering and UI
+## Production architecture target
 
-The board is currently SVG.
+Default direction:
 
-Outer rings are rendered independently and rotated from logical state using `rotationAngle(state, cycleLength)`. Discrete marker positions visualize each ring's available orientations.
+- TypeScript;
+- React;
+- Vite or equivalent lightweight tooling;
+- pure/domain modules for puzzle rules and solver;
+- typed campaign/content modules;
+- explicit application-state layer;
+- renderer downstream of logical state;
+- unit tests for domain behavior;
+- targeted browser tests for critical flows;
+- modest, justified dependencies.
 
-The center ring contains the clickable center and the ball/fire animation.
+The exact file tree may evolve during Phase 1 of the production plan. Clear ownership matters more than matching a prescribed folder diagram.
 
-Rendering may become more dimensional in future, but renderers must consume the same canonical logical state and must not duplicate or reinterpret solver/win rules.
+## Prototype boundary
 
-The UI also owns:
+The current single-file app should be archived under a clearly labeled prototype/reference path before production work proceeds.
 
-- previous/next puzzle navigation
-- move count
-- undo/reset
-- guide modal
-- optional solution display
-- completion modal
+Prototype code may be consulted for:
 
-## Source-region map
+- formulas;
+- puzzle data;
+- UI copy;
+- visual behavior;
+- edge cases;
+- parity checks.
 
-Use:
+Prototype code should not be extended as the main product after archival.
 
-```bash
-npm run context -- --list
-```
+## Rendering boundary
 
-Current logical regions include configuration, authoring/campaign, puzzle-model helpers, validation/rendering, solver semantics, and the React app.
+Rendering consumes canonical gameplay state.
 
-Search a symbol without loading the full file:
+A renderer must not independently decide alignment, legal movement, target satisfaction, wrap validity, or solution structure.
 
-```bash
-npm run context -- --find=solvePuzzleDeterministically
-```
-
-## Dependency policy
-
-Repository-owned development tooling should remain dependency-free while that is practical. Node's standard library is enough for the current server and structural checks.
-
-The shipped app currently depends on CDN-hosted React, ReactDOM, Babel, and Tailwind. A future bundling/offline plan would be an architectural change and should be deliberate rather than incidental.
+The production visual target is a dimensional fixed-perspective ring board. SVG/CSS 2.5D is the default first approach, but WebGL/Three.js may be adopted if a concrete requirement justifies it.
 
 ## Change boundaries
 
-When changing puzzle semantics, inspect model + solver + win handling + authoring comments.
+When changing puzzle semantics, update domain logic, tests, campaign validation, and the owning documentation together.
 
-When changing rendering, preserve logical state semantics and input behavior.
+When changing rendering, preserve domain semantics and input behavior.
 
-When changing campaign data, run structural checks and inspect exact-solution diagnostics in the browser.
+When changing campaign content, validate every puzzle and intended-solution expectation.
 
-When introducing a new subsystem, first ask whether an existing section/doc can own it. Avoid creating a directory tree that costs more to discover than it saves.
+When changing architecture, update this document and agent routing so old paths do not remain falsely authoritative.
