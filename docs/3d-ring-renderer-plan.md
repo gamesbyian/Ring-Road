@@ -1,407 +1,498 @@
-# Ring Road 3D / 2.5D Ring Renderer Plan
+# Ring Road Production Rebuild + Dimensional Renderer Plan
 
 ## Status
 
-Design and implementation plan only. Do **not** replace the current gameplay renderer until the alternate renderer is visually and functionally validated.
+**Canonical production implementation plan.**
+
+The existing single-file Ring Road app is now considered a **prototype/reference implementation**, not the architecture to preserve.
+
+The production game should be rebuilt cleanly around the proven puzzle semantics and the dimensional presentation goal. Existing code may be mined for behavior, formulas, puzzle data, copy, and useful implementation details, but it should not constrain the new architecture.
 
 Visual reference: [`3d-ring-renderer-concept.jpg`](./3d-ring-renderer-concept.jpg)
 
 ![Ring Road 3D concept](./3d-ring-renderer-concept.jpg)
 
-## Why explore this
+## Strategic decision
 
-Ring Road's current presentation is deliberately minimal: seven independently rotatable concentric rings, one notch/gap per ring, discrete orientation markers, a center ball, and exact-move-count puzzle rules. The underlying game is already complete enough that a visual overhaul should be treated as a rendering problem rather than a gameplay rewrite.
+The prototype succeeded at its job: it established that the game works, the puzzle rules are interesting, the authored campaign is viable, and the interaction model is understandable.
 
-A tilted, dimensional presentation can make the board feel like a physical puzzle object: raised rings, visible thickness inside gaps, subtle shadows between layers, and a more tactile sense that the player is rotating machinery or crafted material.
+The next step is **not** to keep polishing the prototype into production. The next step is to archive it intact and use it as executable design evidence while building a production implementation with clean boundaries, typed domain logic, testable puzzle semantics, maintainable rendering, and room for future visual work.
 
-The generated concept image above is **directional reference, not a literal UI specification**. Its useful idea is the dimensional ring board. The scenery, fantasy architecture, decorative parchment panels, and Paper-Mario-like papercraft world are intentionally *not* requirements.
+The production architecture should be chosen for the game Ring Road is becoming, not for minimum disruption to the prototype.
 
-The preferred target for the actual game is:
+## What must survive from the prototype
 
-- preserve Ring Road's dark, restrained visual identity;
-- keep the current saturated ring colors;
-- present the ring assembly as a premium physical object floating in a dark studio-like space;
-- introduce perspective, depth, material response, shadows, and exposed notch walls;
-- keep gameplay readability substantially more important than decorative realism;
-- preserve mobile performance and the current simple interaction model.
+Behavioral truth to preserve unless deliberately changed:
 
-## Design principle
+- seven independently rotatable concentric rings;
+- prime-constrained per-ring cycle counts;
+- one discrete move = one legal orientation step on one ring;
+- clockwise and counterclockwise controls;
+- exact move target, not a maximum;
+- solved state = all ring gaps agree on one shared spoke;
+- cosmetic board orientation is independent of logical solvability;
+- continuous same-direction full wraps may be part of the intended exact solution;
+- campaign puzzles are construct-from-solution and normally have one exact intended move-allocation vector;
+- undo, reset, puzzle navigation, guide, solution display, and completion behavior;
+- mobile-first usability;
+- instantaneous-feeling input;
+- center-ball completion interaction.
 
-**Make the existing board feel physical without making the game mechanically or visually noisy.**
+The prototype is evidence for these rules, not the permanent implementation of them.
 
-The 3D treatment should strengthen the player's understanding of the same seven ring states. It must not introduce fake geometry that obscures where a gap is, where an orientation marker lies, or how far a ring moves per click.
+## What does not need to survive
 
-No gameplay rule should depend on camera angle, apparent perspective, lighting, z-depth, texture, or animation.
+Do not preserve merely for compatibility:
 
-## Recommended implementation approach
+- single-file `index.html` architecture;
+- CDN-loaded runtime dependencies;
+- Babel-in-browser;
+- Tailwind CDN;
+- prototype component boundaries;
+- current state-management shape;
+- current SVG implementation details;
+- current CSS utility structure;
+- current file layout;
+- current local tooling assumptions;
+- renderer fallback architecture designed around the prototype.
 
-Use a staged **2.5D SVG/CSS renderer first**, not Three.js/WebGL.
+If a cleaner production implementation produces the same intended behavior with better testability, clarity, performance, or maintainability, prefer it.
 
-The existing game already models ring state independently from display angle. Each ring can continue to use the same logical rotation state and the same discrete `rotationAngle()` calculation. The alternate renderer should consume the exact same puzzle state and controls.
+## Archive policy
 
-A fixed perspective gives most of the desired visual effect while keeping:
+Before production implementation begins:
 
-- the current React architecture;
-- SVG masks and deterministic geometry;
-- crisp vector rendering;
-- accessible DOM controls;
-- low startup cost;
-- straightforward responsive sizing;
-- simple fallback to the current flat renderer;
-- no new graphics runtime or 3D dependency.
+1. preserve the current prototype verbatim in a clearly named archive/reference location such as `prototype/v1/`;
+2. include a short README describing its status and the commit it came from;
+3. keep the prototype runnable enough to compare behavior and visuals during migration;
+4. remove any implication that archived prototype files are current production architecture;
+5. do not continue feature development in the archived copy except to document or reproduce reference behavior.
 
-Three.js/WebGL should remain an optional later escalation only if the design eventually requires moving cameras, dynamic lighting, physically modeled materials, particles, or other features that 2.5D cannot convincingly provide.
+The archive is a museum exhibit with working buttons.
 
-## Renderer architecture
+## Production architecture direction
 
-### 1. Preserve a canonical logical board
+The implementation agent may refine exact tooling, but the default production direction should be a conventional modern browser application:
 
-Puzzle state remains exactly as it is now:
+- **TypeScript** for domain and application code;
+- **React** for UI composition unless a strong concrete reason emerges to choose otherwise;
+- **Vite** or equivalent lightweight bundling/dev tooling;
+- modular source layout rather than a single application file;
+- pure/domain modules for puzzle rules and solver logic;
+- rendering isolated from gameplay state and puzzle semantics;
+- unit tests for mathematical/domain behavior;
+- targeted browser tests for critical interaction flows once the UI stabilizes;
+- dependency count kept modest and justified.
 
-- ring cycles;
-- ring rotations;
-- board orientation;
-- move history;
+A reasonable initial shape:
+
+```
+src/
+  app/
+  domain/
+    puzzle/
+    solver/
+  content/
+    campaign/
+  render/
+    ring-board/
+  ui/
+  styles/
+tests/
+prototype/
+  v1/
+docs/
+scripts/
+```
+
+This is illustrative, not mandatory. Prefer clear ownership over directory ceremony.
+
+## Architectural principles
+
+### Domain logic is framework-independent
+
+The following should not depend on React, DOM, SVG, CSS, or rendering libraries:
+
+- state normalization;
+- ring/spoke mapping;
 - alignment checks;
-- solver and exact-vector logic;
-- win condition.
+- legal movement semantics;
+- exact directed move-vector analysis;
+- wrap accounting;
+- puzzle validation;
+- campaign validation;
+- construct-from-solution puzzle helpers.
 
-The renderer receives state. It does not reinterpret state.
+These functions should be directly unit-testable.
 
-### 2. Introduce a renderer boundary
+### Content is data, not component code
 
-Extract the current board visualization into a clear component boundary, for example:
+Campaign puzzles belong in typed content modules/data files with validation.
 
-- `FlatRingBoard`
-- `DimensionalRingBoard`
+Authoring metadata should remain distinct from runtime gameplay fields.
 
-Both should accept the same props/state.
+### Application state owns gameplay flow
 
-Do not fork gameplay logic between renderers.
+UI/application state should coordinate:
 
-During development, make renderer selection explicit with a temporary developer flag or small local toggle. The flat renderer remains the known-good fallback until the dimensional renderer reaches parity.
+- selected puzzle;
+- current ring states;
+- move history;
+- move count;
+- cosmetic board orientation;
+- modal/guide/hint state;
+- completion/firing state.
 
-### 3. Fixed camera / projection
+The domain layer determines what those states mean.
 
-Start with a single fixed board angle.
+### Rendering is downstream of truth
 
-Suggested starting point:
+The renderer receives already-defined logical state.
 
-- board tilted roughly 55–65 degrees away from the viewer;
-- slight vertical compression to create the ellipse/perspective impression;
-- centered camera;
-- no player-controlled orbit;
-- no camera drift during normal moves.
+No renderer may independently decide:
 
-The user should never need to mentally compensate for camera motion while solving.
+- whether rings are aligned;
+- whether a move is legal;
+- whether a target count is satisfied;
+- which spoke is solved;
+- whether wraps are valid.
 
-A subtle camera settle/intro animation may be explored only after static readability is proven.
+This keeps future 2D, 2.5D, accessibility, debug, or WebGL renderers interchangeable.
 
-### 4. Physical ring construction
+## Visual target
 
-Each ring should visually consist of several layers:
+The generated concept image is **directional reference, not a literal UI specification**.
 
-1. **top surface**  
-   The familiar saturated ring color.
+Its useful ideas:
 
-2. **outer wall / thickness**  
-   A darker tonal derivative of the top surface.
+- a tilted physical board;
+- strong depth;
+- visibly thick rings;
+- exposed notch walls;
+- shadows between layers;
+- a central ball as a physical object;
+- immediate color distinction.
 
-3. **inner wall / thickness**  
-   Visible especially around the ring's inner circumference and notch.
+The production game should keep Ring Road's own identity:
 
-4. **contact/ambient shadow**  
-   Soft shadow onto the layer beneath it.
+- dark restrained environment;
+- saturated ring colors;
+- clean modern UI;
+- minimal decoration;
+- premium physical-object presentation;
+- excellent mobile readability.
 
-5. **highlight edge**  
-   Very subtle light-facing rim, avoiding chrome/gloss.
-
-The notch is particularly important. It should read as a real cut through a thick ring, with visible side walls. When multiple gaps align, the player should perceive a continuous physical channel through the ring stack.
-
-### 5. Z-layer strategy
-
-Do not rely on arbitrary hand-tuned DOM z-index tricks for every state.
-
-Use deterministic layer ordering:
-
-- support/base;
-- ring underside or shadow;
-- side wall;
-- top face;
-- orientation markers;
-- center hub/ball.
-
-Because rings are concentric and not spatially interpenetrating, the illusion can be achieved with controlled SVG group ordering and projected offsets.
-
-### 6. Materials
-
-The generated concept uses overt papercraft. For the production game, begin more restrained.
-
-Preferred material directions to prototype:
-
-- dense colored paper/card stock;
-- matte molded polymer;
-- anodized/matte precision toy;
-- very subtle fiber/paper grain.
-
-Avoid:
-
-- noisy textures;
-- obvious wood grain;
-- metallic mirror reflections;
-- scenery baked into the board;
-- heavy bevels;
-- excessive bloom.
-
-Texture, if used at all, should disappear perceptually before it competes with orientation markers.
-
-### 7. Orientation markers
-
-The existing discrete markers remain mechanically important.
-
-In the dimensional renderer, test these in order:
-
-1. shallow embossed/dimpled dots;
-2. punched recessed holes;
-3. tiny low-contrast inlaid dots;
-4. current flat markers as fallback.
-
-They must remain visible on every ring size without making high-cycle rings visually busy.
-
-Marker geometry should stay bound to ring-local rotation so it moves exactly with the ring.
-
-### 8. Center ball and hub
-
-The center ball is an excellent candidate for genuine-looking depth because it is visually simple and important to the completion interaction.
-
-Target:
-
-- small white/off-white sphere or pearl;
-- soft local shadow/contact shadow;
-- seated slightly into the center hub;
-- retains the existing fire animation semantics.
-
-Do not make the ball or hub so large that it hides the center notch.
-
-### 9. Rotation animation
-
-Each click still advances exactly one legal ring increment.
-
-Animation goals:
-
-- physical but quick;
-- no spring overshoot that falsely suggests intermediate logical states;
-- no motion blur required;
-- the ring should visibly settle exactly on the marker lattice;
-- concurrent visual effects must not delay input processing.
-
-The current transform duration is a useful baseline, but test shorter durations if perspective makes movement feel slower.
-
-### 10. Aligned-road read
-
-The solved/near-solved state must be even clearer in 3D than in flat view.
-
-When gaps line up:
-
-- the combined notch should read as one radial channel;
-- exposed vertical notch walls should visually reinforce continuity;
-- the center ball's firing route must remain obvious;
-- perspective must not make adjacent gaps appear aligned when they are not.
-
-Do not add an explicit glowing solution line unless testing shows the physical channel alone is insufficient.
-
-## Responsive/mobile requirements
-
-Mobile remains a first-class requirement.
-
-The dimensional board must:
-
-- fit comfortably within narrow portrait widths;
-- keep controls reachable;
-- avoid horizontal overflow;
-- maintain readable notch and marker sizes;
-- avoid relying on hover;
-- avoid expensive filters that tank mid-range mobile GPUs;
-- degrade gracefully if reduced-motion or constrained-device behavior is needed.
-
-The board can reduce its visual tilt on very small screens if that materially improves readability, but underlying geometry must remain unchanged.
-
-## Performance budget
-
-A dimensional renderer is acceptable only if ring input still feels instantaneous.
-
-Performance rules:
-
-- no full React-tree rebuild per animation frame;
-- no canvas texture regeneration on each click;
-- no runtime rasterization of every ring after state changes;
-- precompute static ring geometry from puzzle cycle counts;
-- animate compositor-friendly transforms where possible;
-- keep shadow/filter counts modest;
-- prefer shared SVG definitions/filters over repeated expensive effects;
-- profile reset, rapid alternating rotations, puzzle transitions, and high-marker-count rings on mobile.
-
-The previous rotation-lag work is a warning: visual richness may never reintroduce sluggish ring controls.
-
-## Accessibility and user preference
-
-The dimensional treatment must not be required to understand puzzle state.
-
-Retain:
-
-- current controls and labels;
-- color-independent relationship between controls and rings where possible;
-- readable focus states;
-- reduced-motion compatibility.
-
-Consider eventually retaining the flat renderer as an accessibility/performance display mode even if dimensional becomes the default.
-
-## Explicit non-goals for the first implementation
-
-Do **not** add these while building the first dimensional prototype:
+Do not import:
 
 - Paper Mario characters or copyrighted visual assets;
-- enemy/object occupancy mechanics;
-- radial sliding;
-- free camera rotation;
-- dynamic camera gameplay;
-- elaborate scenery;
-- particle systems;
-- environmental animation;
-- physics;
-- WebGL;
-- new puzzle rules;
-- new controls;
-- texture asset pipelines;
-- lighting editors.
+- fantasy scenery;
+- parchment UI;
+- castle/environment dressing;
+- decorative world-building that competes with the puzzle.
 
-These all confound evaluation of the core question: *does a dimensional board improve Ring Road?*
+## Renderer strategy
+
+### Default first implementation: 2.5D SVG/CSS
+
+Begin with SVG/CSS unless a concrete prototype demonstrates that it cannot meet the target.
+
+Why:
+
+- crisp geometry;
+- deterministic ring construction;
+- DOM accessibility;
+- easy responsive scaling;
+- lightweight runtime;
+- straightforward per-ring transforms;
+- enough control for fixed-perspective physical depth.
+
+### WebGL/Three.js is allowed if earned
+
+Unlike the earlier prototype-preservation plan, the production rebuild is free to adopt WebGL/Three.js if evidence shows it materially improves the target.
+
+Use it only for a concrete requirement such as:
+
+- convincing geometry impossible to fake cleanly;
+- dynamic lighting that materially improves readability;
+- camera movement that becomes part of the final presentation;
+- performance characteristics better than layered SVG at production complexity.
+
+Do not choose it merely because the board is visually 3D.
+
+## Dimensional board design
+
+### Camera / projection
+
+Start with a fixed camera:
+
+- roughly 55–65° downward view;
+- centered composition;
+- no player-controlled orbit;
+- no camera motion during ordinary moves;
+- reduced tilt on narrow portrait layouts if needed for legibility.
+
+### Ring geometry
+
+Each ring should read as a physical annulus with a notch cut through it:
+
+1. top surface;
+2. outer wall;
+3. inner wall;
+4. notch side walls;
+5. local/contact shadow;
+6. subtle highlight edge.
+
+Aligned gaps should create one visually continuous channel.
+
+### Material treatment
+
+Prototype these in restrained form:
+
+- dense card/paper;
+- matte molded polymer;
+- anodized/matte precision-toy material.
+
+Avoid noisy texture, mirror metal, gratuitous gloss, bloom, or scenery.
+
+### Orientation markers
+
+Test:
+
+1. shallow dimples;
+2. recessed punched holes;
+3. low-contrast inlays;
+4. flat markers as fallback.
+
+Marker count must remain readable on high-cycle rings.
+
+### Center hub and ball
+
+The center ball should feel physically seated in the hub, with subtle depth and contact shadow, while preserving a generous interaction target and the firing animation.
+
+### Motion
+
+One logical move must correspond visually to exactly one legal orientation step.
+
+No spring overshoot that implies false states.
+
+Animation must never make input feel queued or sluggish.
+
+## Mobile and accessibility
+
+Mobile is a first-class production target.
+
+Requirements:
+
+- portrait layout without horizontal overflow;
+- touch targets remain comfortable;
+- gaps and orientation markers remain readable;
+- no hover dependency;
+- reduced-motion behavior;
+- keyboard/focus semantics for controls;
+- color should not be the only control-to-ring relationship;
+- expensive visual effects must degrade gracefully.
+
+An alternate simplified renderer may be retained later if it provides real accessibility or low-power value, but production should not be architected around preserving the prototype renderer itself.
+
+## Performance requirements
+
+Input responsiveness is part of correctness.
+
+Production rules:
+
+- no full-tree work per animation frame;
+- precompute static ring geometry from cycle counts;
+- avoid raster regeneration on move;
+- prefer compositor-friendly transforms;
+- cache deterministic geometry;
+- keep expensive filters/shadows bounded;
+- profile rapid alternating rotation, reset, puzzle changes, and high-cycle rings;
+- validate on mobile hardware, not desktop alone.
+
+## Testing strategy
+
+### Domain tests
+
+Before visual migration is considered complete, add executable tests for:
+
+- normalization;
+- rotation/state equivalence;
+- spoke mapping;
+- aligned/not-aligned cases;
+- target-state enumeration;
+- exact directed solution counting;
+- wraps;
+- cycle constraints;
+- all production campaign puzzles having valid intended solutions;
+- uniqueness expectations;
+- reset/state-transition invariants that belong outside rendering.
+
+### Prototype parity tests
+
+Use the archived prototype as reference evidence.
+
+For representative puzzles, compare:
+
+- initial state;
+- legal single-step transitions;
+- alignment outcomes;
+- intended exact solution;
+- wrap behavior;
+- reset semantics;
+- target move handling.
+
+Do not blindly preserve prototype bugs. If behavior differs, decide and document which behavior is canonical.
+
+### Browser tests
+
+Once the production UI stabilizes, cover critical flows:
+
+- rotate CW/CCW;
+- undo;
+- reset;
+- puzzle navigation;
+- exact target completion;
+- under-target/over-target aligned states;
+- center fire;
+- responsive portrait layout.
 
 ## Implementation phases
 
-### Phase 0 — Renderer extraction
+### Phase 0 — Freeze and archive prototype
 
-- Extract current SVG board into a dedicated flat-renderer component.
-- Define the shared renderer input contract.
-- Verify pixel/behavior parity with current main.
-- Add no visual changes yet.
+- snapshot current prototype into `prototype/v1/`;
+- record source commit;
+- keep it runnable for comparison;
+- update repo routing/docs so production work no longer targets archived code;
+- establish production source root and tooling.
 
-**Exit:** flat version behaves identically.
+**Exit:** prototype is clearly frozen; production has a clean empty runway.
 
-### Phase 1 — Projection prototype
+### Phase 1 — Production foundation
 
-- Duplicate renderer into a dimensional experimental component.
-- Apply fixed perspective/tilt.
-- Confirm all seven rings remain legible.
-- Tune board framing on desktop and mobile.
+- choose/finalize TypeScript + React + Vite or justified alternative;
+- create modular source layout;
+- add lint/typecheck/test/build commands;
+- keep CI fast;
+- update agent routing to production paths;
+- preserve token-cheap discovery.
 
-**Exit:** flat geometry looks convincingly tilted without broken interactions.
+**Exit:** production app boots with a minimal shell and all core quality gates are executable.
 
-### Phase 2 — Ring thickness
+### Phase 2 — Domain migration
 
-- Add deterministic underside/side-wall construction.
-- Make notch walls visible.
-- Add restrained inter-ring/contact shadows.
-- Ensure ring ordering never visually glitches while rotating.
+- migrate puzzle types, cycle constraints, normalization, spoke math, alignment logic, solver, wrap semantics, and campaign validation into framework-independent modules;
+- migrate campaign data;
+- add domain tests;
+- compare representative behavior against prototype.
 
-**Exit:** rings read as physically thick independent layers.
+**Exit:** game rules are production-owned and tested without rendering.
 
-### Phase 3 — Material and marker pass
+### Phase 3 — Application state and controls
 
-- Prototype matte/paper/polymer surface treatment.
-- Convert orientation markers into subtle 3D dimples/recesses if successful.
-- Add restrained highlight edges.
+- implement puzzle selection, ring movement, history, reset, move count, cosmetic board orientation, hint/guide/completion state;
+- wire controls to domain logic;
+- keep rendering intentionally simple at first.
 
-**Exit:** physicality is obvious at a glance, but gameplay information remains dominant.
+**Exit:** production build is mechanically playable and matches intended prototype behavior.
 
-### Phase 4 — Center hub and ball
+### Phase 4 — Dimensional renderer foundation
 
-- Give center hub and ball convincing depth.
-- Preserve click target and fire animation.
-- Tune the solved-channel visual read.
+- implement fixed camera/projection;
+- create deterministic physical ring geometry;
+- preserve exact logical-to-visual orientation mapping;
+- establish responsive framing.
 
-**Exit:** center interaction is at least as clear as current main.
+**Exit:** all seven rings are playable in the new dimensional board.
 
-### Phase 5 — Motion/performance
+### Phase 5 — Physical depth and materials
 
-- Profile rapid rotations and reset.
-- Remove/replace expensive SVG filters where needed.
-- Test highest cycle-count puzzles.
-- Test portrait mobile.
-- Test reduced-motion behavior.
+- add top/side/notch-wall surfaces;
+- shadows and restrained highlights;
+- orientation marker treatment;
+- center hub and ball;
+- tune aligned-channel readability.
 
-**Exit:** no perceptible regression in interaction responsiveness.
+**Exit:** board clearly reads as a premium physical object without sacrificing puzzle legibility.
 
-### Phase 6 — Side-by-side evaluation
+### Phase 6 — Motion, accessibility, performance
 
-Compare flat and dimensional renderers on:
+- tune rotation and firing motion;
+- add reduced-motion behavior;
+- verify keyboard/touch semantics;
+- profile mobile;
+- simplify expensive effects where needed.
 
-- immediate understanding of the goal;
-- gap identification;
-- orientation-marker legibility;
-- perceived click response;
-- visual appeal;
-- mobile fit;
-- solver/puzzle-state parity;
-- reset/puzzle-transition behavior.
+**Exit:** production interaction is responsive and accessible across target layouts.
 
-Make the dimensional renderer default only if it wins without qualification on state readability and responsiveness.
+### Phase 7 — UI polish and production parity
 
-### Phase 7 — Production consolidation
+- rebuild guide, solution display, navigation, move counter, completion state, and surrounding UI in the new design system;
+- remove temporary migration/debug UI;
+- add critical browser coverage.
 
-If adopted:
+**Exit:** production build fully supersedes the prototype for gameplay.
 
-- remove prototype-only switches;
-- keep a deliberate fallback/display-mode strategy if useful;
-- centralize shared ring geometry helpers;
-- document rendering invariants near the implementation;
-- add regression checks for renderer/state parity where practical.
+### Phase 8 — Consolidation
+
+- update architecture docs to final implementation;
+- remove migration-only adapters;
+- ensure prototype is reference-only;
+- confirm all CI/checks are green;
+- verify no current docs still route agents into prototype code.
+
+**Exit:** repository has one obvious production path and one clearly archived prototype.
 
 ## Acceptance criteria
 
-The prototype is successful when all of the following are true:
+The production rebuild is complete when:
 
+- prototype is preserved but no longer acts as production code;
+- production code has explicit domain/application/render boundaries;
+- puzzle semantics are unit-tested;
+- campaign validation is executable;
+- all intended prototype gameplay behavior is either preserved or consciously superseded;
 - every logical state renders unambiguously;
-- a one-step rotation visibly lands on exactly one adjacent legal orientation;
-- gaps can be identified as quickly as in the flat renderer;
-- aligned gaps read as a continuous road/channel;
-- marker count is visually understandable across supported cycle sizes;
-- center-ball interaction remains obvious;
-- exact-move and solver behavior is untouched;
-- no horizontal mobile overflow is introduced;
-- rapid input and reset remain responsive;
-- the renderer can be disabled without affecting game state.
+- one click visibly equals one legal step;
+- aligned gaps read as one continuous channel;
+- marker counts remain legible;
+- center-ball completion is obvious;
+- exact-move semantics and wraps work correctly;
+- portrait mobile layout is comfortable;
+- rapid input/reset remain responsive;
+- CI provides fast deterministic feedback;
+- a fresh agent can discover the correct production subsystem without loading the prototype or the entire codebase.
 
-## Future possibilities after adoption
+## Future possibilities
 
-Only after the fixed 2.5D version is proven:
+After production consolidation:
 
-- tiny camera settle on puzzle load;
-- subtle board lift/drop between puzzles;
-- more convincing cast shadow beneath the whole assembly;
-- per-ring micro-elevation differences;
-- material themes;
-- optional speed-mode presentation;
-- WebGL/Three.js experiment if there is a concrete visual behavior that SVG/CSS cannot deliver.
+- subtle camera settle on puzzle load;
+- board lift/drop between puzzles;
+- richer but still restrained material themes;
+- optional rapid-fire / speed mode;
+- procedural puzzle generation using the same construct-from-solution system;
+- alternate renderer only where it provides concrete accessibility/performance value;
+- WebGL escalation if a specific visual requirement justifies it.
 
 ## Reference-image interpretation
 
-The accompanying generated image should be read as evidence for these ideas:
+Read the image as a statement about **physicality and perspective**, not franchise imitation.
 
-- tilted circular board;
-- strongly readable physical ring thickness;
-- exposed walls at gaps;
-- layers casting shadows onto lower layers;
-- central ball as a physical object;
-- colored rings remaining immediately distinguishable.
+Keep:
 
-It should **not** be read as a requirement for:
+- tilted board;
+- ring thickness;
+- gap walls;
+- layered shadows;
+- tactile center object;
+- strong color hierarchy.
 
-- the title treatment;
-- parchment UI;
-- castle/environment;
-- trees, waterfalls, banners, or scenery;
-- exact controls/layout shown;
-- a direct imitation of Paper Mario's art direction.
+Reject:
 
-Ring Road should remain recognizably itself.
+- copied franchise art direction;
+- decorative environment as gameplay framing;
+- visual clutter;
+- UI ornament that overwhelms the board.
+
+Ring Road should emerge from the rebuild looking like a finished version of itself.
