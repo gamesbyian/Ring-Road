@@ -4,18 +4,19 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 
 | Document | Owns |
 |---|---|
-| `architecture.md` | Current application structure, state boundaries, puzzle model, solver, rendering, UI |
+| `3d-ring-renderer-plan.md` | **Canonical production rebuild and dimensional-renderer implementation plan** |
+| `architecture.md` | Current architectural status, canonical gameplay semantics, production boundaries |
 | `testing.md` | Validation commands, what they protect, and finish-line expectations |
 | `periodic-repository-hygiene.md` | Recurring repository entropy-control procedure |
 | `agent-context-routes.json` | Routine agent-context files and byte budgets |
-| `3d-ring-renderer-plan.md` | Proposed dimensional renderer design and staged adoption plan; not current architecture until implemented |
 
-Design proposals may live in additional docs or PR branches. A proposal does not become current architecture merely by existing; update `architecture.md` when implementation changes.
+The existing single-file implementation is prototype/reference material and should be archived during Phase 0 of the production plan.
 
 ## Documentation rules
 
 - One mutable fact gets one current owner.
 - Current behavior belongs in current references, not dated progress prose.
 - Prefer short links to duplication.
+- Prototype behavior is evidence, not current architecture.
 - Preserve useful historical reasoning in Git/PR history rather than inflating mandatory context.
 - Add a new live document only when it owns a distinct durable concern.
