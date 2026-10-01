@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { completionStatus, initialGameState, isExactSolved, nextMoveHint, reduceGame } from "./app/game-state";
 import { CAMPAIGN, CAMPAIGN_ANALYSES } from "./content/campaign";
+import { DioramaScene } from "./render/DioramaScene";
 import { RingBoard } from "./render/RingBoard";
 import "./styles/app.css";
 import { Modal } from "./ui/Modal";
@@ -50,81 +51,86 @@ export default function App() {
     }
   }, [puzzle, state]);
 
+  const title = (
+    <header className="world-header">
+      <div className="title-plaque">
+        <span className="eyebrow">Precision alignment puzzle</span>
+        <h1>Ring Road</h1>
+      </div>
+      <button className="guide-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
+    </header>
+  );
+
+  const board = (
+    <RingBoard
+      puzzle={puzzle}
+      visualStates={state.visualStates}
+      boardOrientation={state.boardOrientation}
+      rotationMotion={state.rotationMotion}
+      canFire={exact}
+      completed={state.completed}
+      onFire={() => dispatch({ type: "fire" })}
+    />
+  );
+
+  const controls = (
+    <aside aria-label="Ring controls">
+      <div className={`counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
+        <strong>{state.history.length}</strong>
+        <span>/ {puzzle.targetMoves} moves</span>
+      </div>
+      <div className="ring-controls">
+        {RING_ORDER.map((ring) => {
+          const cycle = puzzle.ringCycles[ring];
+          return (
+            <div
+              className="ring-control"
+              key={ring}
+              role="group"
+              aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
+            >
+              <span className={`swatch ring-${ring}`} aria-hidden="true">{ring + 1}</span>
+              <span className="ring-name">{LABELS[ring]} <small>{cycle} steps</small></span>
+              <button
+                onClick={() => dispatch({ type: "rotate", ring, direction: -1 })}
+                disabled={state.completed}
+                aria-label={`Rotate ${LABELS[ring]} counterclockwise`}
+              >↶</button>
+              <button
+                onClick={() => dispatch({ type: "rotate", ring, direction: 1 })}
+                disabled={state.completed}
+                aria-label={`Rotate ${LABELS[ring]} clockwise`}
+              >↷</button>
+            </div>
+          );
+        })}
+      </div>
+      <div className="actions">
+        <button onClick={() => dispatch({ type: "undo" })} disabled={!state.history.length || state.completed}>Undo</button>
+        <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
+        <button onClick={() => dispatch({ type: "toggle-hint" })}>Hint</button>
+        <button onClick={() => dispatch({ type: "toggle-solution" })}>Solution</button>
+      </div>
+    </aside>
+  );
+
+  const navigation = (
+    <nav aria-label="Puzzle navigation">
+      <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
+      <span>Puzzle {puzzle.id} of {CAMPAIGN.length}</span>
+      <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
+    </nav>
+  );
+
   return (
-    <main>
-      <header>
-        <div>
-          <span className="eyebrow">Precision alignment puzzle</span>
-          <h1>Ring Road</h1>
-        </div>
-        <button onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
-      </header>
-
-      <section className="game">
-        <div className="board-column">
-          <RingBoard
-            puzzle={puzzle}
-            visualStates={state.visualStates}
-            boardOrientation={state.boardOrientation}
-            rotationMotion={state.rotationMotion}
-            canFire={exact}
-            completed={state.completed}
-            onFire={() => dispatch({ type: "fire" })}
-          />
-          <p className="status" role="status" aria-live="polite">
-            {status}
-          </p>
-        </div>
-
-        <aside aria-label="Ring controls">
-          <div className={`counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
-            <strong>{state.history.length}</strong>
-            <span>/ {puzzle.targetMoves} moves</span>
-          </div>
-          <div className="ring-controls">
-            {RING_ORDER.map((ring) => {
-              const cycle = puzzle.ringCycles[ring];
-              return (
-                <div
-                  className="ring-control"
-                  key={ring}
-                  role="group"
-                  aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
-                >
-                  <span className={`swatch ring-${ring}`} aria-hidden="true">{ring + 1}</span>
-                  <span className="ring-name">{LABELS[ring]} <small>{cycle} steps</small></span>
-                  <button
-                    onClick={() => dispatch({ type: "rotate", ring, direction: -1 })}
-                    disabled={state.completed}
-                    aria-label={`Rotate ${LABELS[ring]} counterclockwise`}
-                  >↶</button>
-                  <button
-                    onClick={() => dispatch({ type: "rotate", ring, direction: 1 })}
-                    disabled={state.completed}
-                    aria-label={`Rotate ${LABELS[ring]} clockwise`}
-                  >↷</button>
-                </div>
-              );
-            })}
-          </div>
-          <div className="actions">
-            <button onClick={() => dispatch({ type: "undo" })} disabled={!state.history.length || state.completed}>Undo</button>
-            <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
-            <button onClick={() => dispatch({ type: "toggle-hint" })}>Hint</button>
-            <button onClick={() => dispatch({ type: "toggle-solution" })}>Solution</button>
-          </div>
-        </aside>
-      </section>
-
-      <nav aria-label="Puzzle navigation">
-        <button
-          onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}
-        >Previous</button>
-        <span>Puzzle {puzzle.id} of {CAMPAIGN.length}</span>
-        <button
-          onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}
-        >Next</button>
-      </nav>
+    <main className="app-shell">
+      <DioramaScene
+        title={title}
+        board={board}
+        controls={controls}
+        status={<p className="status" role="status" aria-live="polite">{status}</p>}
+        navigation={navigation}
+      />
 
       {state.guideOpen && (
         <Modal title="How to play" onClose={closeGuide} closeLabel="Play">
