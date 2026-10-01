@@ -420,6 +420,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Establish one lighting direction shared with environment.
 **Exit:** the live board looks at home in the reference-style scene.
 
+**Implementation checkpoint:** V2 geometry/material work is underway on the live SVG board: deeper 13px walls, broader 20px cuts, slightly wider annuli, color-derived side walls, a multi-layer physical base, warmer hub/ball materials, brighter daylight bevels, and stronger recessed marker treatment. Gameplay geometry remains state-agnostic and the renderer still performs no per-frame work. Visual review and CI/browser smoke remain the exit evidence before V2 is marked complete.
+
 ### V3 — Environment art integration
 - Add optimized backdrop, rear architecture, foreground framing.
 - Establish original Ring Road scenic identity.
