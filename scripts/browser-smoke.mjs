@@ -116,6 +116,14 @@ async function runViewport({ width, height, mobile, debugPort }) {
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport has horizontal overflow`,
     );
+    const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.left < -1 || rect.right > window.innerWidth + 1;
+    }).map((element) => element.getAttribute('aria-label') || element.textContent?.trim() || 'button')`);
+    assert(
+      Array.isArray(clippedInteractiveTargets) && clippedInteractiveTargets.length === 0,
+      `${width}px viewport clips interactive controls: ${clippedInteractiveTargets?.join(", ")}`,
+    );
 
     const guideTitle = await cdp.evaluate("document.querySelector('.modal h2')?.textContent");
     assert(guideTitle === "How to play", `${width}px viewport did not open the guide initially`);
@@ -271,9 +279,10 @@ const server = spawn("node_modules/.bin/vite", ["preview", "--host", "127.0.0.1"
 
 try {
   await waitForUrl(APP_URL);
-  await runViewport({ width: 390, height: 844, mobile: true, debugPort: 9222 });
-  await runViewport({ width: 1440, height: 1000, mobile: false, debugPort: 9223 });
-  console.log("Browser smoke checks passed for mobile and desktop viewports.");
+  await runViewport({ width: 320, height: 568, mobile: true, debugPort: 9222 });
+  await runViewport({ width: 390, height: 844, mobile: true, debugPort: 9223 });
+  await runViewport({ width: 1440, height: 1000, mobile: false, debugPort: 9224 });
+  console.log("Browser smoke checks passed for compact mobile, mobile, and desktop viewports.");
 } finally {
   server.kill("SIGTERM");
 }
