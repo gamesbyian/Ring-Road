@@ -188,6 +188,18 @@ async function runViewport({ width, height, mobile, debugPort }) {
       Array.isArray(clippedInteractiveTargets) && clippedInteractiveTargets.length === 0,
       `${width}px viewport clips interactive controls: ${clippedInteractiveTargets?.join(", ")}`,
     );
+    const undersizedTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width < 44 || rect.height < 44;
+    }).map((element) => ({
+      label: element.getAttribute('aria-label') || element.textContent?.trim() || 'button',
+      width: Math.round(element.getBoundingClientRect().width),
+      height: Math.round(element.getBoundingClientRect().height),
+    }))`);
+    assert(
+      Array.isArray(undersizedTargets) && undersizedTargets.length === 0,
+      `${width}px viewport has interactive targets below 44px: ${JSON.stringify(undersizedTargets)}`,
+    );
 
     const guideTitle = await cdp.evaluate("document.querySelector('.modal h2')?.textContent");
     assert(guideTitle === "How to play", `${width}px viewport did not open the guide initially`);
@@ -224,7 +236,24 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
 
     if (!mobile) {
-      await cdp.evaluate("(() => { const button = Array.from(document.querySelectorAll('header button')).find((node) => node.textContent === 'Guide'); button?.focus(); button?.click(); })()");
+      await cdp.evaluate("document.activeElement instanceof HTMLElement && document.activeElement.blur()");
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await waitFor(
+        async () => Boolean(await cdp.evaluate("document.activeElement?.textContent === 'Guide'")),
+        `${width}px keyboard Tab did not reach the Guide control`,
+      );
+      const focusOutline = await cdp.evaluate(`(() => {
+        const button = document.activeElement;
+        if (!(button instanceof HTMLElement)) return null;
+        const style = getComputedStyle(button);
+        return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
+      })()`);
+      assert(
+        focusOutline && focusOutline.width >= 2 && focusOutline.style !== "none",
+        `${width}px HUD restyle obscured the visible Guide focus indicator`,
+      );
+      await cdp.evaluate("document.activeElement instanceof HTMLButtonElement && document.activeElement.click()");
       await waitFor(
         async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
         `${width}px keyboard accessibility setup did not reopen guide`,

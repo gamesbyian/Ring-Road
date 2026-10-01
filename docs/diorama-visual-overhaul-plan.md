@@ -429,13 +429,15 @@ A phase is not complete if it improves visual richness while materially harming 
 - Implement responsive crops/variants.
 **Exit:** desktop and mobile immediately read as a miniature diorama.
 
-**Implementation checkpoint:** V3 now has separate desktop/mobile authored SVG packages for backdrop, rear architecture, and foreground, loaded through real `<picture>` elements inside `DioramaScene`. Runtime art is text-free, decorative, pointer-inert, and registered in `src/assets/diorama/manifest.ts` with dimensions, role, loading intent, criticality, format, and provenance. The old CSS placeholder towers/steps have been removed. `npm run check:art` now rejects unapproved formats, unmanifested files, and individual assets above the 700 KB review threshold. Canonical visual review and browser smoke remain the V3 exit evidence.
+**Implementation checkpoint:** V3 now has separate desktop/mobile authored SVG packages for backdrop, rear architecture, and foreground, loaded through real `<picture>` elements inside `DioramaScene`. Runtime art is text-free, decorative, pointer-inert, and registered in `src/assets/diorama/manifest.ts` with dimensions, role, loading intent, criticality, format, and provenance. The old CSS placeholder towers/steps have been removed. `npm run check:art` now rejects unapproved formats, unmanifested files, and individual assets above the 700 KB review threshold. PR #61 passed the full repository/browser-smoke gate, including responsive asset selection, pointer-inert decoration, mobile/desktop interaction, and rapid-input coverage. V3 is therefore technically integrated; final screenshot judgment remains part of the later visual audit.
 
 ### V4 — World-integrated HUD
 - Restyle title, controls, move counter, navigation, actions, status, and modals.
 - Preserve semantic HTML and current accessibility behavior.
 - Remove dark-app-shell styling that no longer belongs.
 **Exit:** no major UI element looks imported from another visual system.
+
+**Implementation checkpoint:** V4 now applies one warm stone/painted-plaque material system across the title, guide button, move counter, ring-control monument, action buttons, status plaque, puzzle navigation, and modal shell while preserving the existing semantic buttons, live-region status, dialog roles, focus behavior, and touch targets. Ring rows now use color-keyed physical edge accents instead of relying on hue alone, and move-state styling is expressed through both text and plaque treatment. Browser-smoke and narrow-viewport review remain the phase gate before merge.
 
 ### V5 — Polish and restrained motion
 - Tune shadows, material coherence, atmosphere, foreground separation.
