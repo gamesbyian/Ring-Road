@@ -19,5 +19,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: diorama-audit-screenshots
-          path: artifacts/diorama-audit/*.png
+          path: |
+            artifacts/diorama-audit/*.png
+            docs/3d-ring-renderer-concept.jpg
           if-no-files-found: error
