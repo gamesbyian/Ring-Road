@@ -1,62 +1,49 @@
 # Ring Road testing and finish line
 
-## Fast local finish line
+## Complete local gate
+
+After `npm ci`, run:
 
 ```bash
 npm run check
 ```
 
-This is intentionally cheap and dependency-free.
+The gate runs TypeScript strict checking, Vitest unit tests, a Vite production build, repository/link checks, and agent-context budgets. CI uses Node 22 and runs this same command.
 
-It currently runs:
+Individual commands:
 
-1. repository/puzzle structural smoke checks;
-2. Markdown local-link checks;
-3. agent-context maintenance-trigger checks.
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run check:repo
+npm run check:context
+```
 
-These checks are guardrails, not a substitute for browser behavior testing.
+## Executable coverage
 
-## What the structural check protects
+`src/test/domain.test.ts` owns normalization, one-step rotation, ring/spoke mapping, aligned/non-aligned states, target enumeration, directional distances, exact directed vectors, wraps, cycle constraints, full campaign validation, construct-from-solution parity, and deterministic cached ring geometry.
 
-`scripts/check-repo.mjs` verifies important cheap invariants without trying to execute Babel/React in Node:
+`src/test/game-state.test.ts` owns navigation, one-step and rapid alternating movement, undo, instant reset, history, cosmetic-orientation independence, authored-plan replay and hints, exact under/over-target reporting, center fire, modal exclusivity, and post-completion locking. Add reducer tests when gameplay transitions change; do not test state semantics through SVG details.
 
-- expected application root and React mount exist;
-- the seven-ring constant is present;
-- campaign entries are parseable;
-- puzzle IDs are unique and sequential;
-- every puzzle has seven cycle values and seven initial states;
-- cycle lengths satisfy the current prime/bound constraints;
-- initial states are inside their ring cycles;
-- move targets are positive;
-- required source section markers remain discoverable;
-- local Markdown links resolve.
+`scripts/check-repo.mjs` cheaply verifies production entry points, quality scripts, campaign ID continuity, the frozen prototype, and local Markdown links. `scripts/check-context-budget.mjs` guards mandatory-context size.
 
-If a source refactor makes these checks obsolete, update the checker as part of the same change. Do not silently delete coverage.
+## Direct browser checks
 
-## Browser checks
+For gameplay, renderer, control, or modal changes, run `npm run dev` and exercise:
 
-For changes affecting gameplay, rendering, controls, or modals, run `npm run dev` and manually exercise the changed behavior.
+- both directions on multiple rings, including rapid alternation;
+- undo and reset;
+- previous/next navigation;
+- solution and guide dialogs;
+- exact alignment and center fire;
+- aligned under/over target messaging;
+- keyboard focus and activation;
+- reduced-motion mode;
+- a narrow portrait viewport with no horizontal overflow.
 
-At minimum for interaction changes:
+One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. Browser automation should be added when the interface stabilizes enough that its recurring regression value exceeds its maintenance cost.
 
-- rotate both directions;
-- undo;
-- reset;
-- previous/next puzzle;
-- exact target alignment and center fire;
-- under-target and over-target aligned messages where relevant;
-- narrow portrait layout.
+## Prototype comparison
 
-For renderer/performance changes, rapidly alternate rotations and reset several times. Input responsiveness is part of correctness.
-
-## CI
-
-`.github/workflows/ci.yml` runs `npm run check` on pushes and pull requests.
-
-GitHub Actions is the integration gate, not the first place to discover deterministic failures.
-
-## Adding tests
-
-Prefer the smallest executable invariant that prevents a real regression.
-
-Do not add a framework solely for stylistic completeness. Introduce browser automation or a richer test runner when recurring regressions justify its ongoing install/runtime/context cost.
+Run `npm run prototype` only when behavior evidence is needed. Its CDN dependencies require network access. Production checks never execute or import archived prototype code.

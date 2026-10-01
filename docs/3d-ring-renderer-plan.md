@@ -2,7 +2,7 @@
 
 ## Status
 
-**Canonical production implementation plan.**
+**Canonical production implementation plan. Phase 0 is complete. Phases 1–3 are implemented and verified by the committed lockfile plus the full deterministic quality gate. Phases 4–6 have a playable SVG/CSS foundation with deterministic geometry, truthful one-step motion, physical layering, reduced-motion behavior, accessible controls, and reviewed desktop/mobile production screenshots; stronger perspective, material depth, interactive browser verification, and mobile performance refinement remain. Phase 7 is partial and Phase 8 has not begun. The next exact gate is dimensional-renderer refinement plus an interactive desktop/narrow-viewport pass.**
 
 The existing single-file Ring Road app is now considered a **prototype/reference implementation**, not the architecture to preserve.
 

@@ -4,13 +4,13 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 
 | Document | Owns |
 |---|---|
-| `3d-ring-renderer-plan.md` | **Canonical production rebuild and dimensional-renderer implementation plan** |
-| `architecture.md` | Current architectural status, canonical gameplay semantics, production boundaries |
-| `testing.md` | Validation commands, what they protect, and finish-line expectations |
+| `3d-ring-renderer-plan.md` | Canonical production rebuild and dimensional-renderer plan |
+| `architecture.md` | Implemented production boundaries and gameplay semantics |
+| `testing.md` | Quality gate, executable coverage, and browser finish line |
 | `periodic-repository-hygiene.md` | Recurring repository entropy-control procedure |
-| `agent-context-routes.json` | Routine agent-context files and byte budgets |
+| `agent-context-routes.json` | Routine authority budgets and production discovery routes |
 
-The existing single-file implementation is prototype/reference material and should be archived during Phase 0 of the production plan.
+Production code lives under `src/`. The frozen single-file exhibit and its source provenance live in `../prototype/v1/README.md`.
 
 ## Documentation rules
 

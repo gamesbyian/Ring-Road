@@ -1,10 +1,57 @@
 {
-  "version": 1,
+  "version": 2,
   "authorities": [
-    { "path": "AGENTS.md", "targetBytes": 6000, "compactAtBytes": 12000 },
-    { "path": "docs/README.md", "targetBytes": 4000, "compactAtBytes": 8000 },
-    { "path": "docs/architecture.md", "targetBytes": 9000, "compactAtBytes": 18000 },
-    { "path": "docs/testing.md", "targetBytes": 6000, "compactAtBytes": 12000 },
-    { "path": "docs/periodic-repository-hygiene.md", "targetBytes": 7000, "compactAtBytes": 14000 }
-  ]
+    {
+      "path": "AGENTS.md",
+      "targetBytes": 6000,
+      "compactAtBytes": 12000
+    },
+    {
+      "path": "docs/README.md",
+      "targetBytes": 4000,
+      "compactAtBytes": 8000
+    },
+    {
+      "path": "docs/architecture.md",
+      "targetBytes": 9000,
+      "compactAtBytes": 18000
+    },
+    {
+      "path": "docs/testing.md",
+      "targetBytes": 6000,
+      "compactAtBytes": 12000
+    },
+    {
+      "path": "docs/periodic-repository-hygiene.md",
+      "targetBytes": 7000,
+      "compactAtBytes": 14000
+    }
+  ],
+  "productionRoutes": {
+    "domain": [
+      "src/domain/puzzle.ts",
+      "src/domain/authoring.ts",
+      "src/test/domain.test.ts"
+    ],
+    "solver": [
+      "src/domain/solver.ts",
+      "src/test/domain.test.ts"
+    ],
+    "campaign": [
+      "src/content/campaign.ts"
+    ],
+    "state": [
+      "src/app/game-state.ts",
+      "src/test/game-state.test.ts"
+    ],
+    "renderer": [
+      "src/render/RingBoard.tsx",
+      "src/render/ring-geometry.ts",
+      "src/styles/app.css"
+    ],
+    "ui": [
+      "src/App.tsx",
+      "src/ui/Modal.tsx"
+    ]
+  }
 }

@@ -15,10 +15,10 @@ Do not preserve prototype architecture merely for compatibility.
 | Task | Read first |
 |---|---|
 | Production rebuild / implementation | `docs/3d-ring-renderer-plan.md`, then `docs/architecture.md` |
-| Gameplay/domain semantics | `docs/architecture.md`, production domain files/tests, then prototype only if parity evidence is needed |
-| Puzzle authoring / campaign | production content/domain validation, then archived prototype campaign only as reference |
-| Renderer/UI/accessibility | dimensional-renderer sections of `docs/3d-ring-renderer-plan.md`, then production render/UI code |
-| Solver/alignment/exact-move behavior | `docs/architecture.md#solver-and-win-semantics`, then production domain/solver tests |
+| Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
+| Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
+| Renderer/UI/accessibility | dimensional-renderer plan sections, then `src/render/`, `src/App.tsx`, and `src/styles/` |
+| Solver/alignment/exact-move behavior | `docs/architecture.md`, then `src/domain/solver.ts` and domain tests |
 | Validation / red CI | `docs/testing.md`, then the failing script/test |
 | Repository hygiene | execute `docs/periodic-repository-hygiene.md` from current `main` |
 | Documentation ownership | `docs/README.md` |

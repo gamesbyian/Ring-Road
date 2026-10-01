@@ -1,93 +1,64 @@
+import { createHash } from "node:crypto";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { dirname, join, normalize, resolve } from "node:path";
 
 const root = process.cwd();
-const source = await readFile("index.html", "utf8");
 const failures = [];
-
 const fail = (message) => failures.push(message);
-const requireText = (text, label) => {
-  if (!source.includes(text)) fail(`index.html missing ${label}: ${text}`);
-};
+const required = [
+  "index.html",
+  "package-lock.json",
+  "src/main.tsx",
+  "src/App.tsx",
+  "src/domain/puzzle.ts",
+  "src/domain/solver.ts",
+  "src/content/campaign.ts",
+  "src/app/game-state.ts",
+  "src/render/RingBoard.tsx",
+  "prototype/v1/index.html",
+  "prototype/v1/README.md",
+  "prototype/v1/SHA256SUMS",
+];
 
-requireText('<div id="root"></div>', "React root");
-requireText("ReactDOM.createRoot", "React mount");
-requireText("// ===== Core configuration =====", "configuration section marker");
-requireText("// ===== Prime-only campaign data =====", "campaign section marker");
-requireText("// ===== Puzzle-model helpers =====", "model section marker");
-requireText("// ===== Validation helpers =====", "validation section marker");
-requireText("// ===== React app =====", "React app section marker");
-
-const numberConstant = (name) => {
-  const match = source.match(new RegExp(`const\\s+${name}\\s*=\\s*(\\d+)\\s*;`));
-  if (!match) {
-    fail(`missing numeric constant ${name}`);
-    return NaN;
+for (const file of required) {
+  try {
+    await stat(file);
+  } catch {
+    fail(`missing required production/reference file: ${file}`);
   }
-  return Number(match[1]);
-};
+}
 
-const ringCount = numberConstant("RING_COUNT");
-const maxCenter = numberConstant("MAX_CENTER_RING_CYCLE");
-const maxFirstOuter = numberConstant("MAX_FIRST_OUTER_RING_CYCLE");
-const maxRemaining = numberConstant("MAX_REMAINING_OUTER_RING_CYCLE");
+const html = await readFile("index.html", "utf8");
+if (!html.includes('/src/main.tsx')) {
+  fail("index.html must mount the production TypeScript application");
+}
 
-if (ringCount !== 7) fail(`RING_COUNT expected 7, got ${ringCount}`);
+const packageJson = JSON.parse(await readFile("package.json", "utf8"));
+for (const script of ["dev", "typecheck", "test", "build", "check"]) {
+  if (!packageJson.scripts?.[script]) fail(`package.json missing ${script} script`);
+}
 
-const campaignMatch = source.match(/const\s+CAMPAIGN_PUZZLES\s*=\s*\[([\s\S]*?)\n\s*\];/);
-if (!campaignMatch) {
-  fail("could not locate CAMPAIGN_PUZZLES");
-} else {
-  const entryPattern = /\{\s*id:\s*(\d+),\s*targetMoves:\s*(\d+),\s*ringCycles:\s*\[([^\]]+)\],\s*initial:\s*\[([^\]]+)\],\s*authoring:\s*\{\s*requireWrapInIntendedPlan:\s*(true|false)\s*\}\s*\}/g;
-  const puzzles = [];
-  for (const match of campaignMatch[1].matchAll(entryPattern)) {
-    const nums = (value) => value.split(",").map((part) => Number(part.trim()));
-    puzzles.push({
-      id: Number(match[1]),
-      targetMoves: Number(match[2]),
-      ringCycles: nums(match[3]),
-      initial: nums(match[4]),
-      requireWrap: match[5] === "true"
-    });
-  }
+const campaign = await readFile("src/content/campaign.ts", "utf8");
+const ids = [...campaign.matchAll(/\bid:\s*(\d+),/g)].map((match) => Number(match[1]));
+if (ids.length !== 12 || ids.some((id, index) => id !== index + 1)) {
+  fail("production campaign must contain sequential puzzle IDs 1-12");
+}
 
-  if (!puzzles.length) fail("CAMPAIGN_PUZZLES contained no parseable entries");
-
-  const isPrime = (value) => {
-    if (value < 2) return false;
-    for (let i = 2; i * i <= value; i += 1) if (value % i === 0) return false;
-    return true;
-  };
-
-  const ids = new Set();
-  puzzles.forEach((puzzle, index) => {
-    if (ids.has(puzzle.id)) fail(`duplicate puzzle id ${puzzle.id}`);
-    ids.add(puzzle.id);
-    if (puzzle.id !== index + 1) fail(`puzzle ids must be sequential; position ${index + 1} has id ${puzzle.id}`);
-    if (!(puzzle.targetMoves > 0)) fail(`puzzle ${puzzle.id}: targetMoves must be positive`);
-    if (puzzle.ringCycles.length !== ringCount) fail(`puzzle ${puzzle.id}: expected ${ringCount} ringCycles`);
-    if (puzzle.initial.length !== ringCount) fail(`puzzle ${puzzle.id}: expected ${ringCount} initial states`);
-
-    puzzle.ringCycles.forEach((cycle, ringIndex) => {
-      const limit = ringIndex === 0 ? maxCenter : ringIndex === 1 ? maxFirstOuter : maxRemaining;
-      if (!isPrime(cycle) || cycle > limit) {
-        fail(`puzzle ${puzzle.id} ring ${ringIndex}: invalid cycle ${cycle} (prime <= ${limit} required)`);
-      }
-      const initial = puzzle.initial[ringIndex];
-      if (!Number.isInteger(initial) || initial < 0 || initial >= cycle) {
-        fail(`puzzle ${puzzle.id} ring ${ringIndex}: initial ${initial} outside 0..${cycle - 1}`);
-      }
-    });
-  });
+const checksumRecord = (await readFile("prototype/v1/SHA256SUMS", "utf8")).trim();
+const [expectedPrototypeHash, prototypeName] = checksumRecord.split(/\s+/);
+const prototypeBytes = await readFile("prototype/v1/index.html");
+const actualPrototypeHash = createHash("sha256").update(prototypeBytes).digest("hex");
+if (prototypeName !== "index.html" || actualPrototypeHash !== expectedPrototypeHash) {
+  fail("prototype/v1/index.html no longer matches its frozen SHA-256 record");
 }
 
 const markdownFiles = [];
 async function walk(path) {
   for (const entry of await readdir(path, { withFileTypes: true })) {
-    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    if ([".git", "node_modules", "dist"].includes(entry.name)) continue;
     const full = join(path, entry.name);
     if (entry.isDirectory()) await walk(full);
-    else if (entry.isFile() && entry.name.endsWith(".md")) markdownFiles.push(full);
+    else if (entry.name.endsWith(".md")) markdownFiles.push(full);
   }
 }
 await walk(root);
@@ -96,7 +67,7 @@ for (const file of markdownFiles) {
   const text = await readFile(file, "utf8");
   for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
     let target = match[1].trim();
-    if (!target || target.startsWith("http://") || target.startsWith("https://") || target.startsWith("mailto:") || target.startsWith("#")) continue;
+    if (!target || /^(https?:|mailto:|#)/.test(target)) continue;
     target = target.split("#")[0];
     if (!target) continue;
     const resolved = normalize(resolve(dirname(file), target));
@@ -116,5 +87,4 @@ if (failures.length) {
   console.error(failures.map((item) => `- ${item}`).join("\n"));
   process.exit(1);
 }
-
 console.log("repository checks: ok");
