@@ -1,0 +1,32 @@
+name: Install supplied visual reference
+
+on:
+  push:
+    branches: [audit/reference-image-direct-comparison]
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: audit/reference-image-direct-comparison
+          fetch-depth: 0
+      - name: Replace broken reference with supplied image
+        env:
+          SOURCE_URL: https://sdmntprcentralus.oaiusercontent.com/files/00000000-a2a0-81f5-bb7f-90d81f4ce45d/raw?se=2026-10-01T06%3A51%3A17Z&sp=r&sv=2026-02-06&sr=b&scid=23c3a6c1-6eaf-5c75-af1c-109807af0916&skoid=6174e06a-818a-4ff5-b6f0-d683c3377d0a&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T06%3A16%3A50Z&ske=2026-10-02T06%3A16%3A50Z&sks=b&skv=2026-02-06&sig=VUzkMy9Vk9PAQ7eeJNOR4XkTVPPg271Mg9WViQ5r9ZE%3D
+        run: |
+          curl -fL "$SOURCE_URL" -o docs/3d-ring-renderer-concept.jpg
+          test "$(stat -c%s docs/3d-ring-renderer-concept.jpg)" = "406220"
+          echo "22b6382b5f3581e1f0d9baaad59fb057aeecd4d56e632a53e0342d40c2894562  docs/3d-ring-renderer-concept.jpg" | sha256sum -c -
+      - name: Commit exact supplied reference and remove temporary capture plumbing
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d-ring-renderer-concept.jpg
+          git rm .github/workflows/temp-reference-capture.yml scripts/temp-reference-capture.mjs .github/workflows/temp-install-reference.yml
+          git commit -m "docs: restore canonical visual reference"
+          git push origin HEAD:audit/reference-image-direct-comparison
