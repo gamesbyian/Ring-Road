@@ -5,6 +5,18 @@ const APP_PORT = 4173;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/Ring-Road/`;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+async function removeDirWithRetry(path, attempts = 6) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      await rm(path, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      if (attempt === attempts - 1) throw error;
+      await sleep(50 * (attempt + 1));
+    }
+  }
+}
+
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
@@ -131,7 +143,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
   let cdp;
 
   for (let launchAttempt = 0; launchAttempt < 2 && !cdp; launchAttempt += 1) {
-    await rm(userDataDir, { recursive: true, force: true });
+    await removeDirWithRetry(userDataDir);
     chrome = spawn("google-chrome", [
       "--headless",
       "--no-sandbox",
@@ -396,7 +408,9 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       const start = performance.now();
       for (let move = 0; move < 30; move += 1) {
         buttons[move % 2].click();
-        await new Promise((resolve) => setTimeout(resolve, 4));
+        // Yield to React's microtask batching without making the performance
+        // measurement depend on CI runner timer scheduling jitter.
+        await Promise.resolve();
       }
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       return {
@@ -532,7 +546,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         sleep(1500),
       ]);
     }
-    await rm(userDataDir, { recursive: true, force: true }).catch(() => {});
+    await removeDirWithRetry(userDataDir).catch(() => {});
   }
 }
 
