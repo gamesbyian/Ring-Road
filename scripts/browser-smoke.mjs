@@ -222,8 +222,14 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
   } finally {
     cdp?.close();
-    chrome.kill("SIGTERM");
-    await rm(userDataDir, { recursive: true, force: true });
+    if (chrome.exitCode === null) {
+      chrome.kill("SIGTERM");
+      await Promise.race([
+        new Promise((resolve) => chrome.once("close", resolve)),
+        sleep(1500),
+      ]);
+    }
+    await rm(userDataDir, { recursive: true, force: true }).catch(() => {});
   }
 }
 
