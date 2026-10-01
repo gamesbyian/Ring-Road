@@ -22,4 +22,13 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - name: Capture dependency audit
+        run: npm audit --json > npm-audit.json || true
+      - name: Upload dependency state
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-state
+          path: |
+            package-lock.json
+            npm-audit.json
       - run: npm run check
