@@ -209,7 +209,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
 
     if (!mobile) {
-      await cdp.evaluate("Array.from(document.querySelectorAll('header button')).find((button) => button.textContent === 'Guide')?.click()");
+      await cdp.evaluate("(() => { const button = Array.from(document.querySelectorAll('header button')).find((node) => node.textContent === 'Guide'); button?.focus(); button?.click(); })()");
       await waitFor(
         async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
         `${width}px keyboard accessibility setup did not reopen guide`,
