@@ -45,7 +45,7 @@ For gameplay, renderer, control, or modal changes, run `npm run dev` and exercis
 - reduced-motion mode;
 - a narrow portrait viewport with no horizontal overflow.
 
-One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers both 390×844 mobile and 1440×1000 desktop viewports. It checks horizontal overflow, guide/modal layout, CW/CCW input, undo, reset, puzzle navigation, solution display, exact authored-solution replay through real controls, center fire, and completion. Keep deeper visual judgment manual; extend this harness only for stable critical flows.
+One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers both 390×844 mobile and 1440×1000 desktop viewports. It checks horizontal overflow, guide/modal layout, CW/CCW input, undo, reset, puzzle navigation, rapid alternating input on a 19-step ring, solution display, exact authored-solution replay through real controls, center fire, and completion. Keep deeper visual judgment manual; extend this harness only for stable critical flows.
 
 ## Prototype comparison
 
