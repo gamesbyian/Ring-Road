@@ -56,6 +56,7 @@ export default function App() {
       <div className="title-plaque world-plaque">
         <span className="eyebrow">Precision alignment puzzle</span>
         <h1>Ring Road</h1>
+        <span className="title-tagline">Align the gaps. Clear the road.</span>
       </div>
       <button className="guide-button plaque-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
     </header>
