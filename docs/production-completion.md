@@ -4,7 +4,7 @@ This document is the durable evidence map for the Ring Road production rebuild. 
 
 ## Completion status
 
-The production rebuild is complete in-repository.
+The production rebuild is complete in-repository. This document records the **pre-diorama production baseline**. A later visual presentation overhaul is active under [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md); that work does not reopen the completed gameplay/domain rebuild unless it uncovers a real defect.
 
 All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, or deployment automation are satisfied by the production path.
 
