@@ -2,11 +2,12 @@ import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
 import { ringGeometry } from "./ring-geometry";
 
-const COLORS = ["#9c6cff", "#6366f1", "#35a7ff", "#24c875", "#e8c326", "#ff8635", "#f34e59"];
+const COLORS = ["#a67cff", "#6670f4", "#45b3ff", "#33cf83", "#efcc35", "#ff9147", "#f45d67"];
+const WALL_COLORS = ["#6948ad", "#3f47a3", "#2778a8", "#237d53", "#9d7f1f", "#aa5d2d", "#a33b43"];
 const LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 const CENTER_X = 210;
 const CENTER_Y = 208;
-const WALL_DEPTH = 10;
+const WALL_DEPTH = 13;
 
 interface Props {
   puzzle: Puzzle;
@@ -58,7 +59,8 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
             cx={CENTER_X}
             cy={CENTER_Y}
             r={radius}
-            strokeWidth="19"
+            stroke={WALL_COLORS[index]}
+            strokeWidth="20"
             strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
           />
           <circle
@@ -93,7 +95,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           cx={CENTER_X}
           cy={CENTER_Y}
           r={radius}
-          strokeWidth="20"
+          strokeWidth="21"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         <circle
@@ -102,7 +104,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           cy={CENTER_Y}
           r={radius}
           stroke={COLORS[index]}
-          strokeWidth="17"
+          strokeWidth="18"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         {geometry.markerPoints.map(({ x, y }, marker) => (
@@ -132,25 +134,28 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
         >
           <defs>
             <radialGradient id="hub-material" cx="35%" cy="25%">
-              <stop offset="0" stopColor="#626c84" />
-              <stop offset="0.55" stopColor="#303749" />
-              <stop offset="1" stopColor="#151925" />
+              <stop offset="0" stopColor="#f6e8cb" />
+              <stop offset="0.5" stopColor="#c7aa78" />
+              <stop offset="1" stopColor="#7e6544" />
             </radialGradient>
-            <radialGradient id="ball-material" cx="32%" cy="24%">
+            <radialGradient id="ball-material" cx="30%" cy="22%">
               <stop offset="0" stopColor="#ffffff" />
-              <stop offset="0.28" stopColor="#dce4f5" />
-              <stop offset="0.72" stopColor="#8f9bb3" />
-              <stop offset="1" stopColor="#515b70" />
+              <stop offset="0.22" stopColor="#fff8e6" />
+              <stop offset="0.58" stopColor="#d7c9ac" />
+              <stop offset="1" stopColor="#8d795c" />
             </radialGradient>
             <radialGradient id="marker-recess" cx="38%" cy="32%">
-              <stop offset="0" stopColor="#05070d" />
-              <stop offset="0.56" stopColor="#0b1020" />
-              <stop offset="0.78" stopColor="#20293d" />
-              <stop offset="1" stopColor="#ffffff" stopOpacity="0.34" />
+              <stop offset="0" stopColor="#2b241d" />
+              <stop offset="0.52" stopColor="#4a3d30" />
+              <stop offset="0.76" stopColor="#8c7456" />
+              <stop offset="1" stopColor="#fff8e6" stopOpacity="0.62" />
             </radialGradient>
           </defs>
-          <circle className="board-base-rim" cx={CENTER_X} cy={CENTER_Y + 13} r="206" />
-          <circle className="board-base" cx={CENTER_X} cy={CENTER_Y} r="206" />
+          <ellipse className="board-cast-shadow" cx={CENTER_X + 4} cy={CENTER_Y + 31} rx="204" ry="189" />
+          <circle className="board-base-depth board-base-depth-low" cx={CENTER_X} cy={CENTER_Y + 18} r="208" />
+          <circle className="board-base-depth" cx={CENTER_X} cy={CENTER_Y + 12} r="208" />
+          <circle className="board-base-rim" cx={CENTER_X} cy={CENTER_Y + 4} r="208" />
+          <circle className="board-base" cx={CENTER_X} cy={CENTER_Y} r="202" />
           <g style={{ transform: `rotate(${boardRotation}deg)`, transformOrigin: `${CENTER_X}px ${CENTER_Y}px` }}>
             {puzzle.ringCycles.map((cycle, index) => (
               <Ring
