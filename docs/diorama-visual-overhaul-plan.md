@@ -235,6 +235,106 @@ Keep browser smoke behavioral rather than turning it into a brittle pixel-diff s
 
 If the scene stabilizes sufficiently, later screenshot assertions should target layout boxes or selected invariants rather than full-image equality.
 
+## Implementation decision matrix
+
+| Concern | Chosen approach | Why | Revisit only if |
+|---|---|---|---|
+| Scenic environment | Layered baked raster art | Highest visual richness with low runtime cost | Static layers cannot achieve approved composition |
+| Live puzzle | Existing SVG/CSS renderer | Deterministic, crisp, accessible, already validated | A specific visual requirement is impossible in SVG/CSS |
+| Functional UI | Semantic HTML/CSS | Accessibility, focus, responsive layout, robust input | Never for purely visual reasons |
+| Rich decorative vectors | Small SVG assets | Crisp at any scale, easy tint/mask | Asset becomes too complex/heavy |
+| Raster format | WebP first | Broad support, alpha, strong compression | AVIF gives measured material savings with simple fallback |
+| Responsive scene art | Art-directed mobile/desktop exports | Better crops and lower bandwidth than one universal image | A single asset demonstrably works across all targets |
+| 3D engine | None | No gameplay need; avoids GPU/runtime complexity | Concrete prototype proves a large visible gain |
+| Ambient animation | CSS transform/opacity only | Cheap and reducible | A specific effect requires another mechanism |
+| Visual regression | Review screenshots, not full pixel gate | Avoids brittle CI during active art iteration | Scene stabilizes enough for selective invariant assertions |
+| Fonts | System stack initially; bundled WOFF2 only if art direction needs it | Zero network dependency, predictable loading | A licensed local typeface materially improves identity |
+
+## Asset provenance and source-art discipline
+
+Every production art asset must have a known source and usage right. Generated, commissioned, hand-authored, or third-party-licensed art should be distinguishable in an asset ledger or adjacent source metadata. Do not import mystery assets from image search or another game's files.
+
+For generated or externally authored art, preserve enough source information to reproduce or revise it: source image/reference, prompt/brief where applicable, original high-resolution working file when practical, crop/export instructions, and final optimization settings. Heavy source files do not need to ship in the runtime bundle and may live outside `src/` if repository size becomes unreasonable.
+
+Do not rasterize functional text into scene art. Decorative lettering used purely as scenery is allowed, but the actual game title, puzzle state, move count, actions, instructions, and modal text remain live text.
+
+## Responsive image implementation
+
+Prefer real `<picture>`/`<img>` elements for major scenic layers rather than giant CSS backgrounds when responsive source selection matters. Use `media`, `srcSet`, and explicit width/height or `aspect-ratio` so the browser can choose the correct asset without downloading every variant. Decorative scene images should use empty alt text, `aria-hidden="true"`, `draggable="false"`, and `pointer-events: none`.
+
+Use `object-fit`/`object-position` only within art-directed safe zones established during export. Do not rely on arbitrary cropping to avoid creating mobile variants.
+
+Only above-the-fold critical art should receive eager loading/high fetch priority. Secondary ornaments should decode asynchronously and may load lazily if they are genuinely outside the initial composition.
+
+High-DPI exports should be sized for the maximum displayed pixel density that produces a visible benefit, not automatically exported at enormous source resolution. Verify crispness at DPR 1, 2, and 3 while respecting the byte budget.
+
+## Typography
+
+The reference uses friendly display lettering and sturdy readable UI type. The overhaul may introduce a more characterful display face for the Ring Road identity and headings, but body/control text should remain exceptionally legible.
+
+If a custom font is used:
+
+- bundle it locally as WOFF2;
+- include its license/source record;
+- use the minimum number of weights/files;
+- provide metric-compatible or visually acceptable fallback;
+- use `font-display: swap` or equivalent so the game never waits on typography;
+- verify no control dimensions break during font swap.
+
+Do not load fonts from Google Fonts or another runtime CDN.
+
+## Color, contrast, and visual-state safety
+
+The environment may become bright, but functional states must retain WCAG-appropriate contrast. Test ordinary, exact, over-target, disabled, focus, and modal states against their final physical-material backgrounds rather than against abstract color tokens.
+
+Color is supplemental. Ring number/name/position, move count, status copy, and button labels remain sufficient without hue recognition. Bright scenery must never wash out yellow/orange markers or focus rings.
+
+Where artwork sits behind text, prefer an opaque/semi-opaque plaque surface rather than text-shadow as the primary readability mechanism.
+
+## Browser and failure robustness
+
+Target current evergreen Chromium, Firefox, and Safari behavior using ordinary HTML/CSS/SVG primitives. Avoid experimental rendering features as core requirements. Decorative enhancements may use progressive enhancement only when absence leaves a coherent scene.
+
+Scene loading failures must be survivable. If one or more decorative assets fail:
+
+- board and controls remain laid out and usable;
+- missing foreground art cannot uncover hidden controls or change hit areas;
+- fallback background colors/gradients preserve text contrast;
+- gameplay tests continue to function without relying on image decode events.
+
+Do not gate app initialization on decorative asset promises.
+
+## Zoom, text scaling, and safe geometry
+
+Validate at browser zoom 100%, 150%, and 200% on desktop. The scene may crop more aggressively as text grows, but controls and status must stay reachable. Avoid absolute-positioning functional text against fixed pixels in art.
+
+Reserve explicit safe zones in backdrop/foreground exports for board and controls. Foreground assets that visually overlap the arena must be designed with masks/gutters so they cannot cover ring gaps or control labels at supported breakpoints.
+
+## Risk register
+
+| Risk | Consequence | Mitigation |
+|---|---|---|
+| Art is beautiful but composition breaks on phones | Reference intent lost where most constrained | Separate portrait composition and exports from V1 onward |
+| Baked scenery and live board look like different worlds | Collage effect | Lock camera, lighting direction, palette, and material samples before final art |
+| Raster payload balloons | Slow first load/mobile decode | Per-platform budgets, source selection, WebP, layer cap, measured exceptions |
+| Foreground art steals clicks | Broken gameplay | Pointer-inert decorative layers and automated clipped/covered-control checks |
+| Rich scene causes ring input jank | Gameplay regression | Static layers, no render loop, isolate/memoize board, mobile profiling |
+| Responsive offsets become brittle | Maintenance trap | Grid/container sizing, safe zones, few deliberate breakpoints |
+| Generated art contains unwanted pseudo-text/details | Cheap/uncanny result | Never use generated text as functional UI; paint/clean exports before shipping |
+| Scenic art resembles another IP too closely | Identity/legal risk | Original Ring Road architecture and motifs; reference only the broad diorama language |
+| Accessibility regresses under art polish | Unusable controls/status | Preserve semantic DOM, focus, contrast, reduced motion, zoom tests from each phase |
+| Agents optimize against screenshot instead of game | Fragile implementation | Keep gameplay/render boundaries and behavioral CI authoritative |
+
+## Milestone review protocol
+
+Do not wait until V7 to judge the art. At the end of V1 through V5, capture at least 390×844 and 1440×1000 and answer four questions:
+
+1. Does it read more strongly as a miniature world than the previous milestone?
+2. Is the board still the first gameplay object the eye finds?
+3. Are gaps, dimples, move target, and controls easier or no harder to read?
+4. Did the added richness cost measurable responsiveness or layout robustness?
+
+If the answer to 2, 3, or 4 is materially negative, fix that phase before adding more decorative density.
 ## Implementation phases
 
 ### V0 — Lock direction
