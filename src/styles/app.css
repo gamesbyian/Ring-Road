@@ -1142,23 +1142,8 @@ h1 {
   filter: saturate(0.96) contrast(1.02);
 }
 
-.scene-art-rear img {
-  filter:
-    saturate(0.94)
-    drop-shadow(9px 18px 24px #4b3a2433);
-}
-
-.scene-art-foreground img {
-  filter:
-    saturate(0.94)
-    drop-shadow(6px -1px 16px #5c452c20);
-}
-
-.scene-board-plinth {
-  filter:
-    drop-shadow(12px 28px 24px #46351f4a)
-    drop-shadow(-4px -2px 6px #fff3c326);
-}
+/* Keep V3's single static drop-shadows on rear/foreground art. Avoid stacking
+   additional full-scene filters here: ring interaction owns the frame budget. */
 
 .board-frame {
   isolation: isolate;
