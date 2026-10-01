@@ -253,8 +253,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
         focusOutline && focusOutline.width >= 2 && focusOutline.style !== "none",
         `${width}px HUD restyle obscured the visible Guide focus indicator`,
       );
-      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
-      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
+      await cdp.evaluate("document.activeElement instanceof HTMLButtonElement && document.activeElement.click()");
       await waitFor(
         async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
         `${width}px keyboard accessibility setup did not reopen guide`,
