@@ -167,6 +167,38 @@ async function runViewport({ width, height, mobile, debugPort }) {
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
     await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px previous navigation failed`);
 
+    await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
+    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px rapid-input setup could not reach puzzle 2`);
+    await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
+    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 3 of"), `${width}px rapid-input setup could not reach puzzle 3`);
+
+    const rapidInput = await cdp.evaluate(`(async () => {
+      const group = Array.from(document.querySelectorAll('.ring-control'))
+        .find((node) => node.getAttribute('aria-label')?.startsWith('Red ring') && node.getAttribute('aria-label')?.endsWith('of 19'));
+      const buttons = group?.querySelectorAll('button');
+      if (!buttons?.[0] || !buttons?.[1]) return null;
+      const start = performance.now();
+      for (let move = 0; move < 30; move += 1) {
+        buttons[move % 2].click();
+        await new Promise((resolve) => setTimeout(resolve, 4));
+      }
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return {
+        elapsedMs: performance.now() - start,
+        moves: Number(document.querySelector('.counter strong')?.textContent),
+      };
+    })()`);
+    assert(rapidInput, `${width}px could not locate puzzle 3's 19-step Red ring`);
+    assert(rapidInput.moves === 30, `${width}px rapid alternating input lost moves`);
+    assert(rapidInput.elapsedMs < 1500, `${width}px rapid alternating input exceeded 1500ms (${Math.round(rapidInput.elapsedMs)}ms)`);
+
+    await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Reset')?.click()");
+    await waitFor(async () => (await moveCount()) === 0, `${width}px reset failed after rapid input`);
+    await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
+    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px rapid-input teardown could not reach puzzle 2`);
+    await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
+    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px rapid-input teardown could not return to puzzle 1`);
+
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Solution')?.click()");
     await waitFor(
       async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "Exact solution",
