@@ -24,3 +24,21 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - name: Capture visual review
+        run: |
+          python3 -m http.server 4173 --directory dist >/tmp/ring-road-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 0.25
+          done
+          google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=390,844 --screenshot=mobile.png http://127.0.0.1:4173/
+          google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1440,1000 --screenshot=desktop.png http://127.0.0.1:4173/
+      - name: Upload visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-review
+          path: |
+            mobile.png
+            desktop.png
