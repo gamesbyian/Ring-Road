@@ -551,8 +551,10 @@ try {
   await runViewport({ width: 768, height: 1024, mobile: false, debugPort: 9227, fullFlow: false });
   await runViewport({ width: 1024, height: 768, mobile: false, debugPort: 9228, fullFlow: false });
   await runViewport({ width: 1920, height: 1080, mobile: false, debugPort: 9229, fullFlow: false });
+  // 1440×1000 at ~200% browser zoom presents roughly a 720×500 CSS viewport.
+  await runViewport({ width: 720, height: 500, mobile: false, debugPort: 9230, fullFlow: false });
 
-  console.log("Browser smoke checks passed across the full diorama target viewport matrix.");
+  console.log("Browser smoke checks passed across the full diorama target viewport matrix plus 200% zoom-equivalent reflow.");
 } finally {
   server.kill("SIGTERM");
 }
