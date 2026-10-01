@@ -3,6 +3,8 @@ import type { Puzzle } from "../domain/puzzle";
 import { RING_RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#a67cff", "#6670f4", "#45b3ff", "#33cf83", "#efcc35", "#ff9147", "#f45d67"];
+const TOP_HIGHLIGHTS = ["#c9b2ff", "#9da4ff", "#91d1ff", "#84e4ae", "#f8df74", "#ffbf83", "#ff969d"];
+const TOP_SHADOWS = ["#7d55c9", "#4b53b9", "#2d8fc9", "#269b63", "#b79624", "#c76a34", "#bd414b"];
 const WALL_COLORS = ["#6948ad", "#3f47a3", "#2778a8", "#237d53", "#9d7f1f", "#aa5d2d", "#a33b43"];
 const LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 const CENTER_X = 210;
@@ -102,7 +104,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           cx={CENTER_X}
           cy={CENTER_Y}
           r={radius}
-          stroke={COLORS[index]}
+          stroke={`url(#ring-top-${index})`}
           strokeWidth="18"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
@@ -132,6 +134,20 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
           aria-label="Seven concentric puzzle rings. Use the named controls to rotate them."
         >
           <defs>
+            {COLORS.map((color, index) => (
+              <linearGradient
+                key={color}
+                id={`ring-top-${index}`}
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0" stopColor={TOP_HIGHLIGHTS[index]} />
+                <stop offset="0.36" stopColor={color} />
+                <stop offset="1" stopColor={TOP_SHADOWS[index]} />
+              </linearGradient>
+            ))}
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#f6e8cb" />
               <stop offset="0.5" stopColor="#c7aa78" />
