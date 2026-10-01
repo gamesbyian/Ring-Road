@@ -2,7 +2,7 @@
 
 ## Complete local gate
 
-After `npm install`, run:
+After `npm ci`, run:
 
 ```bash
 npm run check
