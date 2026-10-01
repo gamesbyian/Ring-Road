@@ -392,7 +392,7 @@ nav button { min-width: 92px; }
   header { align-items: flex-start; }
   h1 { font-size: clamp(1.8rem, 10vw, 2.5rem); }
   .eyebrow { font-size: 0.65rem; }
-  header > button { min-height: 40px; padding: 0.5rem 0.7rem; }
+  header > button { min-height: 44px; padding: 0.5rem 0.7rem; }
 
   .modal { padding: 1.5rem 1.25rem; }
   .modal article { max-height: calc(100vh - 3rem); }
