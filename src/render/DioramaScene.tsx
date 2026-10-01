@@ -7,6 +7,9 @@ interface DioramaSceneProps {
   controls: ReactNode;
   status: ReactNode;
   navigation: ReactNode;
+  moves: ReactNode;
+  goal: ReactNode;
+  solution: ReactNode;
 }
 
 interface ScenicPictureProps {
@@ -38,9 +41,21 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
   );
 }
 
-export function DioramaScene({ title, board, controls, status, navigation }: DioramaSceneProps) {
+export function DioramaScene({ title, board, controls, status, navigation, moves, goal, solution }: DioramaSceneProps) {
   return (
-    <section className="diorama-scene" aria-label="Ring Road play area">
+    <section className="diorama-scene reference-first-scene" aria-label="Ring Road play area">
+      <div className="reference-scene-matte" aria-hidden="true" />
+      <div className="reference-scene-props" aria-hidden="true">
+        <span className="reference-tower reference-tower-left" />
+        <span className="reference-tower reference-tower-right" />
+        <span className="reference-banner reference-banner-left" />
+        <span className="reference-banner reference-banner-right" />
+        <span className="reference-tree reference-tree-a" />
+        <span className="reference-tree reference-tree-b" />
+        <span className="reference-tree reference-tree-c" />
+        <span className="reference-crystal reference-crystal-a" />
+        <span className="reference-crystal reference-crystal-b" />
+      </div>
       <div className="scene-backdrop" aria-hidden="true">
         <ScenicPicture role="backdrop" className="scene-art scene-art-backdrop" fetchPriority="high" />
         <ScenicPicture role="rearArchitecture" className="scene-art scene-art-rear" />
@@ -61,6 +76,9 @@ export function DioramaScene({ title, board, controls, status, navigation }: Dio
       </div>
 
       <div className="scene-navigation-slot">{navigation}</div>
+      <div className="reference-moves-slot">{moves}</div>
+      <div className="reference-goal-slot">{goal}</div>
+      <div className="reference-solution-slot">{solution}</div>
 
       <div className="scene-foreground" aria-hidden="true">
         <ScenicPicture role="foreground" className="scene-art scene-art-foreground" />

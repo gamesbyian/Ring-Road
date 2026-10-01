@@ -2,9 +2,9 @@
 
 ## Status and authority
 
-**Completed visual-direction authority.** The implementation is closed; this document now records the shipped art direction, constraints, evidence, and deliberate deviations. It supersedes the earlier decision in `3d-ring-renderer-plan.md` to avoid scenery and castle/environment dressing.
+**Active reference-first visual authority.** The previous V8 lightweight-vector finish line is superseded. The new priority is explicit: **match the supplied reference image as closely as practical first, and preserve technical robustness second.** Robustness remains required for a shippable game, but it no longer outranks visual fidelity when the two are in tension.
 
-The reference concept image is now the intended art-direction target for the **whole play experience**, not merely a source of ideas for the concentric board. The exact castle, HUD arrangement, typography, and individual props are not specifications to copy literally. The specification is the visual language: a tactile miniature world built around a physical rainbow ring puzzle, with environmental depth, warm daylight, toy-like materials, architectural framing, and UI that belongs to the same world.
+The reference concept image is the canonical visual target for the **whole play experience**, including composition, HUD placement, scenic density, material character, board staging, and miniature-diorama impression. Ring Road does not need to copy every incidental prop literally, but a casual side-by-side comparison should read as the same visual concept rather than merely the same genre of scene.
 
 This is a presentation overhaul. Gameplay rules, puzzle content, solver behavior, exact-move semantics, application state, and current accessibility semantics remain authoritative and must not be rewritten to obtain the new look.
 
@@ -33,7 +33,7 @@ A useful shorthand is **miniature puzzle monument in a bright storybook landscap
 - Do not require network-loaded runtime art assets.
 - Do not let mobile become a shrunken desktop composition.
 
-## Architectural decision: composited 2.5D diorama, not real-time WebGL
+## Architectural decision: reference-first composited 2.5D diorama
 
 ### Chosen implementation
 
@@ -46,7 +46,7 @@ Use a **hybrid composited scene**:
 5. use responsive art-directed variants/crops rather than one enormous scene scaled blindly;
 6. keep decorative layers pointer-inert and downstream of application state.
 
-This gives the highest expected visual quality per unit of runtime complexity.
+This is now chosen because it is the shortest path to the target image while keeping the live puzzle interactive. The production scene may use the canonical reference itself as a baked scenic matte/composition anchor, with live HTML/SVG elements registered over it. More positional coupling and art-directed desktop layout are acceptable when they materially improve the match.
 
 ### Why not Three.js/WebGL
 
@@ -54,11 +54,11 @@ The requested look does not require arbitrary camera movement, dynamic world geo
 
 The environment can be rendered more beautifully as baked art than as low-complexity browser 3D. A later prototype may justify a narrowly scoped WebGL effect only if it produces a concrete visual gain that cannot be achieved robustly with the composited approach.
 
-### Why not pure CSS/SVG illustration
+### Why not pure CSS/SVG illustration as the whole scene
 
 Pure SVG/CSS remains ideal for the live board and UI geometry, but is a poor production medium for the reference's rich miniature environment. It would encourage hundreds of decorative DOM nodes, manual pseudo-3D geometry, and complex filters while still looking flatter than professionally baked art.
 
-The split is therefore: **live geometry where state changes, baked illustration where scenery is static, semantic HTML where the player interacts.**
+The split is therefore: **live geometry where state changes, reference-driven baked illustration where scenery is static, semantic HTML where the player interacts.** Desktop reference fidelity is the primary visual target; mobile keeps a purpose-built usable fallback rather than forcing the landscape composition into portrait.
 
 ## Scene registration contract
 
@@ -537,3 +537,27 @@ Unless evidence changes: keep the gameplay board as live SVG/CSS; do not migrate
 These belong to art exploration rather than architecture: exact architectural language, whether water/cliffs/garden/town dominates, logo/sign treatment, plaque/card material, banner/ornament motifs, texture/weathering amount, foreground silhouette, and whether completion triggers a small environmental celebration.
 
 Creative exploration stays inside the technical, readability, accessibility, and performance constraints above.
+
+
+## Reference-first reset — October 2026
+
+The prior V8 implementation was audited against the restored image and judged too conservative. Its composition was recognizably inspired by the reference, but its environment, signage, board monument, and material treatment were still substantially flatter and sparser.
+
+The new implementation order is:
+
+1. **Composition lock:** title sign top-left, ring controls left, monumental circular board centered, puzzle/progress top-right, moves on the right, goal bottom-left, solution bottom-right.
+2. **Reference matte:** use the supplied reference art as the desktop scenic underlay/composition map rather than rebuilding all environmental richness from tiny abstract SVGs.
+3. **Live board fidelity:** retain the deterministic interactive SVG mechanism, but push ring walls, highlights, shadows, hub, bead, plinth, pennants, stairs, and arena architecture toward the photographed-miniature look.
+4. **World-integrated UI:** parchment/stone/dark inset cards should sit in the same visual roles and palette as the reference instead of reading as generic web chrome.
+5. **Responsive compromise:** desktop similarity is the primary art target. Mobile remains readable and touch-safe, with simplified scenic composition where necessary.
+6. **Technical floor:** gameplay semantics, exact-move truth, accessibility, 44px controls, and Pages deployment remain mandatory. Performance work should preserve the visual target rather than quietly deleting it.
+
+### Deliberate tradeoffs now allowed
+
+- more absolute positioning on desktop;
+- direct use of the canonical reference image as a baked background asset;
+- more layered shadows/filters on the hero board;
+- slightly more brittle art registration in exchange for a visibly closer match;
+- larger scenic asset cost than the former tiny-SVG budget, provided loading remains reasonable.
+
+The old rule that tiny SVG scenery was preferable simply because it was cheap is retired.
