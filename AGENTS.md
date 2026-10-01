@@ -6,7 +6,7 @@ Compact router. Read only the authority needed for the task; do not load the arc
 
 Ring Road's production TypeScript application is now the active implementation. The existing single-file app is a frozen prototype/reference implementation.
 
-For product work, start with `docs/architecture.md`; use `docs/3d-ring-renderer-plan.md` for the rebuild history, visual target, remaining finish-line work, and future renderer direction.
+For product work, start with `docs/architecture.md`; use `docs/3d-ring-renderer-plan.md` for rebuild history and visual/future renderer direction, and `docs/production-completion.md` only when auditing completion or release-validation status.
 
 Do not preserve prototype architecture merely for compatibility.
 
@@ -14,7 +14,8 @@ Do not preserve prototype architecture merely for compatibility.
 
 | Task | Read first |
 |---|---|
-| Production implementation / finish-line work | `docs/architecture.md`, then `docs/3d-ring-renderer-plan.md` where visual/rebuild context is relevant |
+| Production implementation | `docs/architecture.md`, then the owning source subsystem |
+| Completion / release-validation audit | `docs/production-completion.md`, then `docs/testing.md` or the relevant authority |
 | Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
 | Renderer/UI/accessibility | dimensional-renderer plan sections, then `src/render/`, `src/App.tsx`, and `src/styles/` |
