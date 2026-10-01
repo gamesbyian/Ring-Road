@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { rm } from "node:fs/promises";
 
 const APP_PORT = 4173;
-const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
+const APP_URL = `http://127.0.0.1:${APP_PORT}/Ring-Road/`;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function assert(condition, message) {
@@ -265,7 +265,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
   }
 }
 
-const server = spawn("python3", ["-m", "http.server", String(APP_PORT), "--directory", "dist"], {
+const server = spawn("node_modules/.bin/vite", ["preview", "--host", "127.0.0.1", "--port", String(APP_PORT), "--strictPort"], {
   stdio: "ignore",
 });
 

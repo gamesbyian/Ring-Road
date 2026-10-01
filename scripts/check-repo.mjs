@@ -16,6 +16,7 @@ const required = [
   "src/app/game-state.ts",
   "src/render/RingBoard.tsx",
   "scripts/browser-smoke.mjs",
+  ".github/workflows/pages.yml",
   "prototype/v1/index.html",
   "prototype/v1/README.md",
   "prototype/v1/SHA256SUMS",
@@ -32,6 +33,16 @@ for (const file of required) {
 const html = await readFile("index.html", "utf8");
 if (!html.includes('/src/main.tsx')) {
   fail("index.html must mount the production TypeScript application");
+}
+
+const viteConfig = await readFile("vite.config.ts", "utf8");
+if (!viteConfig.includes('base: "/Ring-Road/"')) {
+  fail('vite.config.ts must use base "/Ring-Road/" for the project Pages URL');
+}
+
+const pagesWorkflow = await readFile(".github/workflows/pages.yml", "utf8");
+if (!pagesWorkflow.includes("actions/upload-pages-artifact@v3") || !pagesWorkflow.includes("path: dist")) {
+  fail("Pages workflow must publish the built dist directory");
 }
 
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
