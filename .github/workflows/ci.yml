@@ -24,3 +24,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - name: Upload production build for visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist
