@@ -1,0 +1,36 @@
+name: Temporary V8 visual capture
+
+on:
+  push:
+    branches: [audit/reference-image-direct-comparison]
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Start preview
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/ring-road-vite.log 2>&1 &
+          for i in {1..60}; do
+            curl -fsS http://127.0.0.1:4173/Ring-Road/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/ring-road-vite.log
+          exit 1
+      - run: node scripts/temp-v8-capture.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v8-reference-captures
+          path: |
+            desktop-1440x1000.png
+            mobile-390x844.png
