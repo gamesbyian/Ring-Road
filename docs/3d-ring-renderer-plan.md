@@ -2,7 +2,7 @@
 
 ## Status
 
-**Canonical production implementation plan. Phases 0–8 and all in-repository acceptance criteria are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop layouts; true overflow and clipped controls; modal structure; CW/CCW input; undo/reset/navigation; rapid alternating input on a 19-step ring; exact authored-solution replay; center fire; and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete. All implementation work defined by this plan is closed. The remaining physical-mobile-hardware responsiveness spot-check is external release validation, not unfinished rebuild work; see [`production-completion.md`](./production-completion.md) for the criterion-by-criterion evidence map.**
+**Canonical production implementation plan. Phases 0–8 and all in-repository acceptance criteria are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop layouts; true overflow and clipped controls; modal structure; CW/CCW input; undo/reset/navigation; rapid alternating input on a 19-step ring; exact authored-solution replay; center fire; and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete. All implementation work defined by this plan is closed. A physical-mobile-hardware responsiveness spot-check is optional external release validation, not unfinished rebuild work; see [`production-completion.md`](./production-completion.md) for the criterion-by-criterion evidence map.**
 
 The existing single-file Ring Road app is now considered a **prototype/reference implementation**, not the architecture to preserve.
 
@@ -166,7 +166,7 @@ The original rebuild used the concept image primarily as a reference for the phy
 
 The concept image is the art-direction reference for the **whole play experience**: a bright miniature diorama surrounding a tactile rainbow puzzle. The exact castle, HUD placement, and props are not literal requirements, and identifiable third-party/franchise assets must not be copied, but scenic world-building, environmental architecture, warm daylight, and world-integrated UI are now desired rather than excluded.
 
-The active specification for that work is [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md). This completed rebuild plan remains authoritative for the underlying production architecture and gameplay/rendering invariants.
+The completed specification and current visual authority is [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md). This completed rebuild plan remains authoritative for the underlying production architecture and gameplay/rendering invariants.
 ## Renderer strategy
 
 ### Default first implementation: 2.5D SVG/CSS
@@ -476,7 +476,6 @@ Keep:
 Reject:
 
 - copied franchise art direction;
-- decorative environment as gameplay framing;
 - visual clutter;
 - UI ornament that overwhelms the board.
 
