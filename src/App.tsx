@@ -22,6 +22,11 @@ export default function App() {
   const closeSolution = useCallback(() => dispatch({ type: "toggle-solution" }), []);
   const closeCompletion = useCallback(() => dispatch({ type: "dismiss-completion" }), []);
   const hint = analysis?.exactPlan ? nextMoveHint(state, analysis.exactPlan) : "off-plan";
+  const moveState = state.history.length > puzzle.targetMoves
+    ? "over"
+    : state.history.length === puzzle.targetMoves
+      ? "exact"
+      : "under";
 
   useEffect(() => {
     if (!state.completed || state.completionPresented) return;
@@ -71,7 +76,7 @@ export default function App() {
         </div>
 
         <aside aria-label="Ring controls">
-          <div className="counter" aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
+          <div className={`counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
             <strong>{state.history.length}</strong>
             <span>/ {puzzle.targetMoves} moves</span>
           </div>

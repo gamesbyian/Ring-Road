@@ -252,16 +252,19 @@ h1 {
 
 .status {
   min-height: 1.5em;
+  margin: 0.2rem 0 0;
   color: #bac2d8;
   text-align: center;
 }
 
 aside {
   padding: 1rem;
-  border: 1px solid #293044;
-  border-radius: 18px;
-  background: #121622dd;
-  box-shadow: 0 20px 50px #0005;
+  border: 1px solid #31394e;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #171c2bdd, #10141fdd);
+  box-shadow:
+    inset 0 1px 0 #ffffff10,
+    0 20px 50px #0006;
 }
 
 .counter {
@@ -269,10 +272,17 @@ aside {
   align-items: baseline;
   gap: 0.35rem;
   margin: 0.2rem 0 1rem;
+  transition: color 120ms ease;
 }
 
-.counter strong { font-size: 2.5rem; }
+.counter strong {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
 .counter span { color: #a9b1c5; }
+.counter-exact strong { color: #69e5a5; }
+.counter-over strong { color: #ff7b86; }
 
 .ring-controls {
   display: grid;
@@ -327,7 +337,13 @@ nav {
   border-top: 1px solid #272d3c;
 }
 
-nav span { color: #cbd2e4; font-weight: 700; }
+nav span {
+  color: #cbd2e4;
+  font-weight: 700;
+  text-align: center;
+}
+
+nav button { min-width: 92px; }
 
 .modal {
   position: fixed;
@@ -373,7 +389,12 @@ nav span { color: #cbd2e4; font-weight: 700; }
 .modal .campaign-complete { color: #65e6a5; font-weight: 800; }
 
 @media (max-width: 720px) {
-  main { padding-top: 0.65rem; }
+  main { padding: 0.65rem 0.75rem 1.5rem; }
+  header { align-items: flex-start; }
+  h1 { font-size: clamp(1.8rem, 10vw, 2.5rem); }
+  .eyebrow { font-size: 0.65rem; }
+  header > button { min-height: 40px; padding: 0.5rem 0.7rem; }
+
   .modal { padding: 1.5rem 1.25rem; }
   .modal article { max-height: calc(100vh - 3rem); }
   .modal-scroll { padding: 1.35rem 1.35rem 1rem; }
@@ -385,10 +406,12 @@ nav span { color: #cbd2e4; font-weight: 700; }
     transform-origin: 50% 48%;
   }
   .board-frame { padding: 0 0 0.8rem; }
-  aside { padding: 0.75rem; }
+  aside { padding: 0.75rem; border-radius: 16px; }
   .counter { margin-bottom: 0.5rem; }
+  .counter strong { font-size: 2rem; }
   .ring-name small { display: none; }
-  nav button { padding-inline: 0.6rem; }
+  nav { gap: 0.5rem; }
+  nav button { min-width: 0; padding-inline: 0.6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
