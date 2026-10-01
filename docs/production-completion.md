@@ -1,0 +1,55 @@
+# Production completion record
+
+This document is the durable evidence map for the Ring Road production rebuild. It separates implementation completion from validation that requires external physical hardware.
+
+## Completion status
+
+The production rebuild is complete in-repository.
+
+All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, or deployment automation are satisfied by the production path.
+
+One release-validation activity remains external to the repository: a physical mobile-device responsiveness spot-check. That check can increase confidence in device-specific performance, but it is not an unfinished implementation phase.
+
+## Acceptance evidence
+
+| Acceptance criterion | Evidence |
+|---|---|
+| Prototype preserved but not production | `prototype/v1/` is checksum-guarded; production entry point is `src/main.tsx`; repo routing forbids ordinary feature work in the archive. |
+| Explicit domain/application/render boundaries | `src/domain/`, `src/app/game-state.ts`, `src/render/`, `src/content/`, and `src/ui/` have documented single ownership. |
+| Puzzle semantics unit-tested | `src/test/domain.test.ts` covers normalization, one-step rotation, spoke mapping, alignment, target enumeration, directed distances, solver vectors, wraps, campaign constraints, representative prototype parity, authoring reconstruction, and geometry invariants. |
+| Campaign validation executable | `validateCampaign()` runs at module initialization and is exercised by tests. |
+| Prototype behavior preserved or deliberately superseded | Representative prototype puzzle states are locked by tests; intentional production differences are recorded in `architecture.md`. |
+| Every logical state renders unambiguously | Ring visual state is derived from logical/unbounded orientation, static cut geometry is cached, and all moving ring surfaces share one rotor transform. |
+| One input equals one legal step | Reducer tests and browser CW/CCW checks cover one-step behavior; unbounded visual state prevents wrap-boundary reverse animation. |
+| Directed-route exactness | Runtime completion requires a single direction per moved ring; unit coverage rejects cancellation padding while same-direction wraps remain valid. |
+| Aligned channel readability | Channel floor, notch walls, top surfaces and edges share deterministic ring-local geometry; final visual review passed at canonical mobile/desktop sizes. |
+| Marker counts legible | Marker count is generated directly from cycle count; high-cycle rings are included in browser responsiveness coverage. |
+| Center completion obvious | Browser flow verifies exact solution, enabled center, firing, and completion modal. |
+| Exact move semantics and wraps | Domain solver/campaign tests plus browser under/exact/over coverage on a wrap puzzle. |
+| Portrait mobile layout comfortable | Browser gate covers 320×568 and 390×844, true horizontal overflow, clipped interactive controls, modal bounds, and touch-sized controls. |
+| Rapid input/reset responsive | Browser gate exercises 30 alternating inputs on a 19-step ring under a broad regression ceiling, then reset recovery. |
+| Reduced-motion behavior | Browser automation emulates `prefers-reduced-motion: reduce` and verifies ring transitions collapse. |
+| Keyboard/modal accessibility | Modal focus acquisition, Escape dismissal, and focus restoration are browser-tested; controls have semantic buttons, labels, visible focus treatment, and modal focus trapping. |
+| CI fast/deterministic | `npm ci`, `npm run check`, and the dependency-free Chrome smoke gate run in CI; Pages publishing also executes the deterministic quality gate. |
+| Fresh-agent discoverability | `AGENTS.md`, `docs/architecture.md`, `docs/README.md`, and context routes point directly to production authorities without requiring prototype loading. |
+| Production deployment | GitHub Pages builds and publishes `dist/`; deployment is base-path aware and was verified green after the production audit. |
+
+## Resolved plan deviations
+
+The original Phase 1 wording proposed a standalone lint command. The finished repository deliberately does not add a general-purpose lint dependency merely to satisfy that wording. Strict TypeScript, focused repository checks, domain/unit tests, build validation, and browser checks provide higher-value static and behavioral coverage for this small codebase. A dedicated linter should be added later only when it catches a recurring class of defects not already covered by these gates.
+
+The plan also originally treated several accessibility, target-state, and responsive behaviors as manual review items. Stable portions of those checks are now automated in `scripts/browser-smoke.mjs`; visual taste and physical-hardware performance remain matters for direct review.
+
+## External release validation
+
+Before calling a particular release physically validated on mobile hardware, exercise the deployed build on at least one representative touch device and check:
+
+- repeated rapid ring input;
+- reset after rapid input;
+- 19-step marker/ring readability;
+- modal scrolling and fixed footer behavior;
+- center-fire interaction;
+- portrait layout with browser chrome present;
+- heat/jank or visibly delayed interaction.
+
+A failure there should produce a normal implementation issue. A pass does not require another architecture phase.
