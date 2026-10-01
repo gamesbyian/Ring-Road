@@ -1,13 +1,12 @@
 import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
-import { ringGeometry } from "./ring-geometry";
+import { RING_RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#a67cff", "#6670f4", "#45b3ff", "#33cf83", "#efcc35", "#ff9147", "#f45d67"];
 const WALL_COLORS = ["#6948ad", "#3f47a3", "#2778a8", "#237d53", "#9d7f1f", "#aa5d2d", "#a33b43"];
 const LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 const CENTER_X = 210;
 const CENTER_Y = 208;
-const WALL_DEPTH = 13;
 
 interface Props {
   puzzle: Puzzle;
@@ -39,7 +38,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
 
   return (
     <g className="ring">
-      <g className="ring-shadow-layer" transform={`translate(0 ${WALL_DEPTH + 4})`}>
+      <g className="ring-shadow-layer" transform={`translate(0 ${RING_WALL_DEPTH + 4})`}>
         <g className={rotorClass} style={rotorStyle}>
           <circle
             className="ring-shadow"
@@ -52,7 +51,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
         </g>
       </g>
 
-      <g className="ring-wall-layer" transform={`translate(0 ${WALL_DEPTH})`}>
+      <g className="ring-wall-layer" transform={`translate(0 ${RING_WALL_DEPTH})`}>
         <g className={rotorClass} style={rotorStyle}>
           <circle
             className="ring-wall"
