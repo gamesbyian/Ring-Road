@@ -135,7 +135,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         {geometry.markerPoints.map(({ x, y }, marker) => (
-          <circle key={marker} cx={x} cy={y} r="2.3" className="marker" />
+          <circle key={marker} cx={x} cy={y} r="2.6" className="marker" fill="url(#marker-recess)" />
         ))}
         <text className="ring-id" x={CENTER_X - radius} y={CENTER_Y} aria-hidden="true">
           {LABELS[index]}
@@ -170,6 +170,12 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               <stop offset="0.28" stopColor="#dce4f5" />
               <stop offset="0.72" stopColor="#8f9bb3" />
               <stop offset="1" stopColor="#515b70" />
+            </radialGradient>
+            <radialGradient id="marker-recess" cx="38%" cy="32%">
+              <stop offset="0" stopColor="#05070d" />
+              <stop offset="0.56" stopColor="#0b1020" />
+              <stop offset="0.78" stopColor="#20293d" />
+              <stop offset="1" stopColor="#ffffff" stopOpacity="0.34" />
             </radialGradient>
           </defs>
           <circle className="board-base-rim" cx={CENTER_X} cy={CENTER_Y + 13} r="206" />

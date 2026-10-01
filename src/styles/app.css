@@ -163,9 +163,11 @@ h1 {
 }
 
 .marker {
-  fill: #11182799;
-  stroke: #ffffff55;
-  stroke-width: 0.7;
+  stroke: #05070dcc;
+  stroke-width: 0.8;
+  filter:
+    drop-shadow(0 -0.8px 0 #ffffff44)
+    drop-shadow(0 1px 0 #000b);
 }
 
 .ring-id {
