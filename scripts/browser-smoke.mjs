@@ -127,21 +127,37 @@ async function applySolutionLines(cdp, lines, include = () => true) {
 
 async function runViewport({ width, height, mobile, debugPort }) {
   const userDataDir = `/tmp/ring-road-chrome-${debugPort}`;
-  await rm(userDataDir, { recursive: true, force: true });
-
-  const chrome = spawn("google-chrome", [
-    "--headless",
-    "--no-sandbox",
-    "--disable-gpu",
-    "--hide-scrollbars",
-    `--remote-debugging-port=${debugPort}`,
-    `--user-data-dir=${userDataDir}`,
-    "about:blank",
-  ], { stdio: "ignore" });
-
+  let chrome;
   let cdp;
+
+  for (let launchAttempt = 0; launchAttempt < 2 && !cdp; launchAttempt += 1) {
+    await rm(userDataDir, { recursive: true, force: true });
+    chrome = spawn("google-chrome", [
+      "--headless",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--hide-scrollbars",
+      `--remote-debugging-port=${debugPort}`,
+      `--user-data-dir=${userDataDir}`,
+      "about:blank",
+    ], { stdio: "ignore" });
+
+    try {
+      cdp = await createCdpClient(debugPort);
+    } catch (error) {
+      if (chrome.exitCode === null) {
+        chrome.kill("SIGTERM");
+        await Promise.race([
+          new Promise((resolve) => chrome.once("close", resolve)),
+          sleep(1500),
+        ]);
+      }
+      if (launchAttempt === 1) throw error;
+      await sleep(250);
+    }
+  }
+
   try {
-    cdp = await createCdpClient(debugPort);
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
@@ -469,7 +485,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
   } finally {
     cdp?.close();
-    if (chrome.exitCode === null) {
+    if (chrome?.exitCode === null) {
       chrome.kill("SIGTERM");
       await Promise.race([
         new Promise((resolve) => chrome.once("close", resolve)),
