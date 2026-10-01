@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { DIORAMA_ASSETS } from "../assets/diorama/manifest";
 
 interface DioramaSceneProps {
   title: ReactNode;
@@ -8,17 +9,41 @@ interface DioramaSceneProps {
   navigation: ReactNode;
 }
 
+interface ScenicPictureProps {
+  role: "backdrop" | "rearArchitecture" | "foreground";
+  className: string;
+  fetchPriority?: "high" | "auto";
+}
+
+function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictureProps) {
+  const desktop = DIORAMA_ASSETS.desktop[role];
+  const mobile = DIORAMA_ASSETS.mobile[role];
+
+  return (
+    <picture className={className} aria-hidden="true">
+      <source media="(max-width: 720px)" srcSet={mobile.src} />
+      <img
+        src={desktop.src}
+        width={desktop.width}
+        height={desktop.height}
+        alt=""
+        loading="eager"
+        decoding="async"
+        fetchPriority={fetchPriority}
+        draggable={false}
+        data-mobile-src={mobile.src}
+        data-desktop-src={desktop.src}
+      />
+    </picture>
+  );
+}
+
 export function DioramaScene({ title, board, controls, status, navigation }: DioramaSceneProps) {
   return (
     <section className="diorama-scene" aria-label="Ring Road play area">
       <div className="scene-backdrop" aria-hidden="true">
-        <div className="scene-sky" />
-        <div className="scene-horizon" />
-        <div className="scene-rear-architecture">
-          <span className="scene-tower scene-tower-left" />
-          <span className="scene-arch" />
-          <span className="scene-tower scene-tower-right" />
-        </div>
+        <ScenicPicture role="backdrop" className="scene-art scene-art-backdrop" fetchPriority="high" />
+        <ScenicPicture role="rearArchitecture" className="scene-art scene-art-rear" />
       </div>
 
       <div className="scene-title-slot">{title}</div>
@@ -38,8 +63,7 @@ export function DioramaScene({ title, board, controls, status, navigation }: Dio
       <div className="scene-navigation-slot">{navigation}</div>
 
       <div className="scene-foreground" aria-hidden="true">
-        <div className="scene-step scene-step-back" />
-        <div className="scene-step scene-step-front" />
+        <ScenicPicture role="foreground" className="scene-art scene-art-foreground" />
       </div>
     </section>
   );

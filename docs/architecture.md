@@ -14,6 +14,7 @@ Ring Road's active production application is a Vite-bundled React + TypeScript a
 | Typed production campaign and startup validation | `src/content/campaign.ts` |
 | Gameplay flow, history, reset, navigation, plan-aware hints, modal and completion state | `src/app/game-state.ts` |
 | Physical board presentation | `src/render/RingBoard.tsx`, `src/render/ring-geometry.ts`, `src/styles/app.css` |
+| Diorama composition, responsive scenic layers, and runtime art inventory | `src/render/DioramaScene.tsx`, `src/assets/diorama/manifest.ts`, `src/assets/diorama/{desktop,mobile}/`, `src/styles/app.css` |
 | Controls and surrounding interface | `src/App.tsx`, `src/ui/Modal.tsx` |
 | Executable semantics | `src/test/` |
 
@@ -39,7 +40,7 @@ Campaign entries are authored as cycle sets plus intended directed move vectors.
 
 ## Boundaries
 
-Domain, solver, and campaign validation contain no React, DOM, SVG, or CSS dependencies. Application state coordinates flow but delegates mathematical meaning to the domain. Rendering receives puzzle/state facts and never decides legality, alignment, exactness, or wrap validity.
+Domain, solver, and campaign validation contain no React, DOM, SVG, or CSS dependencies. Application state coordinates flow but delegates mathematical meaning to the domain. Rendering receives puzzle/state facts and never decides legality, alignment, exactness, or wrap validity. `DioramaScene` is a presentation-only boundary: its responsive `<picture>` layers are decorative, pointer-inert, selected by media query, and registered in a typed asset manifest; the board and functional UI do not depend on image decode or load events.
 
 Static deterministic ring geometry is derived from cycle counts. Application state keeps normalized logical rotations separate from unbounded visual states, so crossing a cycle boundary animates one step in the requested direction rather than appearing to reverse almost a full turn. Individual moves use a short transition; reset and puzzle selection explicitly render without ring transitions so accumulated wraps cannot turn into queued reset animation. No per-frame React loop or raster generation is used. The current SVG/CSS renderer establishes the production physical board with a recessed base plate and rim; consistently cut top, wall, and shadow surfaces; separately shaded inner and outer edges; explicit colored notch faces; dark channel floors; recessed orientation dimples; embossed identity letters; hub; and ball. Every ring surface derives the same notch angle, preventing false bridges or mismatched wall openings across an aligned channel. Ring letters match named control groups, and each group exposes its normalized orientation and cycle to assistive technology, so color is not the only ring-to-control relationship. The renderer remains intentionally free of per-frame React work and raster regeneration; channel floors and notch faces are cached as ring-local geometry and share the same rotor transform as the visible ring surfaces, so physical cut geometry cannot jump ahead of an animated step; the browser smoke gate guards rapid high-cycle input and responsive interaction without adding a browser-test dependency.
 

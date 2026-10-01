@@ -420,7 +420,7 @@ A phase is not complete if it improves visual richness while materially harming 
 - Establish one lighting direction shared with environment.
 **Exit:** the live board looks at home in the reference-style scene.
 
-**Implementation checkpoint:** V2 geometry/material work is underway on the live SVG board: deeper 13px walls, broader 20px cuts, slightly wider annuli, color-derived side walls, a multi-layer physical base, warmer hub/ball materials, brighter daylight bevels, and stronger recessed marker treatment. Wall depth is now owned by the geometry module so cut faces and rendered side walls share one source of truth. Gameplay geometry remains state-agnostic and the renderer still performs no per-frame work. Visual review and CI/browser smoke remain the exit evidence before V2 is marked complete.
+**Implementation checkpoint:** V2 geometry/material work is implemented on the live SVG board: deeper 13px walls, broader 20px cuts, slightly wider annuli, color-derived side walls, a multi-layer physical base, warmer hub/ball materials, brighter daylight bevels, directional ring-top gradients, and stronger recessed marker treatment. Wall depth is owned by the geometry module so cut faces and rendered side walls share one source of truth. Gameplay geometry remains state-agnostic and the renderer still performs no per-frame work. PR #60 passed the full repository and browser-smoke gates at 320px, 390px, and desktop before merge.
 
 ### V3 — Environment art integration
 - Add optimized backdrop, rear architecture, foreground framing.
@@ -428,6 +428,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Tune overlap/occlusion around the board.
 - Implement responsive crops/variants.
 **Exit:** desktop and mobile immediately read as a miniature diorama.
+
+**Implementation checkpoint:** V3 now has separate desktop/mobile authored SVG packages for backdrop, rear architecture, and foreground, loaded through real `<picture>` elements inside `DioramaScene`. Runtime art is text-free, decorative, pointer-inert, and registered in `src/assets/diorama/manifest.ts` with dimensions, role, loading intent, criticality, format, and provenance. The old CSS placeholder towers/steps have been removed. `npm run check:art` now rejects unapproved formats, unmanifested files, and individual assets above the 700 KB review threshold. Canonical visual review and browser smoke remain the V3 exit evidence.
 
 ### V4 — World-integrated HUD
 - Restyle title, controls, move counter, navigation, actions, status, and modals.
