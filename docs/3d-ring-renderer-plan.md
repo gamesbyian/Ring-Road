@@ -2,7 +2,7 @@
 
 ## Status
 
-**Canonical production implementation plan. Phases 0–7 are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop layouts; true overflow and clipped controls; modal structure; CW/CCW input; undo/reset/navigation; rapid alternating input on a 19-step ring; exact authored-solution replay; center fire; and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete; the only release-validation item that still cannot be established in repository automation is a physical-mobile-hardware responsiveness spot-check.**
+**Canonical production implementation plan. Phases 0–8 and all in-repository acceptance criteria are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop layouts; true overflow and clipped controls; modal structure; CW/CCW input; undo/reset/navigation; rapid alternating input on a 19-step ring; exact authored-solution replay; center fire; and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete. All implementation work defined by this plan is closed. The remaining physical-mobile-hardware responsiveness spot-check is external release validation, not unfinished rebuild work; see [`production-completion.md`](./production-completion.md) for the criterion-by-criterion evidence map.**
 
 The existing single-file Ring Road app is now considered a **prototype/reference implementation**, not the architecture to preserve.
 
@@ -346,7 +346,7 @@ Do not blindly preserve prototype bugs. If behavior differs, decide and document
 
 ### Browser tests
 
-Once the production UI stabilizes, cover critical flows:
+The stable critical flows are now covered by the permanent Chrome smoke gate:
 
 - rotate CW/CCW;
 - undo;
@@ -355,7 +355,10 @@ Once the production UI stabilizes, cover critical flows:
 - exact target completion;
 - under-target/over-target aligned states;
 - center fire;
-- responsive portrait layout.
+- responsive portrait layout;
+- clipped interactive targets at the 320px minimum width;
+- modal focus acquisition/Escape/focus restoration;
+- reduced-motion transition collapse.
 
 ## Implementation phases
 
@@ -373,7 +376,7 @@ Once the production UI stabilizes, cover critical flows:
 
 - choose/finalize TypeScript + React + Vite or justified alternative;
 - create modular source layout;
-- add lint/typecheck/test/build commands;
+- establish static-analysis/typecheck/test/build gates; strict TypeScript plus focused repository/domain/browser checks is the chosen static-analysis strategy, so a standalone general-purpose linter is intentionally not added until it demonstrates recurring value;
 - keep CI fast;
 - update agent routing to production paths;
 - preserve token-cheap discovery.
@@ -442,7 +445,7 @@ Once the production UI stabilizes, cover critical flows:
 - confirm all CI/checks are green;
 - verify no current docs still route agents into prototype code.
 
-**Exit:** repository has one obvious production path and one clearly archived prototype.
+**Exit:** repository has one obvious production path and one clearly archived prototype. **Complete.**
 
 ## Acceptance criteria
 
@@ -464,6 +467,10 @@ The production rebuild is complete when:
 - rapid input/reset remain responsive;
 - CI provides fast deterministic feedback;
 - a fresh agent can discover the correct production subsystem without loading the prototype or the entire codebase.
+
+## Completion authority
+
+The implementation phases above are closed. [`production-completion.md`](./production-completion.md) is the durable evidence map for the acceptance criteria and the boundary between completed implementation and external physical-device release validation.
 
 ## Future possibilities
 
