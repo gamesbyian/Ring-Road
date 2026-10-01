@@ -108,7 +108,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
       `${width}px viewport did not finish loading`,
     );
     await waitFor(
-      async () => Boolean(await cdp.evaluate("document.querySelector('main')")),
+      async () => Boolean(await cdp.evaluate("Boolean(document.querySelector('main'))")),
       `${width}px viewport did not mount the React app`,
     );
 
@@ -143,7 +143,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
 
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
     await waitFor(
-      async () => !(await cdp.evaluate("document.querySelector('.modal')")),
+      async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")),
       `${width}px guide did not close`,
     );
 
@@ -179,7 +179,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     assert(Array.isArray(solutionLines) && solutionLines.length === 7, `${width}px solution modal did not expose seven ring allocations`);
 
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
-    await waitFor(async () => !(await cdp.evaluate("document.querySelector('.modal')")), `${width}px solution modal did not close`);
+    await waitFor(async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")), `${width}px solution modal did not close`);
 
     for (const line of solutionLines) {
       const match = /^([A-Za-z]+): (?:(0)|(\\d+) (CW|CCW))/.exec(line ?? "");
