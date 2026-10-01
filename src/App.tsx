@@ -121,7 +121,7 @@ export default function App() {
       </nav>
 
       {state.guideOpen && (
-        <Modal title="How to play" onClose={closeGuide}>
+        <Modal title="How to play" onClose={closeGuide} closeLabel="Play">
           <p>Rotate each colored ring one legal step at a time. Make all seven gaps meet on one shared spoke in exactly the target number of moves. A full same-direction turn can be part of a solution.</p>
         </Modal>
       )}
