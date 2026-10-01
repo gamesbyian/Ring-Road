@@ -332,29 +332,50 @@ nav span { color: #cbd2e4; font-weight: 700; }
   z-index: 10;
   inset: 0;
   display: grid;
-  padding: 1rem;
-  background: #05060bcf;
+  padding: clamp(1.5rem, 5vh, 3.5rem) clamp(1.25rem, 5vw, 3.5rem);
+  background: #05060bd9;
+  backdrop-filter: blur(8px);
   place-items: center;
 }
 
 .modal article {
+  display: flex;
   width: min(460px, 100%);
-  max-height: 85vh;
-  padding: 1.5rem;
-  overflow: auto;
+  max-height: min(78vh, 620px);
+  overflow: hidden;
   border: 1px solid #3a4259;
-  border-radius: 18px;
+  border-radius: 22px;
   background: #151a29;
-  box-shadow: 0 25px 80px #000;
+  box-shadow: 0 25px 80px #000b;
+  flex-direction: column;
 }
 
+.modal-scroll {
+  min-height: 0;
+  padding: 1.6rem 1.6rem 1.2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal-footer {
+  padding: 0.9rem 1.6rem 1.4rem;
+  border-top: 1px solid #2c3448;
+  background: #131826f2;
+}
+
+.modal-footer button { width: 100%; }
+
 .modal article:focus { outline: none; }
-.modal h2 { margin-top: 0; }
+.modal h2 { margin: 0 0 1rem; }
 .modal p { color: #c6ccda; line-height: 1.5; }
 .modal .campaign-complete { color: #65e6a5; font-weight: 800; }
 
 @media (max-width: 720px) {
   main { padding-top: 0.65rem; }
+  .modal { padding: 1.5rem 1.25rem; }
+  .modal article { max-height: calc(100vh - 3rem); }
+  .modal-scroll { padding: 1.35rem 1.35rem 1rem; }
+  .modal-footer { padding: 0.8rem 1.35rem 1.2rem; }
   .game { grid-template-columns: 1fr; gap: 0.4rem; }
   .board-surface { width: min(100%, 500px); }
   .board {
