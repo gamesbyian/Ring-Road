@@ -18,7 +18,10 @@ npm test
 npm run build
 npm run check:repo
 npm run check:context
+npm run browser:smoke
 ```
+
+`npm run browser:smoke` requires the production `dist/` build plus `google-chrome`. CI runs it after `npm run check`; the script uses only Node 22 built-ins and Chrome's DevTools protocol, so browser coverage adds no npm dependency.
 
 ## Executable coverage
 
@@ -42,7 +45,7 @@ For gameplay, renderer, control, or modal changes, run `npm run dev` and exercis
 - reduced-motion mode;
 - a narrow portrait viewport with no horizontal overflow.
 
-One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. Browser automation should be added when the interface stabilizes enough that its recurring regression value exceeds its maintenance cost.
+One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers both 390×844 mobile and 1440×1000 desktop viewports. It checks horizontal overflow, guide/modal layout, CW/CCW input, undo, reset, puzzle navigation, solution display, exact authored-solution replay through real controls, center fire, and completion. Keep deeper visual judgment manual; extend this harness only for stable critical flows.
 
 ## Prototype comparison
 
