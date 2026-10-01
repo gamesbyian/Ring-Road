@@ -1,15 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 420">
-  <defs><linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2dfb3"/><stop offset=".55" stop-color="#d3b37b"/><stop offset="1" stop-color="#a67d49"/></linearGradient></defs>
-  <g fill="url(#stone)" stroke="#8e683d" stroke-width="4">
-    <path d="M40 420V150h140V420Z"/><path d="M1000 420V150h140V420Z"/>
-    <path d="M20 160h180l-18-36h-144Z"/><path d="M980 160h180l-18-36h-144Z"/>
-    <path d="M300 420V210h580V420Z"/>
+  <defs>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ddb0"/><stop offset=".55" stop-color="#d0ad72"/><stop offset="1" stop-color="#987044"/></linearGradient>
+    <linearGradient id="stone2" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e9cf9b"/><stop offset="1" stop-color="#b78953"/></linearGradient>
+  </defs>
+  <g stroke="#805d39" stroke-width="4">
+    <path d="M0 420V150h152V420Z" fill="url(#stone)"/><path d="M1028 420V150h152V420Z" fill="url(#stone)"/>
+    <path d="M18 150h116V92h-20V62H92V92H62V62H40v30H18Z" fill="url(#stone2)"/>
+    <path d="M1046 150h116V92h-20V62h-22V92h-30V62h-22v30h-22Z" fill="url(#stone2)"/>
+    <path d="M248 420V222h684V420Z" fill="url(#stone)"/>
+    <path d="M238 230h704v-54h-42v-31h-42v31h-54v-31h-42v31h-54v-31h-42v31h-54v-31h-42v31h-54v-31h-42v31h-54v-31h-42v31h-54v-31h-42v31h-42Z" fill="url(#stone2)"/>
   </g>
-  <path d="M474 420V300c0-66 52-118 116-118s116 52 116 118v120Z" fill="#39465c"/>
-  <path d="M490 420V304c0-56 44-100 100-100s100 44 100 100v116Z" fill="#223047"/>
-  <g fill="#5f8156">
-    <circle cx="245" cy="335" r="62"/><circle cx="930" cy="335" r="70"/><circle cx="210" cy="385" r="48"/><circle cx="970" cy="390" r="52"/>
+  <path d="M486 420V307c0-61 46-111 104-111s104 50 104 111v113Z" fill="#25364c"/>
+  <path d="M511 420V311c0-47 35-85 79-85s79 38 79 85v109Z" fill="#426381"/>
+  <g stroke="#6e5032" stroke-width="3">
+    <path d="M63 420V210h72v210Z" fill="#c79754"/><path d="M1045 420V210h72v210Z" fill="#c79754"/>
   </g>
-  <g fill="#d6a43d"><path d="M78 105v-55h6v55z"/><path d="M1096 105V50h6v55z"/></g>
-  <g fill="#ef6a55"><path d="M84 52l56 17-56 20z"/><path d="M1102 52l-56 17 56 20z"/></g>
+  <g>
+    <path d="M77 225h44v92H77Z" fill="#365f9d"/><path d="M1059 225h44v92h-44Z" fill="#d1842c"/>
+    <path d="M99 244 111 271 99 298 87 271Z" fill="#f1c74d"/><path d="M1081 244 1093 271 1081 298 1069 271Z" fill="#f4d35d"/>
+  </g>
+  <g fill="#315f48" stroke="#294b3b" stroke-width="2">
+    <path d="M165 416 215 278l50 138Z"/><path d="M205 416 250 312l45 104Z"/>
+    <path d="M885 416 933 280l49 136Z"/><path d="M924 416 969 310l46 106Z"/>
+  </g>
+  <g fill="#ffca54" stroke="#9d6929" stroke-width="3">
+    <path d="M171 235 190 196l19 39-19 28Z"/><path d="M971 235 990 196l19 39-19 28Z"/>
+  </g>
 </svg>

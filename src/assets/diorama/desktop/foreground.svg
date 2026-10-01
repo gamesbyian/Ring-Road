@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 220">
-  <defs><linearGradient id="step" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e5c994"/><stop offset="1" stop-color="#9f7749"/></linearGradient></defs>
-  <path d="M130 84 Q720 10 1310 84 L1370 220H70Z" fill="#c09b65" stroke="#87623c" stroke-width="4"/>
-  <path d="M0 150 Q720 70 1440 150 V220H0Z" fill="url(#step)" stroke="#805b38" stroke-width="4"/>
-  <g fill="#55784f" opacity=".96"><circle cx="120" cy="132" r="72"/><circle cx="1320" cy="130" r="78"/></g>
+  <defs>
+    <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e7c991"/><stop offset=".62" stop-color="#bd915a"/><stop offset="1" stop-color="#805b39"/></linearGradient>
+  </defs>
+  <path d="M95 64 Q720 0 1345 64 L1390 220H50Z" fill="#c29a61" stroke="#765333" stroke-width="4"/>
+  <path d="M0 118 Q720 44 1440 118V220H0Z" fill="url(#stone)" stroke="#765333" stroke-width="4"/>
+  <g fill="#9d7448" stroke="#6d4d30" stroke-width="3">
+    <path d="M595 89h250v131H595Z"/><path d="M630 75h180v145H630Z"/>
+  </g>
+  <g fill="#ead1a2" stroke="#8c653e" stroke-width="3">
+    <path d="M623 116h194v24H623Z"/><path d="M608 145h224v25H608Z"/><path d="M592 176h256v27H592Z"/>
+  </g>
+  <g fill="#456d50" stroke="#35553e" stroke-width="2">
+    <path d="M25 220 95 80l70 140Z"/><path d="M120 220 177 115l57 105Z"/>
+    <path d="M1206 220 1265 108l60 112Z"/><path d="M1300 220 1370 72l70 148Z"/>
+  </g>
+  <g fill="#315b91"><path d="M365 135h44v78h-44Z"/><path d="M1031 135h44v78h-44Z"/></g>
+  <g fill="#c97c2a"><path d="M430 148h34v65h-34Z"/><path d="M976 148h34v65h-34Z"/></g>
+  <g fill="#efc347"><path d="M522 150 538 174 522 198 506 174Z"/><path d="M918 150 934 174 918 198 902 174Z"/></g>
 </svg>
