@@ -1883,14 +1883,19 @@ h1 {
   background: #f1dec0;
 }
 
-.reference-solution-card button {
+.reference-solution-action {
+  display: block;
   width: 100%;
   min-height: 44px;
-  padding: 0.45rem;
-  border-color: #ffffff2c;
+  padding: 0.7rem 0.45rem;
+  border: 1px solid #ffffff2c;
+  border-radius: 12px;
   color: #fff4df;
-  background: linear-gradient(180deg, #ffffff24, #ffffff0f);
+  background: linear-gradient(180deg, #ffffff20, #ffffff0d);
   box-shadow: inset 0 1px 0 #ffffff20, 0 3px 0 #121b2d;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
 }
 
 .reference-first-scene .scene-status-slot {
