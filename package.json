@@ -1,14 +1,30 @@
 {
   "name": "ring-road",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/serve.mjs",
+    "dev": "vite",
+    "prototype": "node scripts/serve.mjs",
     "context": "node scripts/context.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit && vite build",
     "check:repo": "node scripts/check-repo.mjs",
     "check:context": "node scripts/check-context-budget.mjs",
-    "check": "npm run check:repo && npm run check:context"
+    "check": "npm run typecheck && npm test && npm run build && npm run check:repo && npm run check:context"
+  },
+  "dependencies": {
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.16",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "5.0.4",
+    "typescript": "5.9.2",
+    "vite": "7.1.7",
+    "vitest": "3.2.4"
   },
   "engines": {
     "node": ">=20"
