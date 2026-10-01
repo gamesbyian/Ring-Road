@@ -20,7 +20,7 @@ export interface RingGeometry {
 
 const CENTER_X = 210;
 const TOP_CENTER_Y = 208;
-export const RING_RING_WALL_DEPTH = 13;
+export const RING_WALL_DEPTH = 13;
 const HALF_RING_THICKNESS = 9;
 const GAP_LENGTH = 20;
 const cache = new Map<string, RingGeometry>();
