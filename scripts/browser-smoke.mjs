@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { rm } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 
 const APP_PORT = 4173;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
@@ -146,6 +146,15 @@ async function runViewport({ width, height, mobile, debugPort }) {
       async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")),
       `${width}px guide did not close`,
     );
+
+    if (process.env.REVIEW_CAPTURE === "1") {
+      await sleep(250);
+      const screenshot = await cdp.send("Page.captureScreenshot", {
+        format: "png",
+        captureBeyondViewport: false,
+      });
+      await writeFile(`review-${width}.png`, Buffer.from(screenshot.data, "base64"));
+    }
 
     const moveCount = async () => Number(await cdp.evaluate("document.querySelector('.counter strong')?.textContent"));
     assert((await moveCount()) === 0, `${width}px initial move count is not zero`);
