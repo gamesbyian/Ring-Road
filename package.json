@@ -12,8 +12,9 @@
     "build": "tsc --noEmit && vite build",
     "browser:smoke": "node scripts/browser-smoke.mjs",
     "check:repo": "node scripts/check-repo.mjs",
+    "check:art": "node scripts/check-diorama-assets.mjs",
     "check:context": "node scripts/check-context-budget.mjs",
-    "check": "npm run typecheck && npm test && npm run build && npm run check:repo && npm run check:context"
+    "check": "npm run typecheck && npm test && npm run build && npm run check:repo && npm run check:art && npm run check:context"
   },
   "dependencies": {
     "react": "19.1.1",
