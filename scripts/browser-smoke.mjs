@@ -165,6 +165,19 @@ async function runViewport({ width, height, mobile, debugPort }) {
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport has horizontal overflow`,
     );
+    const scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
+      currentSrc: img.currentSrc,
+      pointerEvents: getComputedStyle(img).pointerEvents,
+      alt: img.getAttribute('alt'),
+    }))`);
+    assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
+    assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
+    assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
+    if (mobile) {
+      assert(scenicLayers.every((layer) => layer.currentSrc.includes("/mobile/")), `${width}px viewport did not select the mobile diorama package`);
+    } else {
+      assert(scenicLayers.every((layer) => layer.currentSrc.includes("/desktop/")), `${width}px viewport did not select the desktop diorama package`);
+    }
     const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
       const rect = element.getBoundingClientRect();
       return rect.left < -1 || rect.right > window.innerWidth + 1;
