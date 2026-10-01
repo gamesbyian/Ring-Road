@@ -53,11 +53,11 @@ export default function App() {
 
   const title = (
     <header className="world-header">
-      <div className="title-plaque">
+      <div className="title-plaque world-plaque">
         <span className="eyebrow">Precision alignment puzzle</span>
         <h1>Ring Road</h1>
       </div>
-      <button className="guide-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
+      <button className="guide-button plaque-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
     </header>
   );
 
@@ -74,17 +74,18 @@ export default function App() {
   );
 
   const controls = (
-    <aside aria-label="Ring controls">
+    <aside className="control-monument" aria-label="Ring controls">
       <div className={`counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
+        <span className="counter-label" aria-hidden="true">Moves</span>
         <strong>{state.history.length}</strong>
-        <span>/ {puzzle.targetMoves} moves</span>
+        <span className="counter-target">/ {puzzle.targetMoves}</span>
       </div>
       <div className="ring-controls">
         {RING_ORDER.map((ring) => {
           const cycle = puzzle.ringCycles[ring];
           return (
             <div
-              className="ring-control"
+              className={`ring-control ring-control-${ring}`}
               key={ring}
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
@@ -105,7 +106,7 @@ export default function App() {
           );
         })}
       </div>
-      <div className="actions">
+      <div className="actions" aria-label="Puzzle actions">
         <button onClick={() => dispatch({ type: "undo" })} disabled={!state.history.length || state.completed}>Undo</button>
         <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
         <button onClick={() => dispatch({ type: "toggle-hint" })}>Hint</button>
@@ -115,9 +116,9 @@ export default function App() {
   );
 
   const navigation = (
-    <nav aria-label="Puzzle navigation">
+    <nav className="puzzle-plaque" aria-label="Puzzle navigation">
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
-      <span>Puzzle {puzzle.id} of {CAMPAIGN.length}</span>
+      <span className="puzzle-index"><small>Puzzle</small>{puzzle.id}<small>of {CAMPAIGN.length}</small></span>
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
     </nav>
   );
@@ -128,7 +129,7 @@ export default function App() {
         title={title}
         board={board}
         controls={controls}
-        status={<p className="status" role="status" aria-live="polite">{status}</p>}
+        status={<p className={`status status-${moveState}`} role="status" aria-live="polite">{status}</p>}
         navigation={navigation}
       />
 
