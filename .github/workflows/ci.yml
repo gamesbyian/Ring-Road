@@ -25,6 +25,8 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run browser:smoke
+        env:
+          REVIEW_CAPTURE: "1"
       - name: Capture final visual review
         run: |
           python3 -m http.server 4173 --directory dist >/tmp/ring-road-server.log 2>&1 &
@@ -43,3 +45,5 @@ jobs:
           path: |
             mobile.png
             desktop.png
+            review-390.png
+            review-1440.png
