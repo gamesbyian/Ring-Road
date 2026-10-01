@@ -49,13 +49,31 @@ export const initialGameState = (puzzle: Puzzle, puzzleIndex = 0, guideOpen = fa
   completionPresented: false,
 });
 
+/**
+ * Exact Ring Road routes are directed per ring: once a ring moves CW or CCW,
+ * every counted move on that ring must keep that direction. This admits full
+ * wraps while rejecting cancellation padding such as CW then CCW.
+ */
+export function followsDirectedRoute(history: readonly Move[]): boolean {
+  const directionByRing = new Map<number, Direction>();
+  for (const move of history) {
+    const previous = directionByRing.get(move.ring);
+    if (previous !== undefined && previous !== move.direction) return false;
+    directionByRing.set(move.ring, move.direction);
+  }
+  return true;
+}
+
 export const isExactSolved = (state: GameState, puzzle: Puzzle): boolean =>
-  alignedSpoke(state.rotations, puzzle.ringCycles) !== null && state.history.length === puzzle.targetMoves;
+  alignedSpoke(state.rotations, puzzle.ringCycles) !== null
+  && state.history.length === puzzle.targetMoves
+  && followsDirectedRoute(state.history);
 
 export type CompletionStatus =
   | { readonly kind: "unaligned" }
   | { readonly kind: "under"; readonly difference: number }
   | { readonly kind: "over"; readonly difference: number }
+  | { readonly kind: "invalid-route" }
   | { readonly kind: "ready" }
   | { readonly kind: "complete" };
 
@@ -65,6 +83,7 @@ export function completionStatus(state: GameState, puzzle: Puzzle): CompletionSt
   const difference = puzzle.targetMoves - state.history.length;
   if (difference > 0) return { kind: "under", difference };
   if (difference < 0) return { kind: "over", difference: Math.abs(difference) };
+  if (!followsDirectedRoute(state.history)) return { kind: "invalid-route" };
   return { kind: "ready" };
 }
 

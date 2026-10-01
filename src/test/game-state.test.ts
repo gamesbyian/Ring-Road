@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { completionStatus, initialGameState, isExactSolved, nextMoveHint, reduceGame, type GameState } from "../app/game-state";
+import { completionStatus, followsDirectedRoute, initialGameState, isExactSolved, nextMoveHint, reduceGame, type GameState } from "../app/game-state";
 import { CAMPAIGN, CAMPAIGN_ANALYSES } from "../content/campaign";
 
 const applyExactPlan = (puzzleIndex: number): GameState => {
@@ -128,6 +128,22 @@ describe("game state", () => {
     expect(completionStatus(artificiallyAligned, CAMPAIGN[0])).toEqual({ kind: "under", difference: 11 });
     const overTarget = { ...artificiallyAligned, history: Array.from({ length: 12 }, () => ({ ring: 0, direction: 1 as const })) };
     expect(completionStatus(overTarget, CAMPAIGN[0])).toEqual({ kind: "over", difference: 1 });
+  });
+
+  it("rejects cancellation padding even when alignment and move count look exact", () => {
+    const solved = applyExactPlan(0);
+    expect(followsDirectedRoute(solved.history)).toBe(true);
+
+    const paddedHistory = [...solved.history];
+    paddedHistory[0] = { ring: 6, direction: 1 };
+    paddedHistory[1] = { ring: 6, direction: -1 };
+    const cancellationPadded = { ...solved, history: paddedHistory };
+
+    expect(cancellationPadded.history).toHaveLength(CAMPAIGN[0].targetMoves);
+    expect(followsDirectedRoute(cancellationPadded.history)).toBe(false);
+    expect(isExactSolved(cancellationPadded, CAMPAIGN[0])).toBe(false);
+    expect(completionStatus(cancellationPadded, CAMPAIGN[0])).toEqual({ kind: "invalid-route" });
+    expect(reduceGame(cancellationPadded, { type: "fire" }, CAMPAIGN).completed).toBe(false);
   });
 
   it("locks rotations after completion", () => {

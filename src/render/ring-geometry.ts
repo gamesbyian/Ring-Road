@@ -14,12 +14,13 @@ export interface RingGeometry {
   readonly innerGapLength: number;
   readonly outerGapLength: number;
   readonly markerPoints: readonly Point[];
+  readonly channelFloor: string;
   readonly notchFaces: readonly string[];
 }
 
 const CENTER_X = 210;
 const TOP_CENTER_Y = 208;
-const WALL_DEPTH = 6;
+const WALL_DEPTH = 10;
 const HALF_RING_THICKNESS = 8.5;
 const GAP_LENGTH = 18;
 const cache = new Map<string, RingGeometry>();
@@ -32,7 +33,7 @@ const pointOnCircle = (radius: number, angle: number, yOffset = 0): Point => ({
 const pointsAttribute = (points: readonly Point[]): string =>
   points.map(({ x, y }) => `${x},${y}`).join(" ");
 
-/** Builds immutable geometry once per radius/cycle pair and reuses it for every move. */
+/** Builds immutable ring-local geometry once per radius/cycle pair and reuses it for every move. */
 export function ringGeometry(radius: number, cycle: number): RingGeometry {
   if (!Number.isFinite(radius) || radius <= HALF_RING_THICKNESS) {
     throw new Error(`Ring radius must be greater than ${HALF_RING_THICKNESS}`);
@@ -52,11 +53,17 @@ export function ringGeometry(radius: number, cycle: number): RingGeometry {
     const angle = (marker * 2 * Math.PI) / cycle - Math.PI / 2;
     return pointOnCircle(radius, angle);
   });
+  const channelFloor = pointsAttribute([
+    pointOnCircle(innerRadius, -halfGapAngle),
+    pointOnCircle(outerRadius, -halfGapAngle),
+    pointOnCircle(outerRadius, halfGapAngle),
+    pointOnCircle(innerRadius, halfGapAngle),
+  ]);
   const notchFaces = [-halfGapAngle, halfGapAngle].map((angle) => pointsAttribute([
-    pointOnCircle(radius - HALF_RING_THICKNESS, angle),
-    pointOnCircle(radius + HALF_RING_THICKNESS, angle),
-    pointOnCircle(radius + HALF_RING_THICKNESS, angle, WALL_DEPTH),
-    pointOnCircle(radius - HALF_RING_THICKNESS, angle, WALL_DEPTH),
+    pointOnCircle(innerRadius, angle),
+    pointOnCircle(outerRadius, angle),
+    pointOnCircle(outerRadius, angle, WALL_DEPTH),
+    pointOnCircle(innerRadius, angle, WALL_DEPTH),
   ]));
   const geometry = Object.freeze({
     radius,
@@ -69,6 +76,7 @@ export function ringGeometry(radius: number, cycle: number): RingGeometry {
     innerGapLength: gapAngle * innerRadius,
     outerGapLength: gapAngle * outerRadius,
     markerPoints: Object.freeze(markerPoints),
+    channelFloor,
     notchFaces: Object.freeze(notchFaces),
   });
   cache.set(key, geometry);

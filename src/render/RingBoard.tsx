@@ -25,41 +25,16 @@ interface RingProps {
   rotationMotion: "step" | "instant";
 }
 
-const pointOnCircle = (radius: number, angle: number, yOffset = 0) => ({
-  x: CENTER_X + radius * Math.cos(angle),
-  y: CENTER_Y + radius * Math.sin(angle) + yOffset,
-});
-
-const pointsAttribute = (points: readonly { x: number; y: number }[]) =>
-  points.map(({ x, y }) => `${x},${y}`).join(" ");
-
 const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingProps) {
   const radius = 38 + index * 27;
   const geometry = ringGeometry(radius, cycle);
   const displayedState = ((state % cycle) + cycle) % cycle;
   const rotationDegrees = (state * 360) / cycle;
-  const rotationRadians = (state * 2 * Math.PI) / cycle;
   const rotorClass = `ring-rotor ${rotationMotion === "instant" ? "ring-instant" : ""}`;
   const rotorStyle = {
     transform: `rotate(${rotationDegrees}deg)`,
     transformOrigin: `${CENTER_X}px ${CENTER_Y}px`,
   };
-  const halfGapAngle = geometry.gapLength / radius / 2;
-  const notchFaces = [-halfGapAngle, halfGapAngle].map((edgeAngle) => {
-    const angle = edgeAngle + rotationRadians;
-    return pointsAttribute([
-      pointOnCircle(geometry.innerRadius, angle),
-      pointOnCircle(geometry.outerRadius, angle),
-      pointOnCircle(geometry.outerRadius, angle, WALL_DEPTH),
-      pointOnCircle(geometry.innerRadius, angle, WALL_DEPTH),
-    ]);
-  });
-  const channelFloorPoints = pointsAttribute([
-    pointOnCircle(geometry.innerRadius, -halfGapAngle),
-    pointOnCircle(geometry.outerRadius, -halfGapAngle),
-    pointOnCircle(geometry.outerRadius, halfGapAngle),
-    pointOnCircle(geometry.innerRadius, halfGapAngle),
-  ]);
 
   return (
     <g className="ring">
@@ -104,19 +79,15 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
       </g>
 
       <g className={rotorClass} style={rotorStyle}>
-        <polygon points={channelFloorPoints} className="ring-channel-floor" />
-      </g>
-
-      {notchFaces.map((points, face) => (
-        <polygon
-          key={face}
-          points={points}
-          className={`notch-wall notch-wall-${face === 0 ? "lit" : "shade"}`}
-          style={{ fill: COLORS[index] }}
-        />
-      ))}
-
-      <g className={rotorClass} style={rotorStyle}>
+        <polygon points={geometry.channelFloor} className="ring-channel-floor" />
+        {geometry.notchFaces.map((points, face) => (
+          <polygon
+            key={face}
+            points={points}
+            className={`notch-wall notch-wall-${face === 0 ? "lit" : "shade"}`}
+            style={{ fill: COLORS[index] }}
+          />
+        ))}
         <circle
           className="ring-top-bevel"
           cx={CENTER_X}
