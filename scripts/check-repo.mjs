@@ -7,6 +7,7 @@ const failures = [];
 const fail = (message) => failures.push(message);
 const required = [
   "index.html",
+  "package-lock.json",
   "src/main.tsx",
   "src/App.tsx",
   "src/domain/puzzle.ts",
