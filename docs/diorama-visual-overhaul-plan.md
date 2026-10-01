@@ -411,6 +411,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Keep all gameplay functional.
 **Exit:** composition works at target viewports before final art exists.
 
+**Implementation checkpoint (PR #59):** structural V1 work is implemented with an explicit `DioramaScene`, separate desktop/portrait layout behavior, pointer-inert placeholder depth bands, world-positioned board/HUD/navigation slots, and the live board/game-state boundaries preserved. CI/browser smoke and milestone screenshot review remain the exit evidence before V1 is marked complete.
+
 ### V2 — Board mass and daylight materials
 - Broaden/tune ring geometry.
 - Increase wall/plinth mass.
