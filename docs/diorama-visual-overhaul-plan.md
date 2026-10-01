@@ -445,6 +445,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Verify reduced motion and no input latency regression.
 **Exit:** scene feels cohesive rather than assembled.
 
+**Implementation checkpoint:** V5 now unifies scenic saturation/shadow direction around the established upper-left light, adds a one-time title/rear/plinth settle using transform/opacity only, and adds a single center completion halo when the ball fires. No ambient loop, parallax, particles, canvas, or requestAnimationFrame work has been introduced. The existing reduced-motion mode explicitly removes the settle and completion animations, and browser smoke now asserts both reduced-motion collapse and pointer-inert one-shot completion behavior.
+
 ### V6 — Responsive/performance/accessibility hardening
 - Test all target viewport classes.
 - Optimize asset formats/sizes.
