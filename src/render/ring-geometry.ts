@@ -20,9 +20,9 @@ export interface RingGeometry {
 
 const CENTER_X = 210;
 const TOP_CENTER_Y = 208;
-const WALL_DEPTH = 10;
-const HALF_RING_THICKNESS = 8.5;
-const GAP_LENGTH = 18;
+export const RING_WALL_DEPTH = 13;
+const HALF_RING_THICKNESS = 9;
+const GAP_LENGTH = 20;
 const cache = new Map<string, RingGeometry>();
 
 const pointOnCircle = (radius: number, angle: number, yOffset = 0): Point => ({
@@ -62,8 +62,8 @@ export function ringGeometry(radius: number, cycle: number): RingGeometry {
   const notchFaces = [-halfGapAngle, halfGapAngle].map((angle) => pointsAttribute([
     pointOnCircle(innerRadius, angle),
     pointOnCircle(outerRadius, angle),
-    pointOnCircle(outerRadius, angle, WALL_DEPTH),
-    pointOnCircle(innerRadius, angle, WALL_DEPTH),
+    pointOnCircle(outerRadius, angle, RING_WALL_DEPTH),
+    pointOnCircle(innerRadius, angle, RING_WALL_DEPTH),
   ]));
   const geometry = Object.freeze({
     radius,

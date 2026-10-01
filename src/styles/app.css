@@ -274,17 +274,37 @@ h1 {
   will-change: transform;
 }
 
+.board-cast-shadow {
+  fill: #4d38254d;
+  filter: blur(5px);
+}
+
+.board-base-depth {
+  fill: #7e6548;
+  stroke: #55432f;
+  stroke-width: 1.5;
+}
+
+.board-base-depth-low {
+  fill: #604b36;
+  stroke: #453426;
+  stroke-width: 2;
+}
+
 .board-base-rim {
-  fill: #6d604f;
-  stroke: #41382e;
+  fill: #d6bc8f;
+  stroke: #795d3e;
   stroke-width: 3;
+  filter: drop-shadow(0 3px 2px #4b372446);
 }
 
 .board-base {
-  fill: #383f4a;
-  stroke: #8c8172;
-  stroke-width: 1.5;
-  filter: drop-shadow(0 5px 4px #2b231b66);
+  fill: #4b5662;
+  stroke: #e5d0aa;
+  stroke-width: 2;
+  filter:
+    drop-shadow(0 -2px 0 #fff6)
+    drop-shadow(0 6px 5px #4b372452);
 }
 
 .ring-rotor { transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -298,45 +318,61 @@ h1 {
   stroke-linecap: butt;
 }
 
-.ring-shadow { stroke: #3d2f2590; }
-.ring-wall { stroke: #403a35; }
-.ring-top-bevel {
-  stroke: #1c1b19;
-  filter: drop-shadow(0 2px 1px #2b211a70);
+.ring-shadow {
+  stroke: #3f2f2470;
+  filter: blur(0.7px);
 }
+
+.ring-wall {
+  filter:
+    brightness(0.86)
+    drop-shadow(0 2px 1px #3c2a1e50);
+}
+
+.ring-top-bevel {
+  stroke: #fff4d44d;
+  filter:
+    drop-shadow(0 -1px 0 #ffffff75)
+    drop-shadow(0 2px 1px #5a402b35);
+}
+
 .ring-top {
   filter:
-    drop-shadow(0 -1.5px 0 #ffffff70)
-    drop-shadow(0 1.5px 0 #ffffff20)
-    drop-shadow(0 3px 2px #4b36296b);
+    saturate(0.98)
+    brightness(1.04)
+    drop-shadow(0 -1.6px 0 #ffffff80)
+    drop-shadow(0 1.7px 0 #ffffff2a)
+    drop-shadow(0 4px 2px #513b2c5c);
 }
 
 .ring-edge { fill: none; stroke-width: 1.4; }
-.ring-outer-edge { stroke: #332d29b8; }
-.ring-inner-edge { stroke: #fff3d85f; }
+.ring-outer-edge { stroke: #5d432fb8; }
+.ring-inner-edge { stroke: #fff8e889; }
 
 .ring-channel-floor {
-  fill: #253044;
-  stroke: #ffffff2e;
-  stroke-width: 0.8;
-  filter: drop-shadow(0 2px 2px #2a1e1866);
+  fill: #313946;
+  stroke: #f8ebd13d;
+  stroke-width: 0.9;
+  filter:
+    drop-shadow(0 3px 2px #251b155f)
+    drop-shadow(0 -1px 0 #ffffff20);
 }
 
 .notch-wall {
-  stroke: #ffffff45;
-  stroke-width: 0.8;
-  filter: drop-shadow(0 2px 1px #3a291e66);
+  stroke: #fff7e458;
+  stroke-width: 0.9;
+  filter: drop-shadow(0 3px 1px #3a291e55);
 }
 
-.notch-wall-lit { fill-opacity: 0.46; filter: brightness(0.82) drop-shadow(0 2px 1px #3a291e66); }
-.notch-wall-shade { fill-opacity: 0.32; filter: brightness(0.52) drop-shadow(0 2px 1px #3a291e66); }
+.notch-wall-lit { fill-opacity: 0.58; filter: brightness(0.9) drop-shadow(0 2px 1px #3a291e55); }
+.notch-wall-shade { fill-opacity: 0.48; filter: brightness(0.6) drop-shadow(0 2px 1px #3a291e55); }
 
 .marker {
-  stroke: #201a15cc;
-  stroke-width: 0.8;
+  stroke: #372b20d9;
+  stroke-width: 0.9;
   filter:
-    drop-shadow(0 -0.8px 0 #ffffff70)
-    drop-shadow(0 1px 0 #2c211acc);
+    drop-shadow(0 -0.9px 0 #fff9)
+    drop-shadow(0 1.2px 0 #3b2d22b8);
 }
 
 .ring-id {
@@ -353,16 +389,20 @@ h1 {
 
 .hub {
   fill: url("#hub-material");
-  stroke: #3b332b;
+  stroke: #6f573c;
   stroke-width: 5;
-  filter: drop-shadow(0 6px 3px #35271f70);
+  filter:
+    drop-shadow(0 -1px 0 #fff8)
+    drop-shadow(0 7px 4px #35271f66);
 }
 
 .ball {
   fill: url("#ball-material");
   stroke: #fffdf5;
-  stroke-width: 1;
-  filter: drop-shadow(0 6px 4px #392b236e);
+  stroke-width: 1.2;
+  filter:
+    drop-shadow(0 -1px 0 #fff)
+    drop-shadow(0 7px 4px #392b235c);
   transition: transform 350ms ease, opacity 350ms ease;
   transform-origin: 210px 202px;
 }
