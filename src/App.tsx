@@ -76,11 +76,6 @@ export default function App() {
 
   const controls = (
     <aside className="control-monument" aria-label="Ring controls">
-      <div className={`counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
-        <span className="counter-label" aria-hidden="true">Moves</span>
-        <strong>{state.history.length}</strong>
-        <span className="counter-target">/ {puzzle.targetMoves}</span>
-      </div>
       <div className="ring-controls">
         {RING_ORDER.map((ring) => {
           const cycle = puzzle.ringCycles[ring];
@@ -116,6 +111,53 @@ export default function App() {
     </aside>
   );
 
+  const moves = (
+    <section className={`reference-moves-card counter counter-${moveState}`} aria-label={`${state.history.length} of ${puzzle.targetMoves} moves`}>
+      <span className="reference-card-label">Moves</span>
+      <strong>{state.history.length}</strong>
+      <span className="reference-moves-rule" aria-hidden="true" />
+      <span className="reference-moves-target">Target <b>{puzzle.targetMoves}</b></span>
+    </section>
+  );
+
+  const goal = (
+    <section className="reference-goal-card" aria-label="Puzzle goal">
+      <div className="reference-goal-heading">
+        <span className="reference-goal-badge" aria-hidden="true">?</span>
+        <strong>Goal</strong>
+      </div>
+      <p>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</p>
+      <div className="reference-goal-miniature" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </section>
+  );
+
+  const solutionCard = (
+    <section className="reference-solution-card" aria-label="Solution">
+      <div className="reference-solution-heading">
+        <span className="reference-eye" aria-hidden="true" />
+        <strong>Solution</strong>
+      </div>
+      <div className="reference-solution-preview" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <button onClick={() => dispatch({ type: "toggle-solution" })}>Show move plan</button>
+    </section>
+  );
+
   const navigation = (
     <nav className="puzzle-plaque" aria-label="Puzzle navigation">
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
@@ -132,6 +174,9 @@ export default function App() {
         controls={controls}
         status={<p className={`status status-${moveState}`} role="status" aria-live="polite">{status}</p>}
         navigation={navigation}
+        moves={moves}
+        goal={goal}
+        solution={solutionCard}
       />
 
       {state.guideOpen && (
