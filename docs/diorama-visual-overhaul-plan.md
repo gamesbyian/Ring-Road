@@ -58,6 +58,41 @@ Pure SVG/CSS remains ideal for the live board and UI geometry, but is a poor pro
 
 The split is therefore: **live geometry where state changes, baked illustration where scenery is static, semantic HTML where the player interacts.**
 
+## Scene registration contract
+
+The baked art and live board need a shared coordinate contract or the result will drift into brittle hand-tuned offsets.
+
+Use a scene container with an explicit design aspect ratio for each art direction, then position major planes using normalized percentages/CSS custom properties rather than viewport pixels. Desktop and portrait may use different design canvases, but each should define:
+
+- board center and nominal diameter;
+- horizon/rear-architecture band;
+- control safe zone;
+- puzzle/move plaque safe zone;
+- foreground overlap mask zone;
+- no-occlusion zone around all seven ring gaps/markers;
+- crop-safe outer gutters.
+
+Export guides for those zones alongside source art. `DioramaScene` should own the coordinate mapping; individual UI components should not invent their own scenic offsets.
+
+Before final art, create a registration proof using flat-color placeholder layers and verify it at every target viewport. Final painted exports must drop into the same contract without changing gameplay layout.
+
+Perspective must also be locked: the live board tilt, apparent ellipse, light direction, and arena/plinth perspective should be calibrated together from one approved composition. Do not separately "eyeball" the board and background.
+
+## Asset validation tooling
+
+Add a lightweight repository check once real art lands. It should inventory runtime diorama assets and fail on objectively unsafe mistakes such as an unapproved file type, missing declared dimensions/manifest entry where required, or an individual file beyond the hard review threshold. Keep aesthetic quality out of deterministic CI.
+
+Vite's hashed asset output should remain the cache-busting mechanism. Do not hand-version filenames unless source-art workflow requires it.
+
+Track at least the following during V6:
+
+- compressed critical bytes for desktop and mobile;
+- total decoded pixel area of initially loaded large layers;
+- cumulative layout shift from scene loading, target < 0.05;
+- rapid-input browser smoke timing versus pre-overhaul baseline;
+- whether initial interaction is possible before nonessential art completes.
+
+Do not turn network-sensitive paint metrics into flaky hard CI gates; use them as measured review evidence unless a stable harness is established.
 ## Scene composition
 
 ### Desktop / landscape
@@ -335,6 +370,7 @@ Do not wait until V7 to judge the art. At the end of V1 through V5, capture at l
 4. Did the added richness cost measurable responsiveness or layout robustness?
 
 If the answer to 2, 3, or 4 is materially negative, fix that phase before adding more decorative density.
+
 ## Implementation phases
 
 ### V0 — Lock direction
