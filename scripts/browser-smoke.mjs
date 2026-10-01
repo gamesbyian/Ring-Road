@@ -291,7 +291,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     }
 
     if (!mobile) {
-      await cdp.evaluate("document.activeElement instanceof HTMLElement && document.activeElement.blur()");
+      await cdp.evaluate("(() => { document.body.tabIndex = -1; document.body.focus(); })()");
       await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
       await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
       await waitFor(
