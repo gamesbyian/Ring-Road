@@ -76,6 +76,55 @@ async function waitFor(predicate, message, attempts = 80) {
   throw new Error(message);
 }
 
+const parseSolutionLine = (line) => {
+  const match = /^([A-Za-z]+): (?:(0)|(\d+) (CW|CCW))/.exec(line ?? "");
+  assert(match, `Could not parse solution line: ${line}`);
+  const [, color, stationary, countText, direction] = match;
+  return {
+    color,
+    count: stationary ? 0 : Number(countText),
+    direction,
+  };
+};
+
+async function clickRingMoves(cdp, color, direction, count) {
+  for (let move = 0; move < count; move += 1) {
+    const buttonIndex = direction === "CW" ? 1 : 0;
+    const clicked = await cdp.evaluate(`(() => {
+      const group = Array.from(document.querySelectorAll('.ring-control'))
+        .find((node) => node.getAttribute('aria-label')?.startsWith(${JSON.stringify(color + " ring")}));
+      const buttons = group?.querySelectorAll('button');
+      buttons?.[${buttonIndex}]?.click();
+      return Boolean(buttons?.[${buttonIndex}]);
+    })()`);
+    assert(clicked, `Could not click ${color} ${direction} control`);
+    await sleep(18);
+  }
+}
+
+async function readSolutionLines(cdp, width) {
+  await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Solution')?.click()");
+  await waitFor(
+    async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "Exact solution",
+    `${width}px solution modal did not open`,
+  );
+  const lines = await cdp.evaluate(
+    "Array.from(document.querySelectorAll('.modal-scroll p')).map((node) => node.textContent)",
+  );
+  assert(Array.isArray(lines) && lines.length === 7, `${width}px solution modal did not expose seven ring allocations`);
+  await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
+  await waitFor(async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")), `${width}px solution modal did not close`);
+  return lines;
+}
+
+async function applySolutionLines(cdp, lines, include = () => true) {
+  for (const line of lines) {
+    const parsed = parseSolutionLine(line);
+    if (!include(parsed)) continue;
+    await clickRingMoves(cdp, parsed.color, parsed.direction, parsed.count);
+  }
+}
+
 async function runViewport({ width, height, mobile, debugPort }) {
   const userDataDir = `/tmp/ring-road-chrome-${debugPort}`;
   await rm(userDataDir, { recursive: true, force: true });
@@ -148,12 +197,50 @@ async function runViewport({ width, height, mobile, debugPort }) {
     assert(modalLayout?.overflowY === "auto", `${width}px modal body is not scrollable`);
     assert(modalLayout.footerBottom <= modalLayout.articleBottom + 1, `${width}px modal footer escapes its panel`);
     assert(modalLayout.articleBottom < modalLayout.viewportHeight, `${width}px modal lacks bottom viewport padding`);
+    await waitFor(
+      async () => Boolean(await cdp.evaluate("document.activeElement?.matches('.modal article')")),
+      `${width}px modal did not receive initial focus`,
+    );
 
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
     await waitFor(
       async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")),
       `${width}px guide did not close`,
     );
+
+    if (!mobile) {
+      await cdp.evaluate("Array.from(document.querySelectorAll('header button')).find((button) => button.textContent === 'Guide')?.click()");
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
+        `${width}px keyboard accessibility setup did not reopen guide`,
+      );
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
+      await waitFor(
+        async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")),
+        `${width}px Escape did not close modal`,
+      );
+      assert(
+        await cdp.evaluate("document.activeElement?.textContent === 'Guide'"),
+        `${width}px modal did not restore focus to its trigger`,
+      );
+
+      await cdp.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+      });
+      assert(
+        await cdp.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches"),
+        `${width}px reduced-motion emulation did not apply`,
+      );
+      const reducedTransitionSeconds = Number(await cdp.evaluate(
+        "parseFloat(getComputedStyle(document.querySelector('.ring-rotor')).transitionDuration)",
+      ));
+      assert(
+        Number.isFinite(reducedTransitionSeconds) && reducedTransitionSeconds <= 0.001,
+        `${width}px ring transition does not collapse under reduced motion`,
+      );
+      await cdp.send("Emulation.setEmulatedMedia", { features: [] });
+    }
 
     const moveCount = async () => Number(await cdp.evaluate("document.querySelector('.counter strong')?.textContent"));
     assert((await moveCount()) === 0, `${width}px initial move count is not zero`);
@@ -207,6 +294,40 @@ async function runViewport({ width, height, mobile, debugPort }) {
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
     await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px rapid-input teardown could not return to puzzle 1`);
 
+    if (!mobile) {
+      for (let step = 0; step < 6; step += 1) {
+        await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
+      }
+      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 7 of"), `${width}px under/over setup could not reach puzzle 7`);
+      const wrapSolutionLines = await readSolutionLines(cdp, width);
+      await applySolutionLines(cdp, wrapSolutionLines, ({ color }) => color !== "Violet");
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.status')?.textContent"))?.includes("3 more moves needed"),
+        `${width}px wrapped puzzle did not expose aligned under-target state`,
+      );
+      const violet = wrapSolutionLines.map(parseSolutionLine).find(({ color }) => color === "Violet");
+      assert(violet?.count === 3 && violet.direction === "CW", "Puzzle 7 no longer exposes the expected full-wrap acceptance fixture");
+      await clickRingMoves(cdp, violet.color, violet.direction, violet.count);
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.status')?.textContent"))?.includes("fire the center"),
+        `${width}px wrapped puzzle did not reach exact target`,
+      );
+      await clickRingMoves(cdp, violet.color, violet.direction, violet.count);
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.status')?.textContent"))?.includes("3 moves over target"),
+        `${width}px wrapped puzzle did not expose aligned over-target state`,
+      );
+      assert(
+        await cdp.evaluate("document.querySelector('.hub-button')?.disabled"),
+        `${width}px center remained fireable while aligned over target`,
+      );
+      await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Reset')?.click()");
+      for (let step = 0; step < 6; step += 1) {
+        await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
+      }
+      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px under/over teardown could not return to puzzle 1`);
+    }
+
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Solution')?.click()");
     await waitFor(
       async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "Exact solution",
@@ -221,24 +342,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
     await waitFor(async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")), `${width}px solution modal did not close`);
 
-    for (const line of solutionLines) {
-      const match = /^([A-Za-z]+): (?:(0)|(\d+) (CW|CCW))/.exec(line ?? "");
-      assert(match, `Could not parse solution line: ${line}`);
-      const [, color, stationary, countText, direction] = match;
-      const count = stationary ? 0 : Number(countText);
-      for (let move = 0; move < count; move += 1) {
-        const buttonIndex = direction === "CW" ? 1 : 0;
-        const clicked = await cdp.evaluate(`(() => {
-          const group = Array.from(document.querySelectorAll('.ring-control'))
-            .find((node) => node.getAttribute('aria-label')?.startsWith(${JSON.stringify(color + " ring")}));
-          const buttons = group?.querySelectorAll('button');
-          buttons?.[${buttonIndex}]?.click();
-          return Boolean(buttons?.[${buttonIndex}]);
-        })()`);
-        assert(clicked, `Could not click ${color} ${direction} control`);
-        await sleep(18);
-      }
-    }
+    await applySolutionLines(cdp, solutionLines);
 
     await waitFor(
       async () => (await cdp.evaluate("document.querySelector('.status')?.textContent"))?.includes("fire the center"),
