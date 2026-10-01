@@ -437,6 +437,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Remove dark-app-shell styling that no longer belongs.
 **Exit:** no major UI element looks imported from another visual system.
 
+**Implementation checkpoint:** V4 now applies one warm stone/painted-plaque material system across the title, guide button, move counter, ring-control monument, action buttons, status plaque, puzzle navigation, and modal shell while preserving the existing semantic buttons, live-region status, dialog roles, focus behavior, and touch targets. Ring rows now use color-keyed physical edge accents instead of relying on hue alone, and move-state styling is expressed through both text and plaque treatment. Browser-smoke and narrow-viewport review remain the phase gate before merge.
+
 ### V5 — Polish and restrained motion
 - Tune shadows, material coherence, atmosphere, foreground separation.
 - Add only approved cheap ambient/completion motion.
