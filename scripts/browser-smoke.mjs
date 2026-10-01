@@ -376,6 +376,31 @@ async function runViewport({ width, height, mobile, debugPort }) {
       120,
     );
 
+    if (!mobile) {
+      await cdp.evaluate("Array.from(document.querySelectorAll('.modal-scroll button')).find((button) => button.textContent === 'Next puzzle')?.click()");
+      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px completion action did not advance to puzzle 2`);
+      for (let step = 0; step < 10; step += 1) {
+        await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
+      }
+      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 12 of"), `${width}px campaign-end setup could not reach puzzle 12`);
+      const finalSolutionLines = await readSolutionLines(cdp, width);
+      await applySolutionLines(cdp, finalSolutionLines);
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.status')?.textContent"))?.includes("fire the center"),
+        `${width}px final puzzle exact solution did not reach ready state`,
+      );
+      await cdp.evaluate("document.querySelector('.hub-button')?.click()");
+      await waitFor(
+        async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "Puzzle complete!",
+        `${width}px final puzzle completion dialog did not appear`,
+        120,
+      );
+      assert(
+        (await cdp.evaluate("document.querySelector('.campaign-complete')?.textContent"))?.includes("campaign complete"),
+        `${width}px final completion did not report campaign mastery`,
+      );
+    }
+
     assert(
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport gained horizontal overflow after interaction`,
