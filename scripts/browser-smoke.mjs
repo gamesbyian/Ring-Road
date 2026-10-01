@@ -182,7 +182,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     await waitFor(async () => !(await cdp.evaluate("Boolean(document.querySelector('.modal'))")), `${width}px solution modal did not close`);
 
     for (const line of solutionLines) {
-      const match = /^([A-Za-z]+): (?:(0)|(\\d+) (CW|CCW))/.exec(line ?? "");
+      const match = /^([A-Za-z]+): (?:(0)|(\d+) (CW|CCW))/.exec(line ?? "");
       assert(match, `Could not parse solution line: ${line}`);
       const [, color, stationary, countText, direction] = match;
       const count = stationary ? 0 : Number(countText);
