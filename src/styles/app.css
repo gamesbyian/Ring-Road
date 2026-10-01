@@ -635,7 +635,7 @@ nav button { min-width: 92px; }
     background: linear-gradient(180deg, #8bc7ee 0 24%, #b7d9a2 24% 47%, #d4b97f 47% 100%);
   }
 
-  .scene-sky { inset-bottom: 56%; }
+  .scene-sky { bottom: 56%; }
 
   .scene-horizon {
     inset: 17% -25% 53%;
