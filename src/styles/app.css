@@ -112,17 +112,23 @@ h1 {
 
 .ring-shadow,
 .ring-wall,
+.ring-top-bevel,
 .ring-top {
   fill: none;
   stroke-linecap: butt;
 }
 
 .ring-shadow { stroke: #000a; }
-.ring-wall { stroke: #191e2b; }
+.ring-wall { stroke: #171c29; }
+.ring-top-bevel {
+  stroke: #080b12;
+  filter: drop-shadow(0 2px 1px #000b);
+}
 .ring-top {
   filter:
-    drop-shadow(0 -1px 0 #ffffff52)
-    drop-shadow(0 2px 1px #0008);
+    drop-shadow(0 -1.5px 0 #ffffff66)
+    drop-shadow(0 1.5px 0 #ffffff18)
+    drop-shadow(0 3px 2px #0009);
 }
 
 .ring-edge {
@@ -133,11 +139,27 @@ h1 {
 .ring-outer-edge { stroke: #090c14cc; }
 .ring-inner-edge { stroke: #4b556b80; }
 
-.notch-wall {
-  fill: #111621;
-  stroke: #ffffff2b;
+.ring-channel-floor {
+  fill: #060910;
+  stroke: #6d789033;
   stroke-width: 0.8;
-  filter: drop-shadow(0 2px 1px #0008);
+  filter: drop-shadow(0 2px 2px #000b);
+}
+
+.notch-wall {
+  stroke: #ffffff36;
+  stroke-width: 0.8;
+  filter: drop-shadow(0 2px 1px #000a);
+}
+
+.notch-wall-lit {
+  fill-opacity: 0.42;
+  filter: brightness(0.72) drop-shadow(0 2px 1px #000a);
+}
+
+.notch-wall-shade {
+  fill-opacity: 0.28;
+  filter: brightness(0.42) drop-shadow(0 2px 1px #000a);
 }
 
 .marker {

@@ -54,6 +54,12 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
       pointOnCircle(geometry.innerRadius, angle, WALL_DEPTH),
     ]);
   });
+  const channelFloorPoints = pointsAttribute([
+    pointOnCircle(geometry.innerRadius, -halfGapAngle),
+    pointOnCircle(geometry.outerRadius, -halfGapAngle),
+    pointOnCircle(geometry.outerRadius, halfGapAngle),
+    pointOnCircle(geometry.innerRadius, halfGapAngle),
+  ]);
 
   return (
     <g className="ring">
@@ -97,11 +103,28 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
         </g>
       </g>
 
+      <g className={rotorClass} style={rotorStyle}>
+        <polygon points={channelFloorPoints} className="ring-channel-floor" />
+      </g>
+
       {notchFaces.map((points, face) => (
-        <polygon key={face} points={points} className="notch-wall" />
+        <polygon
+          key={face}
+          points={points}
+          className={`notch-wall notch-wall-${face === 0 ? "lit" : "shade"}`}
+          style={{ fill: COLORS[index] }}
+        />
       ))}
 
       <g className={rotorClass} style={rotorStyle}>
+        <circle
+          className="ring-top-bevel"
+          cx={CENTER_X}
+          cy={CENTER_Y}
+          r={radius}
+          strokeWidth="20"
+          strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
+        />
         <circle
           className="ring-top"
           cx={CENTER_X}
