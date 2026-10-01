@@ -52,6 +52,10 @@
     "ui": [
       "src/App.tsx",
       "src/ui/Modal.tsx"
+    ],
+    "browser": [
+      "scripts/browser-smoke.mjs",
+      "docs/testing.md"
     ]
   }
 }
