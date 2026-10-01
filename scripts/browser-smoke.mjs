@@ -191,7 +191,8 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    if (mobile) {
+    const expectsMobileArt = width <= 720;
+    if (expectsMobileArt) {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.mobileSrc), `${width}px viewport did not select the mobile diorama package`);
     } else {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not select the desktop diorama package`);
@@ -551,8 +552,10 @@ try {
   await runViewport({ width: 768, height: 1024, mobile: false, debugPort: 9227, fullFlow: false });
   await runViewport({ width: 1024, height: 768, mobile: false, debugPort: 9228, fullFlow: false });
   await runViewport({ width: 1920, height: 1080, mobile: false, debugPort: 9229, fullFlow: false });
+  // 1440×1000 at ~200% browser zoom presents roughly a 720×500 CSS viewport.
+  await runViewport({ width: 720, height: 500, mobile: false, debugPort: 9230, fullFlow: false });
 
-  console.log("Browser smoke checks passed across the full diorama target viewport matrix.");
+  console.log("Browser smoke checks passed across the full diorama target viewport matrix plus 200% zoom-equivalent reflow.");
 } finally {
   server.kill("SIGTERM");
 }

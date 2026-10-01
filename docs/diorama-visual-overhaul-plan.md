@@ -465,6 +465,17 @@ A phase is not complete if it improves visual richness while materially harming 
 - Record deliberate deviations.
 **Exit:** diorama overhaul is production-complete.
 
+**Final audit record:** canonical 390×844 and 1440×1000 production screenshots were captured from CI and reviewed directly. The first audit exposed that the rear-architecture layer was visually lost behind the board; V7 raised that layer into a readable rear depth band and the corrected captures were re-reviewed. No obsolete placeholder selectors remain. The committed reference file `docs/3d-ring-renderer-concept.jpg` is not decodable by standard JPEG tooling in its current repository form, so direct pixel/image comparison against that binary was not possible; the audit instead used this plan's recorded reference intent plus the canonical rendered milestones. That source limitation is deliberate evidence, not silently ignored.
+
+**Final approval rubric**
+- **A — Diorama identity: YES against documented intent.** The live build reads as a miniature physical play monument with distant landscape, architectural framing, board plane, and foreground. Direct comparison to the corrupt reference JPEG is unavailable.
+- **B — Board physicality: YES.** Rings have visible wall depth, carved channel gaps, recessed markers, a heavy base/plinth, shared lighting, and a seated center mechanism.
+- **C — UI coherence: YES.** Title, controls, move counter, status, navigation, actions, and modals use one warm plaque/material family; no major dark-app-shell surface remains.
+- **D — Mobile survival: YES.** Canonical 390×844 review preserves scenery and board priority; automated coverage includes 320×568 with 44px targets and no horizontal overflow.
+- **E — Technical robustness: YES for in-repository evidence.** Full behavioral CI is green; all target viewport classes, a 200%-zoom-equivalent reflow viewport, asset budgets, missing-art fallback, keyboard focus, touch sizing, reduced motion, and rapid-input ceilings are covered. Physical-device validation remains an external release check.
+
+**Deliberate deviations:** the final scene uses lightweight original SVG scenery rather than a photoreal/high-detail raster package. This keeps the board visually dominant, asset packages tiny, failure behavior simple, and interaction performance inside the existing ceiling. The invalid reference JPEG is retained as historical input rather than replaced or silently normalized.
+
 ## Final approval rubric
 
 Before declaring completion, the final canonical screenshots and live build must receive explicit yes/no review across five sections:
