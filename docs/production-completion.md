@@ -6,7 +6,7 @@ This document is the durable evidence map for the Ring Road production rebuild. 
 
 The production rebuild and the in-repository diorama presentation overhaul are complete. The gameplay/domain rebuild remains unchanged by the visual work; the final visual evidence and deviations are recorded in [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md).
 
-All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, deployment automation, or canonical CI screenshot review are satisfied by the production path. The final diorama audit reviewed 390×844 and 1440×1000 production captures, corrected the rear architectural depth band, and re-ran the full quality gate.
+All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, deployment automation, or canonical CI screenshot review are satisfied by the production path. The visual audit now includes direct comparison of 390×844 and 1440×1000 production captures against the restored canonical reference; V8 corrected board centering, desktop HUD placement, and scenic richness revealed by that comparison.
 
 One release-validation activity remains external to the repository: a physical mobile-device responsiveness spot-check. That check can increase confidence in device-specific performance, but it is not an unfinished implementation phase.
 
@@ -41,7 +41,7 @@ The original Phase 1 wording proposed a standalone lint command. The finished re
 
 The plan also originally treated several accessibility, target-state, responsive, zoom, and decorative-failure behaviors as manual review items. Stable portions are now automated in `scripts/browser-smoke.mjs`; visual taste and physical-hardware performance remain matters for direct review.
 
-The diorama reference JPEG retained in `docs/3d-ring-renderer-concept.jpg` is not decodable by standard JPEG tooling in its current repository form. V7 therefore audited against the plan's documented reference intent and canonical production screenshots rather than claiming a direct image-to-image comparison.
+A valid copy of the diorama reference is now retained at `docs/3d-ring-renderer-concept.jpg`. Direct comparison against it exposed a real V7 evidence gap: the board treatment was strong, but desktop composition and environmental richness had drifted too far from the target. V8 corrected the scene hierarchy and responsive environment before the completion record was re-closed.
 
 ## External release validation
 
