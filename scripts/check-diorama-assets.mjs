@@ -1,1 +1,69 @@
-import { readdir, readFile, stat } from "node:fs/promises";\nimport path from "node:path";\n\nconst ROOT = new URL("../src/assets/diorama/", import.meta.url);\nconst MANIFEST = new URL("../src/assets/diorama/manifest.ts", import.meta.url);\nconst ALLOWED = new Set([".svg", ".webp", ".avif", ".png"]);\nconst MAX_BYTES = 700 * 1024;\nconst PACKAGE_BUDGETS = { desktop: 1.5 * 1024 * 1024, mobile: 900 * 1024 };\nconst MAX_LAYERS = { desktop: 4, mobile: 3 };\n\nasync function walk(directory) {\n  const entries = await readdir(directory, { withFileTypes: true });\n  const files = [];\n  for (const entry of entries) {\n    const resolved = new URL(`${entry.name}${entry.isDirectory() ? "/" : ""}`, directory);\n    if (entry.isDirectory()) files.push(...await walk(resolved));\n    else files.push(resolved);\n  }\n  return files;\n}\n\nconst manifest = await readFile(MANIFEST, "utf8");\nconst files = (await walk(ROOT)).filter((url) => !url.pathname.endsWith("/manifest.ts"));\nconst failures = [];\nconst packageBytes = { desktop: 0, mobile: 0 };\nconst packageCounts = { desktop: 0, mobile: 0 };\n\nfor (const file of files) {\n  const extension = path.extname(file.pathname).toLowerCase();\n  const filename = path.basename(file.pathname);\n  const fileStat = await stat(file);\n  const variant = file.pathname.includes("/desktop/")\n    ? "desktop"\n    : file.pathname.includes("/mobile/")\n      ? "mobile"\n      : null;\n\n  if (!ALLOWED.has(extension)) failures.push(`${filename}: unsupported runtime diorama format ${extension}`);\n  if (fileStat.size > MAX_BYTES) failures.push(`${filename}: ${fileStat.size} bytes exceeds the 700 KB review threshold`);\n  if (!manifest.includes(filename)) failures.push(`${filename}: missing from src/assets/diorama/manifest.ts`);\n\n  if (!variant) {\n    failures.push(`${filename}: runtime art must live under desktop/ or mobile/`);\n  } else {\n    packageBytes[variant] += fileStat.size;\n    packageCounts[variant] += 1;\n  }\n}\n\nfor (const variant of ["desktop", "mobile"]) {\n  if (packageBytes[variant] > PACKAGE_BUDGETS[variant]) {\n    failures.push(`${variant} art package is ${packageBytes[variant]} bytes, above its ${PACKAGE_BUDGETS[variant]} byte budget`);\n  }\n  if (packageCounts[variant] > MAX_LAYERS[variant]) {\n    failures.push(`${variant} art package has ${packageCounts[variant]} layers, above its ${MAX_LAYERS[variant]}-layer budget`);\n  }\n}\n\nfor (const required of ["desktop", "mobile", "width", "height", "critical", "loading", "provenance"]) {\n  if (!manifest.includes(required)) failures.push(`manifest is missing required field/token: ${required}`);\n}\n\nif (failures.length) {\n  console.error("Diorama asset validation failed:");\n  for (const failure of failures) console.error(`- ${failure}`);\n  process.exit(1);\n}\n\nconsole.log(`Diorama asset validation passed for ${files.length} runtime assets (desktop: ${packageBytes.desktop} bytes, mobile: ${packageBytes.mobile} bytes).`);\n
+import { readdir, readFile, stat } from "node:fs/promises";
+import path from "node:path";
+
+const ROOT = new URL("../src/assets/diorama/", import.meta.url);
+const MANIFEST = new URL("../src/assets/diorama/manifest.ts", import.meta.url);
+const ALLOWED = new Set([".svg", ".webp", ".avif", ".png"]);
+const MAX_BYTES = 700 * 1024;
+const PACKAGE_BUDGETS = { desktop: 1.5 * 1024 * 1024, mobile: 900 * 1024 };
+const MAX_LAYERS = { desktop: 4, mobile: 3 };
+
+async function walk(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const resolved = new URL(`${entry.name}${entry.isDirectory() ? "/" : ""}`, directory);
+    if (entry.isDirectory()) files.push(...await walk(resolved));
+    else files.push(resolved);
+  }
+  return files;
+}
+
+const manifest = await readFile(MANIFEST, "utf8");
+const files = (await walk(ROOT)).filter((url) => !url.pathname.endsWith("/manifest.ts"));
+const failures = [];
+const packageBytes = { desktop: 0, mobile: 0 };
+const packageCounts = { desktop: 0, mobile: 0 };
+
+for (const file of files) {
+  const extension = path.extname(file.pathname).toLowerCase();
+  const filename = path.basename(file.pathname);
+  const fileStat = await stat(file);
+  const variant = file.pathname.includes("/desktop/")
+    ? "desktop"
+    : file.pathname.includes("/mobile/")
+      ? "mobile"
+      : null;
+
+  if (!ALLOWED.has(extension)) failures.push(`${filename}: unsupported runtime diorama format ${extension}`);
+  if (fileStat.size > MAX_BYTES) failures.push(`${filename}: ${fileStat.size} bytes exceeds the 700 KB review threshold`);
+  if (!manifest.includes(filename)) failures.push(`${filename}: missing from src/assets/diorama/manifest.ts`);
+
+  if (!variant) {
+    failures.push(`${filename}: runtime art must live under desktop/ or mobile/`);
+  } else {
+    packageBytes[variant] += fileStat.size;
+    packageCounts[variant] += 1;
+  }
+}
+
+for (const variant of ["desktop", "mobile"]) {
+  if (packageBytes[variant] > PACKAGE_BUDGETS[variant]) {
+    failures.push(`${variant} art package is ${packageBytes[variant]} bytes, above its ${PACKAGE_BUDGETS[variant]} byte budget`);
+  }
+  if (packageCounts[variant] > MAX_LAYERS[variant]) {
+    failures.push(`${variant} art package has ${packageCounts[variant]} layers, above its ${MAX_LAYERS[variant]}-layer budget`);
+  }
+}
+
+for (const required of ["desktop", "mobile", "width", "height", "critical", "loading", "provenance"]) {
+  if (!manifest.includes(required)) failures.push(`manifest is missing required field/token: ${required}`);
+}
+
+if (failures.length) {
+  console.error("Diorama asset validation failed:");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
+
+console.log(`Diorama asset validation passed for ${files.length} runtime assets (desktop: ${packageBytes.desktop} bytes, mobile: ${packageBytes.mobile} bytes).`);
