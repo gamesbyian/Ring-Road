@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Active visual-direction plan.** This plan supersedes the earlier decision in `3d-ring-renderer-plan.md` to avoid scenery and castle/environment dressing.
+**Completed visual-direction authority.** The implementation is closed; this document now records the shipped art direction, constraints, evidence, and deliberate deviations. It supersedes the earlier decision in `3d-ring-renderer-plan.md` to avoid scenery and castle/environment dressing.
 
 The reference concept image is now the intended art-direction target for the **whole play experience**, not merely a source of ideas for the concentric board. The exact castle, HUD arrangement, typography, and individual props are not specifications to copy literally. The specification is the visual language: a tactile miniature world built around a physical rainbow ring puzzle, with environmental depth, warm daylight, toy-like materials, architectural framing, and UI that belongs to the same world.
 
@@ -472,7 +472,7 @@ A phase is not complete if it improves visual richness while materially harming 
 - **B — Board physicality: YES.** Rings have visible wall depth, carved channel gaps, recessed markers, a heavy base/plinth, shared lighting, and a seated center mechanism. This was already the strongest part of V7 and survived V8 unchanged.
 - **C — UI coherence: YES.** Title, controls, move counter, status, navigation, actions, and modals use one warm plaque/material family; V8 also brings desktop placement materially closer to the canonical reference without baking functional text into scenery.
 - **D — Mobile survival: YES.** Portrait remains interaction-first rather than copying the reference's landscape HUD: the board stays dominant, scenic castle framing survives above/around it, and controls stack below. Automated coverage includes 320×568 with 44px targets and no horizontal overflow.
-- **E — Technical robustness: YES for in-repository evidence once V8 CI is green.** The established viewport, reflow, asset-budget, missing-art, focus, touch, reduced-motion, and rapid-input gates remain authoritative. V8 keeps the same semantic/rendering boundaries and fixes rather than weakens any failing gate.
+- **E — Technical robustness: YES for in-repository evidence.** The established viewport, reflow, asset-budget, missing-art, focus, touch, reduced-motion, and rapid-input gates remain authoritative. V8 keeps the same semantic/rendering boundaries and fixes rather than weakens any failing gate; the final PR browser gate passed, and the permanent smoke harness was subsequently hardened against CI timer/profile-cleanup jitter without relaxing its 1500ms rapid-input ceiling.
 
 **Deliberate deviations:** the production scene uses lightweight original SVG scenery rather than the reference's high-detail rendered/painted treatment; the reference's separate Goal and Solution corner cards are not duplicated because Ring Road already exposes that functionality through its live status/Guide/Hint/Solution interfaces; mobile uses a purpose-built stacked layout instead of squeezing the landscape reference around a narrow board. These deviations preserve gameplay clarity, tiny asset packages, simple failure behavior, and existing interaction performance while retaining the reference's composition, palette, physical-board emphasis, and miniature-world identity.
 
