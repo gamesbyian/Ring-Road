@@ -162,35 +162,11 @@ This keeps future 2D, 2.5D, accessibility, debug, or WebGL renderers interchange
 
 ## Visual target
 
-The generated concept image is **directional reference, not a literal UI specification**.
+The original rebuild used the concept image primarily as a reference for the physical board. That interpretation is now superseded.
 
-Its useful ideas:
+The concept image is the art-direction reference for the **whole play experience**: a bright miniature diorama surrounding a tactile rainbow puzzle. The exact castle, HUD placement, and props are not literal requirements, and identifiable third-party/franchise assets must not be copied, but scenic world-building, environmental architecture, warm daylight, and world-integrated UI are now desired rather than excluded.
 
-- a tilted physical board;
-- strong depth;
-- visibly thick rings;
-- exposed notch walls;
-- shadows between layers;
-- a central ball as a physical object;
-- immediate color distinction.
-
-The production game should keep Ring Road's own identity:
-
-- dark restrained environment;
-- saturated ring colors;
-- clean modern UI;
-- minimal decoration;
-- premium physical-object presentation;
-- excellent mobile readability.
-
-Do not import:
-
-- Paper Mario characters or copyrighted visual assets;
-- fantasy scenery;
-- parchment UI;
-- castle/environment dressing;
-- decorative world-building that competes with the puzzle.
-
+The active specification for that work is [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md). This completed rebuild plan remains authoritative for the underlying production architecture and gameplay/rendering invariants.
 ## Renderer strategy
 
 ### Default first implementation: 2.5D SVG/CSS
