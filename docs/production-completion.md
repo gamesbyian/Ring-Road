@@ -8,7 +8,7 @@ The production rebuild and the in-repository diorama presentation overhaul are c
 
 All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, deployment automation, or canonical CI screenshot review are satisfied by the production path. The visual audit now includes direct comparison of 390×844 and 1440×1000 production captures against the restored canonical reference; V8 corrected board centering, desktop HUD placement, and scenic richness revealed by that comparison.
 
-One release-validation activity remains external to the repository: a physical mobile-device responsiveness spot-check. That check can increase confidence in device-specific performance, but it is not an unfinished implementation phase.
+Implementation is complete. A physical mobile-device responsiveness spot-check remains an optional release-validation activity outside the repository; it can increase confidence in device-specific performance but does not gate repository completion.
 
 ## Acceptance evidence
 
@@ -32,7 +32,7 @@ One release-validation activity remains external to the repository: a physical m
 | Keyboard/modal accessibility | Modal focus acquisition, Escape dismissal, focus restoration, visible keyboard focus, 44px controls, and a 200%-zoom-equivalent reflow viewport are browser-tested; controls retain semantic buttons and labels. |
 | CI fast/deterministic | `npm ci`, `npm run check`, and the dependency-free Chrome smoke gate run in CI; Pages publishing also executes the deterministic quality gate. |
 | Fresh-agent discoverability | `AGENTS.md`, `docs/architecture.md`, `docs/README.md`, and context routes point directly to production authorities without requiring prototype loading. |
-| Diorama presentation | Canonical 390×844 and 1440×1000 CI captures were visually reviewed; the board is installed in a four-band miniature scene, the HUD uses one plaque/material family, and the V7 architecture-depth correction passed the full browser gate. |
+| Diorama presentation | Canonical 390×844 and 1440×1000 captures were compared directly with the restored concept image; V8 corrected board centering, desktop HUD placement, and scenic density, then passed the full browser gate. |
 | Production deployment | GitHub Pages builds and publishes `dist/`; deployment is base-path aware and was verified green after the production audit. |
 
 ## Resolved plan deviations
@@ -55,4 +55,4 @@ Before calling a particular release physically validated on mobile hardware, exe
 - portrait layout with browser chrome present;
 - heat/jank or visibly delayed interaction.
 
-A failure there should produce a normal implementation issue. A pass does not require another architecture phase.
+This is optional release confidence work, not outstanding repository work. Any failure found there should produce a normal implementation issue; a pass does not require another architecture phase.
