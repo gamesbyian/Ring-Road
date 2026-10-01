@@ -1,6 +1,6 @@
 import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
-import { RING_RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
+import { RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#a67cff", "#6670f4", "#45b3ff", "#33cf83", "#efcc35", "#ff9147", "#f45d67"];
 const TOP_HIGHLIGHTS = ["#c9b2ff", "#9da4ff", "#91d1ff", "#84e4ae", "#f8df74", "#ffbf83", "#ff969d"];
