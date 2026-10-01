@@ -154,7 +154,7 @@ export default function App() {
         <span />
         <span />
       </div>
-      <button onClick={() => dispatch({ type: "toggle-solution" })}>Show move plan</button>
+      <span className="reference-solution-action">Move plan in controls</span>
     </section>
   );
 
