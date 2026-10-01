@@ -70,37 +70,41 @@ h1 {
 .board-column { min-width: 0; }
 
 .board-frame {
-  padding: 1rem 0 0;
-  perspective: 900px;
+  padding: 0.25rem 0 2.2rem;
+  perspective: 1050px;
 }
 
 .board-surface {
   position: relative;
-  width: min(100%, 620px);
+  width: min(100%, 650px);
   margin: auto;
+  transform-style: preserve-3d;
 }
 
 .board {
   display: block;
   width: 100%;
   overflow: visible;
-  filter: drop-shadow(0 28px 24px #0009);
-  transform: rotateX(13deg);
+  filter: drop-shadow(0 46px 30px #000c);
+  transform: rotateX(48deg) translateY(-1.5%);
+  transform-origin: 50% 48%;
+  will-change: transform;
 }
 
 .board-base-rim {
-  fill: #070a11;
-  stroke: #252b3a;
-  stroke-width: 2;
+  fill: #05070c;
+  stroke: #202637;
+  stroke-width: 3;
 }
 
 .board-base {
   fill: #111622;
-  stroke: #3b4356;
+  stroke: #465067;
   stroke-width: 1.5;
+  filter: drop-shadow(0 5px 4px #0008);
 }
 
-.ring {
+.ring-rotor {
   transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -113,9 +117,13 @@ h1 {
   stroke-linecap: butt;
 }
 
-.ring-shadow { stroke: #0008; }
-.ring-wall { stroke: #202534; }
-.ring-top { filter: drop-shadow(0 -1px 0 #ffffff40); }
+.ring-shadow { stroke: #000a; }
+.ring-wall { stroke: #191e2b; }
+.ring-top {
+  filter:
+    drop-shadow(0 -1px 0 #ffffff52)
+    drop-shadow(0 2px 1px #0008);
+}
 
 .ring-edge {
   fill: none;
@@ -126,9 +134,10 @@ h1 {
 .ring-inner-edge { stroke: #4b556b80; }
 
 .notch-wall {
-  fill: #171b27;
-  stroke: #ffffff20;
-  stroke-width: 0.7;
+  fill: #111621;
+  stroke: #ffffff2b;
+  stroke-width: 0.8;
+  filter: drop-shadow(0 2px 1px #0008);
 }
 
 .marker {
@@ -325,9 +334,12 @@ nav span { color: #cbd2e4; font-weight: 700; }
 @media (max-width: 720px) {
   main { padding-top: 0.65rem; }
   .game { grid-template-columns: 1fr; gap: 0.4rem; }
-  .board-surface { width: min(100%, 470px); }
-  .board { transform: rotateX(8deg); }
-  .board-frame { padding-top: 0; }
+  .board-surface { width: min(100%, 500px); }
+  .board {
+    transform: rotateX(36deg) translateY(-1%);
+    transform-origin: 50% 48%;
+  }
+  .board-frame { padding: 0 0 0.8rem; }
   aside { padding: 0.75rem; }
   .counter { margin-bottom: 0.5rem; }
   .ring-name small { display: none; }
