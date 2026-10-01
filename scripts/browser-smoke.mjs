@@ -191,7 +191,8 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    if (mobile) {
+    const expectsMobileArt = width <= 720;
+    if (expectsMobileArt) {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.mobileSrc), `${width}px viewport did not select the mobile diorama package`);
     } else {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not select the desktop diorama package`);
