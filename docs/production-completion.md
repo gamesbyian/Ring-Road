@@ -24,7 +24,7 @@ One release-validation activity remains external to the repository: a physical m
 | Directed-route exactness | Runtime completion requires a single direction per moved ring; unit coverage rejects cancellation padding while same-direction wraps remain valid. |
 | Aligned channel readability | Channel floor, notch walls, top surfaces and edges share deterministic ring-local geometry; final visual review passed at canonical mobile/desktop sizes. |
 | Marker counts legible | Marker count is generated directly from cycle count; high-cycle rings are included in browser responsiveness coverage. |
-| Center completion obvious | Browser flow verifies exact solution, enabled center, firing, and completion modal. |
+| Center and campaign completion obvious | Browser flow verifies exact solution, enabled center, firing, ordinary completion, advancing from completion, and final-puzzle campaign mastery. |
 | Exact move semantics and wraps | Domain solver/campaign tests plus browser under/exact/over coverage on a wrap puzzle. |
 | Portrait mobile layout comfortable | Browser gate covers 320×568 and 390×844, true horizontal overflow, clipped interactive controls, modal bounds, and touch-sized controls. |
 | Rapid input/reset responsive | Browser gate exercises 30 alternating inputs on a 19-step ring under a broad regression ceiling, then reset recovery. |
