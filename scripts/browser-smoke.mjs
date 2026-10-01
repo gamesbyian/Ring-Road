@@ -236,10 +236,16 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
 
     if (!mobile) {
-      await cdp.evaluate("(() => { const button = Array.from(document.querySelectorAll('header button')).find((node) => node.textContent === 'Guide'); button?.focus(); })()");
+      await cdp.evaluate("document.activeElement instanceof HTMLElement && document.activeElement.blur()");
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await waitFor(
+        async () => Boolean(await cdp.evaluate("document.activeElement?.textContent === 'Guide'")),
+        `${width}px keyboard Tab did not reach the Guide control`,
+      );
       const focusOutline = await cdp.evaluate(`(() => {
-        const button = Array.from(document.querySelectorAll('header button')).find((node) => node.textContent === 'Guide');
-        if (!button) return null;
+        const button = document.activeElement;
+        if (!(button instanceof HTMLElement)) return null;
         const style = getComputedStyle(button);
         return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
       })()`);
@@ -247,7 +253,8 @@ async function runViewport({ width, height, mobile, debugPort }) {
         focusOutline && focusOutline.width >= 2 && focusOutline.style !== "none",
         `${width}px HUD restyle obscured the visible Guide focus indicator`,
       );
-      await cdp.evaluate("Array.from(document.querySelectorAll('header button')).find((node) => node.textContent === 'Guide')?.click()");
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
       await waitFor(
         async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
         `${width}px keyboard accessibility setup did not reopen guide`,
