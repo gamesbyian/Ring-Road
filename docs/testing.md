@@ -8,7 +8,7 @@ After `npm ci`, run:
 npm run check
 ```
 
-The gate runs TypeScript strict checking, Vitest unit tests, a Vite production build, repository/link checks, and agent-context budgets. CI uses Node 22 and runs this same command.
+The gate runs TypeScript strict checking, Vitest unit tests, a Vite production build, repository/link checks, and agent-context budgets. CI uses Node 22, runs this deterministic gate, then runs the Chrome-backed browser smoke suite against the built production app.
 
 Individual commands:
 
@@ -33,7 +33,7 @@ npm run browser:smoke
 
 ## Direct browser checks
 
-For gameplay, renderer, control, or modal changes, run `npm run dev` and exercise:
+For gameplay, renderer, control, or modal changes, use the automated browser smoke gate for stable critical flows and use `npm run dev` for visual/interaction judgment that automation cannot establish. Relevant manual checks include:
 
 - both directions on multiple rings, including rapid alternation;
 - undo and reset;
@@ -45,7 +45,7 @@ For gameplay, renderer, control, or modal changes, run `npm run dev` and exercis
 - reduced-motion mode;
 - a narrow portrait viewport with no horizontal overflow.
 
-One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers both 390×844 mobile and 1440×1000 desktop viewports. It checks horizontal overflow, guide/modal layout, CW/CCW input, undo, reset, puzzle navigation, rapid alternating input on a 19-step ring, solution display, exact authored-solution replay through real controls, center fire, and completion. Keep deeper visual judgment manual; extend this harness only for stable critical flows.
+One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers both 390×844 mobile and 1440×1000 desktop viewports. It checks horizontal overflow, guide/modal layout, CW/CCW input, undo, reset, puzzle navigation, rapid alternating input on a 19-step ring, solution display, exact authored-solution replay through real controls, center fire, and completion. Final current-build screenshots at both canonical sizes were visually reviewed after that gate and did not expose a correction worth making. Keep deeper visual judgment manual; extend this harness only for stable critical flows. A physical-device responsiveness spot-check remains appropriate before treating mobile performance as release-validated.
 
 ## Prototype comparison
 
