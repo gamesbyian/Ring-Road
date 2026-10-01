@@ -4,7 +4,8 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 
 | Document | Owns |
 |---|---|
-| `3d-ring-renderer-plan.md` | Canonical production rebuild and dimensional-renderer plan |
+| `3d-ring-renderer-plan.md` | Completed production rebuild and dimensional-renderer architecture record |
+| `diorama-visual-overhaul-plan.md` | Active whole-screen diorama art direction, implementation plan, budgets, and acceptance criteria |
 | `architecture.md` | Implemented production boundaries and gameplay semantics |
 | `testing.md` | Quality gate, executable coverage, and browser finish line |
 | `production-completion.md` | Final acceptance-evidence map and external release-validation boundary |
