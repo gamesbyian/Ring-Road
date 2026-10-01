@@ -4,9 +4,9 @@ This document is the durable evidence map for the Ring Road production rebuild. 
 
 ## Completion status
 
-The production rebuild is complete in-repository. This document records the **pre-diorama production baseline**. A later visual presentation overhaul is active under [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md); that work does not reopen the completed gameplay/domain rebuild unless it uncovers a real defect.
+The production rebuild and the in-repository diorama presentation overhaul are complete. The gameplay/domain rebuild remains unchanged by the visual work; the final visual evidence and deviations are recorded in [`diorama-visual-overhaul-plan.md`](./diorama-visual-overhaul-plan.md).
 
-All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, or deployment automation are satisfied by the production path.
+All implementation phases and acceptance criteria that can be established from source, automated tests, browser automation, repository structure, deployment automation, or canonical CI screenshot review are satisfied by the production path. The final diorama audit reviewed 390×844 and 1440×1000 production captures, corrected the rear architectural depth band, and re-ran the full quality gate.
 
 One release-validation activity remains external to the repository: a physical mobile-device responsiveness spot-check. That check can increase confidence in device-specific performance, but it is not an unfinished implementation phase.
 
@@ -26,19 +26,22 @@ One release-validation activity remains external to the repository: a physical m
 | Marker counts legible | Marker count is generated directly from cycle count; high-cycle rings are included in browser responsiveness coverage. |
 | Center and campaign completion obvious | Browser flow verifies exact solution, enabled center, firing, ordinary completion, advancing from completion, and final-puzzle campaign mastery. |
 | Exact move semantics and wraps | Domain solver/campaign tests plus browser under/exact/over coverage on a wrap puzzle. |
-| Portrait mobile layout comfortable | Browser gate covers 320×568 and 390×844, true horizontal overflow, clipped interactive controls, modal bounds, and touch-sized controls. |
+| Portrait mobile layout comfortable | Browser gate covers 320×568, 360×800, 390×844, and 430×932; it checks true horizontal overflow, primary layout containment, modal bounds, and 44px controls. |
 | Rapid input/reset responsive | Browser gate exercises 30 alternating inputs on a 19-step ring under a broad regression ceiling, then reset recovery. |
-| Reduced-motion behavior | Browser automation emulates `prefers-reduced-motion: reduce` and verifies ring transitions collapse. |
-| Keyboard/modal accessibility | Modal focus acquisition, Escape dismissal, and focus restoration are browser-tested; controls have semantic buttons, labels, visible focus treatment, and modal focus trapping. |
+| Reduced-motion behavior | Browser automation emulates `prefers-reduced-motion: reduce` and verifies ring transitions plus V5 scene/completion motion collapse. |
+| Keyboard/modal accessibility | Modal focus acquisition, Escape dismissal, focus restoration, visible keyboard focus, 44px controls, and a 200%-zoom-equivalent reflow viewport are browser-tested; controls retain semantic buttons and labels. |
 | CI fast/deterministic | `npm ci`, `npm run check`, and the dependency-free Chrome smoke gate run in CI; Pages publishing also executes the deterministic quality gate. |
 | Fresh-agent discoverability | `AGENTS.md`, `docs/architecture.md`, `docs/README.md`, and context routes point directly to production authorities without requiring prototype loading. |
+| Diorama presentation | Canonical 390×844 and 1440×1000 CI captures were visually reviewed; the board is installed in a four-band miniature scene, the HUD uses one plaque/material family, and the V7 architecture-depth correction passed the full browser gate. |
 | Production deployment | GitHub Pages builds and publishes `dist/`; deployment is base-path aware and was verified green after the production audit. |
 
 ## Resolved plan deviations
 
 The original Phase 1 wording proposed a standalone lint command. The finished repository deliberately does not add a general-purpose lint dependency merely to satisfy that wording. Strict TypeScript, focused repository checks, domain/unit tests, build validation, and browser checks provide higher-value static and behavioral coverage for this small codebase. A dedicated linter should be added later only when it catches a recurring class of defects not already covered by these gates.
 
-The plan also originally treated several accessibility, target-state, and responsive behaviors as manual review items. Stable portions of those checks are now automated in `scripts/browser-smoke.mjs`; visual taste and physical-hardware performance remain matters for direct review.
+The plan also originally treated several accessibility, target-state, responsive, zoom, and decorative-failure behaviors as manual review items. Stable portions are now automated in `scripts/browser-smoke.mjs`; visual taste and physical-hardware performance remain matters for direct review.
+
+The diorama reference JPEG retained in `docs/3d-ring-renderer-concept.jpg` is not decodable by standard JPEG tooling in its current repository form. V7 therefore audited against the plan's documented reference intent and canonical production screenshots rather than claiming a direct image-to-image comparison.
 
 ## External release validation
 
