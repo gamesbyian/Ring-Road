@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Use `npm run check` for the deterministic local quality gate. Use `npm run browser:smoke` after a production build when Chrome is available to exercise the critical desktop/mobile interaction flow. Repository routing starts in [`AGENTS.md`](./AGENTS.md); current implementation boundaries live in [`docs/architecture.md`](./docs/architecture.md), while [`docs/3d-ring-renderer-plan.md`](./docs/3d-ring-renderer-plan.md) records the completed production rebuild and visual direction. [`docs/production-completion.md`](./docs/production-completion.md) maps every acceptance criterion to its evidence and isolates the remaining physical-device check as external release validation.
+Use `npm run check` for the deterministic local quality gate. Use `npm run browser:smoke` after a production build when Chrome is available to exercise the critical desktop/mobile interaction flow. Repository routing starts in [`AGENTS.md`](./AGENTS.md); current implementation boundaries live in [`docs/architecture.md`](./docs/architecture.md), while [`docs/3d-ring-renderer-plan.md`](./docs/3d-ring-renderer-plan.md) records the completed production rebuild and renderer invariants. The active visual direction is [`docs/diorama-visual-overhaul-plan.md`](./docs/diorama-visual-overhaul-plan.md). [`docs/production-completion.md`](./docs/production-completion.md) maps every acceptance criterion to its evidence and isolates the remaining physical-device check as external release validation.
 
 ## Frozen prototype
 
