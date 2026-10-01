@@ -88,10 +88,10 @@ describe("campaign and exact solver", () => {
   it("counts wrapped directed allocations as distinct exact vectors", () => {
     const analysis = analyzePuzzle({
       id: 99,
-      targetMoves: 3,
+      targetMoves: 2,
       ringCycles: [2, 2, 2, 2, 2, 2, 2],
       initial: [0, 0, 0, 0, 0, 0, 0],
-      authoring: { requireWrapInIntendedPlan: true, expectedExactVectorCount: 0 },
+      authoring: { requireWrapInIntendedPlan: true, expectedExactVectorCount: 1 },
     });
     expect(analysis.exactSolutionVectorCount).toBeGreaterThan(0);
     expect(analysis.usesWraps).toBe(true);
