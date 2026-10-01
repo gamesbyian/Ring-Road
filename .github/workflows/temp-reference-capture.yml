@@ -1,0 +1,40 @@
+name: Temporary visual reference capture
+
+on:
+  push:
+    branches: [audit/reference-image-direct-comparison]
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Start preview
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/ring-road-vite.log 2>&1 &
+          echo $! > /tmp/ring-road-vite.pid
+          for i in {1..60}; do
+            curl -fsS http://127.0.0.1:4173/Ring-Road/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/ring-road-vite.log
+          exit 1
+      - name: Capture canonical screenshots
+        run: |
+          google-chrome --headless --disable-gpu --hide-scrollbars --no-sandbox --window-size=1440,1000 --screenshot=desktop-1440x1000.png http://127.0.0.1:4173/Ring-Road/
+          google-chrome --headless --disable-gpu --hide-scrollbars --no-sandbox --window-size=390,844 --screenshot=mobile-390x844.png http://127.0.0.1:4173/Ring-Road/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reference-comparison-captures
+          path: |
+            desktop-1440x1000.png
+            mobile-390x844.png
