@@ -16,6 +16,8 @@ The finished game should feel as though the player is looking down onto a loving
 
 The target experience is immediately colorful and inviting, physically dimensional rather than "SVG on a webpage", scenic enough to have a memorable identity before the player moves anything, visually coherent from board to controls to modal surfaces, readable and responsive on phones despite the richer presentation, fast enough that visual richness never compromises ring input, and original to Ring Road rather than a literal reproduction of the reference's fantasy castle.
 
+The desired first impression is ordered and non-negotiable: first, **this is a charming little world**; second, **there is a large physical rainbow puzzle at its center**; third, **the controls and information surfaces belong to that same world**; fourth, **it is immediately obvious what can be interacted with**.
+
 A useful shorthand is **miniature puzzle monument in a bright storybook landscape**.
 
 ## Non-goals
@@ -62,7 +64,7 @@ The split is therefore: **live geometry where state changes, baked illustration 
 
 The baked art and live board need a shared coordinate contract or the result will drift into brittle hand-tuned offsets.
 
-Use a scene container with an explicit design aspect ratio for each art direction, then position major planes using normalized percentages/CSS custom properties rather than viewport pixels. Desktop and portrait may use different design canvases, but each should define:
+Use a scene container with an explicit design aspect ratio for each art direction, then position major planes using normalized percentages/CSS custom properties rather than viewport pixels. Desktop and portrait may use different design canvases, but each must define a typed or tokenized scene contract, for example `desktopScene` and `portraitScene`, as the single source of truth for:
 
 - board center and nominal diameter;
 - horizon/rear-architecture band;
@@ -72,7 +74,7 @@ Use a scene container with an explicit design aspect ratio for each art directio
 - no-occlusion zone around all seven ring gaps/markers;
 - crop-safe outer gutters.
 
-Export guides for those zones alongside source art. `DioramaScene` should own the coordinate mapping; individual UI components should not invent their own scenic offsets.
+Export guides for those zones alongside source art. `DioramaScene` owns the coordinate mapping; individual UI components must not invent their own scenic offsets. Functional components consume scene variables/tokens rather than hard-coded art-relative pixel positions.
 
 Before final art, create a registration proof using flat-color placeholder layers and verify it at every target viewport. Final painted exports must drop into the same contract without changing gameplay layout.
 
@@ -97,7 +99,8 @@ Do not turn network-sensitive paint metrics into flaky hard CI gates; use them a
 
 ### Desktop / landscape
 
-- Large central board occupying roughly the middle 55–65% of viewport width.
+- Board should occupy approximately **58–64% of viewport width** at the canonical 1440×1000 review size, with minor responsive variation allowed only when composition requires it.
+- Board center should sit at roughly **50% x / 56% y** of the scene design canvas.
 - Environmental architecture wraps behind and around the board.
 - Foreground plinth/steps overlap the lower edge of the scene.
 - Ring controls attach visually to one side of the arena rather than floating in generic app chrome.
@@ -113,6 +116,9 @@ Portrait mobile is a separate art direction, not a scaled desktop screenshot. Pr
 
 At 320–430px widths:
 
+- board should occupy approximately **82–90% of available content width**;
+- board center should sit at roughly **50% x / 38–44% y** of the scene design canvas;
+- retain at least one visible top framing element and one visible lower/foreground framing element;
 - crop the distant scene aggressively;
 - retain selected towers/trees/stonework as top/side framing;
 - keep the board large enough for markers and gaps to read;
@@ -122,6 +128,10 @@ At 320–430px widths:
 - simplify or remove decoration that competes with interaction.
 
 Mobile should still unmistakably be the same miniature world.
+
+### No-occlusion rule
+
+No decorative foreground layer may cover live ring surfaces, ring gaps, orientation markers, button labels, move/puzzle/status text, or focus indicators. Scenic overlap is allowed only outside the board and control safe zones defined by the scene registration contract.
 
 ## Art direction
 
@@ -147,11 +157,13 @@ Use one coherent baked lighting direction and mirror it in CSS/SVG board treatme
 
 ## Board visual overhaul
 
-The current board remains the mechanical base but should become materially more substantial.
+The current board remains the mechanical base but should become materially more substantial. This is not complete until the board reads as an object with believable weight and volume rather than merely a well-shaded vector graphic.
 
 ### Geometry
 
 Evaluate and tune ring stroke/annulus thickness, spacing, wall depth, board rim thickness, center hub depth, outer plinth diameter, and notch-wall visibility. Rings should feel broad enough to touch, gaps should read as real cuts, and the outer platform should feel heavy enough to support the mechanism. Do not change logical orientation math or gameplay hit targets to achieve this.
+
+Board review is explicitly pass/fail at the end of this phase. The board must answer yes to all of the following: does it look like something a person could physically pick up; does the outer base feel heavy enough to support the mechanism; do the gaps read as cuts through material rather than missing stroke segments; do aligned gaps read as one continuous road; and does the board remain the dominant gameplay object once surrounded by scenery?
 
 ### Surface treatment
 
@@ -198,12 +210,14 @@ Preferred formats: SVG for simple icons/plaques/banners/masks; WebP for rich ras
 
 Never bake puzzle numbers, move counts, instructions, or functional controls into scenery.
 
-### Initial asset budgets
+### Asset manifest and initial budgets
+
+All shipped diorama assets must be recorded in a lightweight manifest or typed inventory containing at least: purpose, responsive variant, file type, pixel dimensions, compressed size, critical/noncritical classification, eager/lazy loading intent, source/provenance, and fallback expectation.
 
 - Desktop critical scene art: target <= 1.5 MB compressed total.
 - Mobile critical scene art: target <= 900 KB compressed total.
 - No single decorative raster asset > 700 KB without explicit review.
-- Avoid more than four large full-frame raster layers.
+- Avoid more than four large full-frame raster layers on desktop and three on mobile.
 - Declare intrinsic dimensions to prevent layout shift.
 
 Budgets may be changed from measured evidence, but increases must purchase visible quality.
@@ -219,6 +233,10 @@ Introduce a presentation boundary such as `src/render/DioramaScene.tsx` alongsid
 ### Identity/header
 
 Replace the generic dark app header with an integrated Ring Road sign/plaque treatment. Title remains real text or has an equivalent accessible name. Guide remains discoverable. Mobile identity must not consume board space.
+
+### Shared HUD material system
+
+Treat title sign, puzzle plaque, moves plaque, ring-control plaques, action/tool strip, status banner, and modal surfaces as one material family. They should share a small set of visual tokens for surface/background, border/bevel, shadow, primary text, secondary text, accent/gold, focus, and disabled states. Do not allow each panel to invent a separate material language.
 
 ### Ring controls
 
@@ -242,9 +260,9 @@ Use a deliberate stacking model: backdrop, rear, board plane, UI plane, foregrou
 
 ## Responsive validation
 
-At minimum validate 320×568, 360×800, 390×844, 430×932, 768×1024, 1024×768, 1440×1000, and a wide 16:9 desktop.
+At minimum validate 320×568, 360×800, 390×844, 430×932, 768×1024, 1024×768, 1440×1000, and a wide 16:9 desktop. At 320–430px portrait the board remains dominant, all ring controls remain available without horizontal scrolling, touch targets remain comfortable, the title does not consume disproportionate vertical space, and at least a recognizable top and foreground scenic frame remain visible.
 
-For each, verify board dominance, no clipped controls, no gap/marker obscured by foreground art, no text/prop collisions, landscape-phone usability, safe-area behavior where relevant, and comfortable modal bounds. Prefer `clamp()`, grid/flex, `aspect-ratio`, and container-relative sizing before breakpoint-specific pixel offsets.
+For each, verify board dominance, no clipped controls, no gap/marker obscured by foreground art, no text/prop collisions, landscape-phone usability, safe-area behavior where relevant, and comfortable modal bounds. If any scenic feature makes mobile meaningfully worse, the scenic feature loses. Prefer `clamp()`, grid/flex, `aspect-ratio`, and container-relative sizing before breakpoint-specific pixel offsets.
 
 ## Accessibility
 
@@ -305,7 +323,7 @@ High-DPI exports should be sized for the maximum displayed pixel density that pr
 
 ## Typography
 
-The reference uses friendly display lettering and sturdy readable UI type. The overhaul may introduce a more characterful display face for the Ring Road identity and headings, but body/control text should remain exceptionally legible.
+The reference uses friendly display lettering and sturdy readable UI type. Use at most **one display typeface** and **one UI/body typeface**. The overhaul may introduce a more characterful display face for the Ring Road identity and headings, but body/control text should remain exceptionally legible.
 
 If a custom font is used:
 
@@ -317,6 +335,8 @@ If a custom font is used:
 - verify no control dimensions break during font swap.
 
 Do not load fonts from Google Fonts or another runtime CDN.
+
+Functional text must never be baked into scenic art. This prohibition applies to the game title, puzzle number, move count, controls, instructions, actions, status, and modal copy.
 
 ## Color, contrast, and visual-state safety
 
@@ -330,14 +350,14 @@ Where artwork sits behind text, prefer an opaque/semi-opaque plaque surface rath
 
 Target current evergreen Chromium, Firefox, and Safari behavior using ordinary HTML/CSS/SVG primitives. Avoid experimental rendering features as core requirements. Decorative enhancements may use progressive enhancement only when absence leaves a coherent scene.
 
-Scene loading failures must be survivable. If one or more decorative assets fail:
+Scene loading failures must be survivable and explicitly tested. If one or more decorative assets fail:
 
 - board and controls remain laid out and usable;
-- missing foreground art cannot uncover hidden controls or change hit areas;
+- missing foreground art cannot uncover hidden controls, alter hit areas, or trigger layout collapse;
 - fallback background colors/gradients preserve text contrast;
 - gameplay tests continue to function without relying on image decode events.
 
-Do not gate app initialization on decorative asset promises.
+Do not gate app initialization on decorative asset promises, image decode completion, or intrinsic dimensions that are not reserved in layout.
 
 ## Zoom, text scaling, and safe geometry
 
@@ -370,6 +390,10 @@ Do not wait until V7 to judge the art. At the end of V1 through V5, capture at l
 4. Did the added richness cost measurable responsiveness or layout robustness?
 
 If the answer to 2, 3, or 4 is materially negative, fix that phase before adding more decorative density.
+
+## Phase-gate rule
+
+A phase is not complete if it improves visual richness while materially harming board readability, interaction clarity, mobile usability, input responsiveness, accessibility behavior, or layout robustness. Those regressions must be fixed before the next visual layer is added.
 
 ## Implementation phases
 
@@ -428,6 +452,34 @@ If the answer to 2, 3, or 4 is materially negative, fix that phase before adding
 - Update architecture/testing/completion docs.
 - Record deliberate deviations.
 **Exit:** diorama overhaul is production-complete.
+
+## Final approval rubric
+
+Before declaring completion, the final canonical screenshots and live build must receive explicit yes/no review across five sections:
+
+### A. Diorama identity
+- Does the game unmistakably feel like a miniature physical world?
+- Is it substantially closer to the reference image's spirit than the pre-overhaul build?
+
+### B. Board physicality
+- Do the rings feel materially thick and tangible?
+- Do gaps read as carved channels and aligned gaps as one continuous road?
+
+### C. UI coherence
+- Do plaques, controls, status, and modals feel native to the same world?
+- Is any major element still visibly inherited from the old dark app shell?
+
+### D. Mobile survival
+- Does portrait mobile still look intentionally diorama-like rather than merely cropped?
+- Is 320px portrait fully playable with comfortable controls and no horizontal overflow?
+
+### E. Technical robustness
+- Are all behavioral checks green?
+- Are asset budgets satisfied or explicitly justified by measured quality gains?
+- Are decorative layers input-transparent?
+- Are reduced motion, keyboard behavior, zoom, and fallback-with-missing-art intact?
+
+If any section fails, the overhaul is not done.
 
 ## Acceptance criteria
 
