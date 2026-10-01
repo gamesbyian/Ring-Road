@@ -1309,7 +1309,7 @@ h1 {
   .puzzle-plaque button {
     flex: 1;
     min-width: 0;
-    min-height: 40px;
+    min-height: 44px;
   }
 }
 
