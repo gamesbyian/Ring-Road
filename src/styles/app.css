@@ -1267,6 +1267,10 @@ h1 {
     padding-left: 0.26rem;
   }
 
+  .control-monument .ring-control button {
+    min-height: 46px;
+  }
+
   .control-monument .ring-name {
     font-size: 0.78rem;
   }
