@@ -2,7 +2,7 @@
 
 ## Status
 
-**Canonical production implementation plan. Phases 0–7 are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers responsive overflow, modal structure, CW/CCW input, undo/reset/navigation, rapid alternating input on a 19-step ring, exact authored-solution replay, center fire, and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete; the only release-validation item that still cannot be established in repository automation is a physical-mobile-hardware responsiveness spot-check.**
+**Canonical production implementation plan. Phases 0–7 are implemented. The production TypeScript/React app now owns the game; the prototype is frozen reference evidence. The SVG/CSS board has deterministic physical geometry, aligned-channel floors, shaded notch walls, recessed orientation dimples, truthful one-step motion, reduced-motion behavior, accessible controls, polished modals/game chrome, and reviewed 390×844 mobile plus 1440×1000 desktop presentation. CI runs the deterministic quality gate and a dependency-free headless-Chrome smoke suite that covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop layouts; true overflow and clipped controls; modal structure; CW/CCW input; undo/reset/navigation; rapid alternating input on a 19-step ring; exact authored-solution replay; center fire; and completion. A fresh final visual capture of the current build found no correction worth making. Phase 8 consolidation is implemented in the current production path. The repository rebuild is complete; the only release-validation item that still cannot be established in repository automation is a physical-mobile-hardware responsiveness spot-check.**
 
 The existing single-file Ring Road app is now considered a **prototype/reference implementation**, not the architecture to preserve.
 
@@ -29,6 +29,7 @@ Behavioral truth to preserve unless deliberately changed:
 - one discrete move = one legal orientation step on one ring;
 - clockwise and counterclockwise controls;
 - exact move target, not a maximum;
+- runtime completion must preserve directed-route semantics: a ring may wrap, but counted moves on that ring may not reverse direction as cancellation padding;
 - solved state = all ring gaps agree on one shared spoke;
 - cosmetic board orientation is independent of logical solvability;
 - continuous same-direction full wraps may be part of the intended exact solution;
@@ -301,7 +302,7 @@ Input responsiveness is part of correctness.
 Production rules:
 
 - no full-tree work per animation frame;
-- precompute static ring geometry from cycle counts;
+- precompute static ring geometry from cycle counts, including channel floors and notch faces, so all moving physical surfaces share one transform and one geometry authority;
 - avoid raster regeneration on move;
 - prefer compositor-friendly transforms;
 - cache deterministic geometry;
@@ -454,6 +455,7 @@ The production rebuild is complete when:
 - all intended prototype gameplay behavior is either preserved or consciously superseded;
 - every logical state renders unambiguously;
 - one click visibly equals one legal step;
+- runtime completion rejects CW/CCW cancellation padding and accepts continuous same-direction wraps;
 - aligned gaps read as one continuous channel;
 - marker counts remain legible;
 - center-ball completion is obvious;
@@ -496,3 +498,12 @@ Reject:
 - UI ornament that overwhelms the board.
 
 Ring Road should emerge from the rebuild looking like a finished version of itself.
+
+## Post-rebuild audit hardening
+
+A production audit after the initial consolidation found two gaps that the phase checklist had not made explicit enough:
+
+- solver validation rejected cancellation padding, but runtime completion previously checked only final alignment plus move count; completion now also requires one continuous direction per moved ring, so live play matches the directed-vector model;
+- notch-wall polygons were positioned from destination state outside the animated rotor while the ring top transitioned; channel/notch geometry is now centralized and transformed with the ring, preventing transient physical desynchronization.
+
+The audit also widened browser coverage to the declared 320px minimum layout, checks for clipped interactive controls rather than relying on hidden overflow, and makes Pages deployment run the full deterministic quality gate before publishing.
