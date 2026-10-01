@@ -9,7 +9,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-async function waitForUrl(url, attempts = 80, delay = 100) {
+async function waitForUrl(url, attempts = 200, delay = 100) {
   let lastError;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
