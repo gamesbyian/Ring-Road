@@ -125,7 +125,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
   const fireLabel = completed ? "Puzzle complete" : canFire ? "Fire center ball" : "Center ball locked until exact alignment";
 
   return (
-    <div className="board-frame">
+    <div className={`board-frame ${completed ? "board-complete" : ""}`}>
       <div className="board-surface">
         <svg
           className="board"
@@ -186,6 +186,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
           <circle className={`ball ${completed ? "ball-fired" : ""}`} cx={CENTER_X} cy={CENTER_Y - 6} r="15" />
           <circle className={`ball-shine ${completed ? "ball-fired" : ""}`} cx={CENTER_X - 5} cy={CENTER_Y - 11} r="4" />
         </svg>
+        <span className={`completion-halo ${completed ? "completion-halo-active" : ""}`} aria-hidden="true" />
         <button className="hub-button" onClick={onFire} disabled={!canFire || completed} aria-label={fireLabel}>
           <span className="visually-hidden">{fireLabel}</span>
         </button>
