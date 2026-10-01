@@ -109,8 +109,8 @@ button:disabled { opacity: 0.42; cursor: default; transform: none; }
   left: 50%;
   top: auto;
   right: auto;
-  bottom: 21%;
-  width: min(92vw, 1180px);
+  bottom: 41%;
+  width: min(88vw, 1120px);
   height: auto;
   aspect-ratio: 1180 / 420;
   transform: translateX(-50%);
@@ -627,8 +627,8 @@ nav button { min-width: 92px; }
   }
 
   .scene-art-rear {
-    bottom: 52%;
-    width: 116vw;
+    bottom: 62%;
+    width: 108vw;
     aspect-ratio: 500 / 240;
   }
 
