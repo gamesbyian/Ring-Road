@@ -17,9 +17,12 @@ npm run typecheck
 npm test
 npm run build
 npm run check:repo
+npm run check:art
 npm run check:context
 npm run browser:smoke
 ```
+
+`npm run check:art` enforces per-asset review thresholds, desktop/mobile package budgets, variant placement, manifest registration, and the maximum scenic-layer count.
 
 `npm run browser:smoke` requires the production `dist/` build plus `google-chrome`. CI runs it after `npm run check`; the script uses only Node 22 built-ins and Chrome's DevTools protocol, so browser coverage adds no npm dependency.
 
@@ -45,7 +48,7 @@ For gameplay, renderer, control, or modal changes, use the automated browser smo
 - reduced-motion mode;
 - a narrow portrait viewport with no horizontal overflow.
 
-One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness covers 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop viewports. It checks true horizontal overflow, clipped interactive targets, guide/modal layout, modal focus acquisition, Escape dismissal and focus restoration, reduced-motion transition collapse, CW/CCW input, undo, reset, puzzle navigation, rapid alternating input on a 19-step ring, aligned under/exact/over target states on a wrapped puzzle, solution display, exact authored-solution replay through real controls, center fire, ordinary completion, completion-driven advancement, and final-puzzle campaign mastery. Unit coverage separately guards the directed-route completion invariant so cancellation padding cannot satisfy the runtime win condition. Final current-build screenshots at both canonical sizes were visually reviewed after that gate and did not expose a correction worth making. Keep deeper visual judgment manual; extend this harness only for stable critical flows. A physical-device responsiveness spot-check remains the only external release-validation item. It is tracked as such in `production-completion.md`; it is not an unfinished implementation gate.
+One activation must visibly and logically equal one step. Reset and puzzle changes must not queue stale motion. The permanent browser smoke harness runs full interaction coverage at 320×568 compact mobile, 390×844 mobile, and 1440×1000 desktop, plus structural responsive passes at 360×800, 430×932, 768×1024, 1024×768, and 1920×1080. It checks true horizontal overflow, clipped and sub-44px interactive targets, guide/modal layout, primary board/control/navigation containment, responsive scenic-package selection, decorative-art input transparency, modal focus acquisition, visible keyboard focus, Escape dismissal and focus restoration, reduced-motion transition collapse, CW/CCW input, undo, reset, puzzle navigation, rapid alternating input on a 19-step ring, aligned under/exact/over target states on a wrapped puzzle, solution display, exact authored-solution replay through real controls, center fire, ordinary completion, completion-driven advancement, final-puzzle campaign mastery, and continued gameplay layout after decorative art is deliberately removed. Unit coverage separately guards the directed-route completion invariant so cancellation padding cannot satisfy the runtime win condition. Final current-build screenshots at both canonical sizes were visually reviewed after that gate and did not expose a correction worth making. Keep deeper visual judgment manual; extend this harness only for stable critical flows. A physical-device responsiveness spot-check remains the only external release-validation item. It is tracked as such in `production-completion.md`; it is not an unfinished implementation gate.
 
 ## Prototype comparison
 
