@@ -6,7 +6,7 @@ Compact router. Read only the authority needed for the task; do not load the arc
 
 Ring Road's production TypeScript application is now the active implementation. The existing single-file app is a frozen prototype/reference implementation.
 
-For product work, start with `docs/architecture.md`; use `docs/diorama-visual-overhaul-plan.md` for active visual direction, `docs/3d-ring-renderer-plan.md` for completed rebuild history/invariants, and `docs/production-completion.md` only when auditing the pre-overhaul production baseline or release-validation status.
+For product work, start with `docs/architecture.md`; use `docs/diorama-visual-overhaul-plan.md` for the completed visual authority, `docs/3d-ring-renderer-plan.md` for completed rebuild history/invariants, and `docs/production-completion.md` only when auditing the pre-overhaul production baseline or release-validation status.
 
 Do not preserve prototype architecture merely for compatibility.
 
@@ -18,7 +18,7 @@ Do not preserve prototype architecture merely for compatibility.
 | Completion / release-validation audit | `docs/production-completion.md`, then `docs/testing.md` or the relevant authority |
 | Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
-| Renderer/UI/accessibility | `docs/diorama-visual-overhaul-plan.md` for active art direction, then `src/render/`, `src/assets/diorama/manifest.ts`, `src/App.tsx`, and `src/styles/`; use the completed dimensional-renderer plan for historical architecture/invariants |
+| Renderer/UI/accessibility | `docs/diorama-visual-overhaul-plan.md` for current art-direction authority, then `src/render/`, `src/assets/diorama/manifest.ts`, `src/App.tsx`, and `src/styles/`; use the completed dimensional-renderer plan for historical architecture/invariants |
 | Solver/alignment/exact-move behavior | `docs/architecture.md`, then `src/domain/solver.ts` and domain tests |
 | Validation / red CI | `docs/testing.md`, then the failing script/test |
 | Repository hygiene | execute `docs/periodic-repository-hygiene.md` from current `main` |
