@@ -125,7 +125,7 @@ async function applySolutionLines(cdp, lines, include = () => true) {
   }
 }
 
-async function runViewport({ width, height, mobile, debugPort }) {
+async function runViewport({ width, height, mobile, debugPort, fullFlow = true }) {
   const userDataDir = `/tmp/ring-road-chrome-${debugPort}`;
   let chrome;
   let cdp;
@@ -251,8 +251,47 @@ async function runViewport({ width, height, mobile, debugPort }) {
       `${width}px guide did not close`,
     );
 
+    const layoutBounds = await cdp.evaluate(`(() => {
+      const selectors = ['.board-frame', '.control-monument', '.puzzle-plaque'];
+      return selectors.map((selector) => {
+        const node = document.querySelector(selector);
+        if (!node) return { selector, missing: true };
+        const rect = node.getBoundingClientRect();
+        return {
+          selector,
+          missing: false,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        };
+      });
+    })()`);
+    assert(
+      layoutBounds.every((item) => !item.missing && item.width > 0 && item.height > 0 && item.left >= -1 && item.right <= width + 1),
+      `${width}px viewport has escaped or missing primary layout regions: ${JSON.stringify(layoutBounds)}`,
+    );
+
+    if (!fullFlow) return;
+
     if (!mobile) {
-      await cdp.evaluate("document.activeElement instanceof HTMLElement && document.activeElement.blur()");
+      await cdp.evaluate(`(() => {
+        document.querySelectorAll('.scene-art source').forEach((source) => source.removeAttribute('srcset'));
+        document.querySelectorAll('.scene-art img').forEach((img) => img.removeAttribute('src'));
+      })()`);
+      const fallbackLayout = await cdp.evaluate(`(() => {
+        const board = document.querySelector('.board-frame')?.getBoundingClientRect();
+        const controls = document.querySelector('.control-monument')?.getBoundingClientRect();
+        return {
+          board: Boolean(board && board.width > 0 && board.height > 0),
+          controls: Boolean(controls && controls.width > 0 && controls.height > 0),
+        };
+      })()`);
+      assert(fallbackLayout?.board && fallbackLayout?.controls, `${width}px decorative-art failure removed functional gameplay layout`);
+    }
+
+    if (!mobile) {
+      await cdp.evaluate("(() => { document.body.tabIndex = -1; document.body.focus(); })()");
       await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
       await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
       await waitFor(
@@ -502,10 +541,18 @@ const server = spawn("node_modules/.bin/vite", ["preview", "--host", "127.0.0.1"
 
 try {
   await waitForUrl(APP_URL);
+
   await runViewport({ width: 320, height: 568, mobile: true, debugPort: 9222 });
   await runViewport({ width: 390, height: 844, mobile: true, debugPort: 9223 });
   await runViewport({ width: 1440, height: 1000, mobile: false, debugPort: 9224 });
-  console.log("Browser smoke checks passed for compact mobile, mobile, and desktop viewports.");
+
+  await runViewport({ width: 360, height: 800, mobile: true, debugPort: 9225, fullFlow: false });
+  await runViewport({ width: 430, height: 932, mobile: true, debugPort: 9226, fullFlow: false });
+  await runViewport({ width: 768, height: 1024, mobile: false, debugPort: 9227, fullFlow: false });
+  await runViewport({ width: 1024, height: 768, mobile: false, debugPort: 9228, fullFlow: false });
+  await runViewport({ width: 1920, height: 1080, mobile: false, debugPort: 9229, fullFlow: false });
+
+  console.log("Browser smoke checks passed across the full diorama target viewport matrix.");
 } finally {
   server.kill("SIGTERM");
 }

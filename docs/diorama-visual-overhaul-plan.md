@@ -455,6 +455,8 @@ A phase is not complete if it improves visual richness while materially harming 
 - Verify decorative failure fallback.
 **Exit:** richer art costs no gameplay reliability.
 
+**Implementation checkpoint:** V6 now enforces the complete target viewport matrix in browser smoke: full gameplay at 320×568, 390×844, and 1440×1000, with lean structural passes at 360×800, 430×932, 768×1024, 1024×768, and 1920×1080. The gate verifies primary layout containment, 44px controls, responsive art selection, pointer transparency, modal bounds, and no overflow at every class. Desktop full-flow deliberately removes every decorative scene source before continuing interaction, proving gameplay does not depend on art decode. The art validator now enforces the plan's 1.5 MB desktop / 900 KB mobile package budgets and 4/3-layer caps in addition to the 700 KB single-file review threshold. Existing gates continue to cover rapid input, keyboard focus, touch-sized controls, and reduced motion.
+
 ### V7 — Final visual audit
 - Capture canonical screenshots.
 - Compare against reference intent and approved milestones.
