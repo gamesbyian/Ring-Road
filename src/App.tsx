@@ -118,7 +118,7 @@ export default function App() {
   const navigation = (
     <nav className="puzzle-plaque" aria-label="Puzzle navigation">
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
-      <span className="puzzle-index"><small>Puzzle</small>{puzzle.id}<small>of {CAMPAIGN.length}</small></span>
+      <span className="puzzle-index"><small>Puzzle </small>{puzzle.id}<small> of {CAMPAIGN.length}</small></span>
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
     </nav>
   );
