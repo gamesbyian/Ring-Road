@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 420">
+  <defs><linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2dfb3"/><stop offset=".55" stop-color="#d3b37b"/><stop offset="1" stop-color="#a67d49"/></linearGradient></defs>
+  <g fill="url(#stone)" stroke="#8e683d" stroke-width="4">
+    <path d="M40 420V150h140V420Z"/><path d="M1000 420V150h140V420Z"/>
+    <path d="M20 160h180l-18-36h-144Z"/><path d="M980 160h180l-18-36h-144Z"/>
+    <path d="M300 420V210h580V420Z"/>
+  </g>
+  <path d="M474 420V300c0-66 52-118 116-118s116 52 116 118v120Z" fill="#39465c"/>
+  <path d="M490 420V304c0-56 44-100 100-100s100 44 100 100v116Z" fill="#223047"/>
+  <g fill="#5f8156">
+    <circle cx="245" cy="335" r="62"/><circle cx="930" cy="335" r="70"/><circle cx="210" cy="385" r="48"/><circle cx="970" cy="390" r="52"/>
+  </g>
+  <g fill="#d6a43d"><path d="M78 105v-55h6v55z"/><path d="M1096 105V50h6v55z"/></g>
+  <g fill="#ef6a55"><path d="M84 52l56 17-56 20z"/><path d="M1102 52l-56 17 56 20z"/></g>
+</svg>
