@@ -6,35 +6,62 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-production
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for legacy Pages publisher for this commit
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "Waiting for GitHub's legacy Pages publisher so the Vite deploy is always last."
+          for attempt in {1..60}; do
+            runs="$(curl -fsSL \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/$REPO/actions/runs?head_sha=$SHA&per_page=20")"
+
+            legacy="$(printf '%s' "$runs" | jq -r '[.workflow_runs[] | select(.name == "pages build and deployment")] | first | if . == null then "missing" else (.status + ":" + (.conclusion // "")) end')"
+
+            case "$legacy" in
+              completed:*)
+                echo "Legacy Pages run finished: $legacy"
+                break
+                ;;
+              missing)
+                echo "Legacy Pages run not visible yet (attempt $attempt/60)."
+                ;;
+              *)
+                echo "Legacy Pages run is $legacy (attempt $attempt/60)."
+                ;;
+            esac
+
+            if [ "$attempt" -eq 60 ]; then
+              echo "ERROR: Legacy Pages publisher did not finish within the wait window." >&2
+              exit 1
+            fi
+            sleep 3
+          done
+
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Make Actions the only Pages deployment source
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-        run: |
-          curl --fail-with-body -L \
-            -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/$REPO/pages" \
-            -d '{"build_type":"workflow"}'
       - run: npm ci
       - run: npm run check
       - uses: actions/configure-pages@v5
@@ -51,7 +78,7 @@ jobs:
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy Vite build to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 
@@ -64,10 +91,10 @@ jobs:
           PAGE_URL: ${{ needs.deploy.outputs.page_url }}
         run: |
           set -euo pipefail
-          # Pages can take a few seconds to become readable after deploy completes.
+          html=""
           for attempt in {1..20}; do
             html="$(curl -fsSL "${PAGE_URL}?deploy=${GITHUB_SHA}" || true)"
-            if [ -n "$html" ]; then
+            if printf '%s' "$html" | grep -q '/Ring-Road/assets/'; then
               break
             fi
             sleep 3
