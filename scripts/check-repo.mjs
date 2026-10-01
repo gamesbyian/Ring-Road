@@ -15,6 +15,7 @@ const required = [
   "src/content/campaign.ts",
   "src/app/game-state.ts",
   "src/render/RingBoard.tsx",
+  "scripts/browser-smoke.mjs",
   "prototype/v1/index.html",
   "prototype/v1/README.md",
   "prototype/v1/SHA256SUMS",
@@ -34,7 +35,7 @@ if (!html.includes('/src/main.tsx')) {
 }
 
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
-for (const script of ["dev", "typecheck", "test", "build", "check"]) {
+for (const script of ["dev", "typecheck", "test", "build", "check", "browser:smoke"]) {
   if (!packageJson.scripts?.[script]) fail(`package.json missing ${script} script`);
 }
 

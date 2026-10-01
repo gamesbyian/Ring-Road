@@ -4,9 +4,9 @@ Compact router. Read only the authority needed for the task; do not load the arc
 
 ## Current direction
 
-Ring Road is being rebuilt for production. The existing single-file app is a prototype/reference implementation.
+Ring Road's production TypeScript application is now the active implementation. The existing single-file app is a frozen prototype/reference implementation.
 
-For production work, start with `docs/3d-ring-renderer-plan.md` and `docs/architecture.md`.
+For product work, start with `docs/architecture.md`; use `docs/3d-ring-renderer-plan.md` for the rebuild history, visual target, remaining finish-line work, and future renderer direction.
 
 Do not preserve prototype architecture merely for compatibility.
 
@@ -14,7 +14,7 @@ Do not preserve prototype architecture merely for compatibility.
 
 | Task | Read first |
 |---|---|
-| Production rebuild / implementation | `docs/3d-ring-renderer-plan.md`, then `docs/architecture.md` |
+| Production implementation / finish-line work | `docs/architecture.md`, then `docs/3d-ring-renderer-plan.md` where visual/rebuild context is relevant |
 | Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
 | Renderer/UI/accessibility | dimensional-renderer plan sections, then `src/render/`, `src/App.tsx`, and `src/styles/` |
@@ -57,9 +57,7 @@ If production intentionally differs from prototype behavior, encode the intended
 
 ## Verification
 
-Use the production scripts defined by the rebuild as they are introduced.
-
-During the transition, run the existing repository checks as well. Browser-facing changes require direct interaction testing on a narrow/mobile viewport.
+Use `npm run check` for deterministic local validation. Browser-facing changes also require `npm run browser:smoke` after a production build when Chrome is available, plus direct visual judgment where appearance itself is the subject of the change.
 
 ## Context budget
 

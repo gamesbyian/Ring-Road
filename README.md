@@ -1,6 +1,6 @@
 # Ring Road
 
-Ring Road is a seven-ring alignment puzzle being rebuilt as a production TypeScript application. Rotate every concentric ring until its gap shares one spoke, using exactly the puzzle's target number of moves.
+Ring Road is a seven-ring alignment puzzle implemented as a production TypeScript application. Rotate every concentric ring until its gap shares one spoke, using exactly the puzzle's target number of moves.
 
 ## Production development
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Use `npm run check` for the complete local quality gate. Repository routing starts in [`AGENTS.md`](./AGENTS.md); the canonical implementation plan is [`docs/3d-ring-renderer-plan.md`](./docs/3d-ring-renderer-plan.md).
+Use `npm run check` for the deterministic local quality gate. Use `npm run browser:smoke` after a production build when Chrome is available to exercise the critical desktop/mobile interaction flow. Repository routing starts in [`AGENTS.md`](./AGENTS.md); current implementation boundaries live in [`docs/architecture.md`](./docs/architecture.md), while [`docs/3d-ring-renderer-plan.md`](./docs/3d-ring-renderer-plan.md) records the production rebuild, visual target, and remaining release validation.
 
 ## Frozen prototype
 
