@@ -4,6 +4,8 @@ Ring Road is a seven-ring alignment puzzle implemented as a production TypeScrip
 
 ## Production development
 
+Requires Node.js 22.12 or newer.
+
 ```bash
 npm install
 npm run dev
