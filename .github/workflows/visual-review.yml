@@ -1,0 +1,34 @@
+name: Visual Review
+
+on:
+  push:
+    branches: [review/final-visual-pass]
+    paths-ignore:
+      - "tmp/visual-review/**"
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/final-visual-pass
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/browser-smoke.mjs --capture-dir=tmp/visual-review
+      - name: Commit current production screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tmp/visual-review
+          git diff --cached --quiet && exit 0
+          git commit -m "review: capture current desktop and mobile UI"
+          git push origin HEAD:review/final-visual-pass
