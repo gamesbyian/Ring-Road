@@ -214,6 +214,22 @@ async function runViewport({ width, height, mobile, debugPort }) {
         async () => (await cdp.evaluate("document.querySelector('.modal h2')?.textContent")) === "How to play",
         `${width}px keyboard accessibility setup did not reopen guide`,
       );
+      await waitFor(
+        async () => Boolean(await cdp.evaluate("document.activeElement?.matches('.modal article')")),
+        `${width}px reopened modal did not receive focus`,
+      );
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await waitFor(
+        async () => Boolean(await cdp.evaluate("document.activeElement?.matches('.modal-footer button')")),
+        `${width}px Tab did not enter the modal action`,
+      );
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      assert(
+        await cdp.evaluate("document.activeElement?.matches('.modal-footer button')"),
+        `${width}px modal focus escaped after tabbing past its last action`,
+      );
       await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
       await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
       await waitFor(
