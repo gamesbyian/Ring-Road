@@ -1102,3 +1102,91 @@ h1 {
     min-width: 92px;
   }
 }
+
+
+/* V5 restrained scene polish */
+@keyframes scene-settle-title {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scene-settle-rear {
+  from { opacity: 0; transform: translateY(10px) scale(0.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes scene-settle-plinth {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes completion-halo-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
+  30% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.65); }
+}
+
+.title-plaque {
+  animation: scene-settle-title 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.scene-art-rear img {
+  animation: scene-settle-rear 440ms 70ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.scene-board-plinth {
+  animation: scene-settle-plinth 320ms 120ms ease-out both;
+}
+
+.scene-art-backdrop img {
+  filter: saturate(0.96) contrast(1.02);
+}
+
+/* Keep V3's single static drop-shadows on rear/foreground art. Avoid stacking
+   additional full-scene filters here: ring interaction owns the frame budget. */
+
+.board-frame {
+  isolation: isolate;
+}
+
+.completion-halo {
+  position: absolute;
+  z-index: 1;
+  top: 49%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  border: 3px solid #fff7d6c9;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 7px #f0c85c28,
+    0 0 24px #fff2aa4d;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.55);
+}
+
+.completion-halo-active {
+  animation: completion-halo-pop 560ms cubic-bezier(0.15, 0.75, 0.25, 1) both;
+}
+
+.board-complete .center-instruction {
+  color: #f8fff5;
+  background: #2f7d51e8;
+  box-shadow:
+    inset 0 1px 0 #ffffff59,
+    0 3px 8px #254f353d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-plaque,
+  .scene-art-rear img,
+  .scene-board-plinth,
+  .completion-halo-active {
+    animation: none !important;
+  }
+
+  .completion-halo-active {
+    opacity: 0;
+  }
+}

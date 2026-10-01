@@ -127,21 +127,37 @@ async function applySolutionLines(cdp, lines, include = () => true) {
 
 async function runViewport({ width, height, mobile, debugPort }) {
   const userDataDir = `/tmp/ring-road-chrome-${debugPort}`;
-  await rm(userDataDir, { recursive: true, force: true });
-
-  const chrome = spawn("google-chrome", [
-    "--headless",
-    "--no-sandbox",
-    "--disable-gpu",
-    "--hide-scrollbars",
-    `--remote-debugging-port=${debugPort}`,
-    `--user-data-dir=${userDataDir}`,
-    "about:blank",
-  ], { stdio: "ignore" });
-
+  let chrome;
   let cdp;
+
+  for (let launchAttempt = 0; launchAttempt < 2 && !cdp; launchAttempt += 1) {
+    await rm(userDataDir, { recursive: true, force: true });
+    chrome = spawn("google-chrome", [
+      "--headless",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--hide-scrollbars",
+      `--remote-debugging-port=${debugPort}`,
+      `--user-data-dir=${userDataDir}`,
+      "about:blank",
+    ], { stdio: "ignore" });
+
+    try {
+      cdp = await createCdpClient(debugPort);
+    } catch (error) {
+      if (chrome.exitCode === null) {
+        chrome.kill("SIGTERM");
+        await Promise.race([
+          new Promise((resolve) => chrome.once("close", resolve)),
+          sleep(1500),
+        ]);
+      }
+      if (launchAttempt === 1) throw error;
+      await sleep(250);
+    }
+  }
+
   try {
-    cdp = await createCdpClient(debugPort);
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
@@ -299,6 +315,11 @@ async function runViewport({ width, height, mobile, debugPort }) {
         Number.isFinite(reducedTransitionSeconds) && reducedTransitionSeconds <= 0.001,
         `${width}px ring transition does not collapse under reduced motion`,
       );
+      const reducedSceneAnimation = await cdp.evaluate("getComputedStyle(document.querySelector('.title-plaque')).animationName");
+      assert(
+        reducedSceneAnimation === "none",
+        `${width}px scene-settle animation remains active under reduced motion`,
+      );
       await cdp.send("Emulation.setEmulatedMedia", { features: [] });
     }
 
@@ -419,6 +440,19 @@ async function runViewport({ width, height, mobile, debugPort }) {
       `${width}px completion dialog did not appear after firing center`,
       120,
     );
+    const completionAccent = await cdp.evaluate(`(() => {
+      const halo = document.querySelector('.completion-halo');
+      if (!halo) return null;
+      const style = getComputedStyle(halo);
+      return {
+        active: halo.classList.contains('completion-halo-active'),
+        pointerEvents: style.pointerEvents,
+        animationName: style.animationName,
+      };
+    })()`);
+    assert(completionAccent?.active, `${width}px completion halo did not activate`);
+    assert(completionAccent?.pointerEvents === "none", `${width}px completion halo can intercept input`);
+    assert(completionAccent?.animationName === "completion-halo-pop", `${width}px completion halo lost its restrained one-shot animation`);
 
     if (!mobile) {
       await cdp.evaluate("Array.from(document.querySelectorAll('.modal-scroll button')).find((button) => button.textContent === 'Next puzzle')?.click()");
@@ -451,7 +485,7 @@ async function runViewport({ width, height, mobile, debugPort }) {
     );
   } finally {
     cdp?.close();
-    if (chrome.exitCode === null) {
+    if (chrome?.exitCode === null) {
       chrome.kill("SIGTERM");
       await Promise.race([
         new Promise((resolve) => chrome.once("close", resolve)),
