@@ -31,6 +31,8 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
         decoding="async"
         fetchPriority={fetchPriority}
         draggable={false}
+        data-mobile-src={mobile.src}
+        data-desktop-src={desktop.src}
       />
     </picture>
   );
