@@ -21,7 +21,6 @@ jobs:
       - name: Start preview
         run: |
           npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/ring-road-vite.log 2>&1 &
-          echo $! > /tmp/ring-road-vite.pid
           for i in {1..60}; do
             curl -fsS http://127.0.0.1:4173/Ring-Road/ >/dev/null && exit 0
             sleep 1
@@ -29,9 +28,7 @@ jobs:
           cat /tmp/ring-road-vite.log
           exit 1
       - name: Capture canonical screenshots
-        run: |
-          google-chrome --headless --disable-gpu --hide-scrollbars --no-sandbox --window-size=1440,1000 --screenshot=desktop-1440x1000.png http://127.0.0.1:4173/Ring-Road/
-          google-chrome --headless --disable-gpu --hide-scrollbars --no-sandbox --window-size=390,844 --screenshot=mobile-390x844.png http://127.0.0.1:4173/Ring-Road/
+        run: node scripts/temp-reference-capture.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: reference-comparison-captures
