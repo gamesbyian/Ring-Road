@@ -2137,7 +2137,7 @@ h1 {
 }
 
 .reference-first-scene .ring-control {
-  grid-template-columns: 24px minmax(0, 1fr) 44px 44px;
+  grid-template-columns: 24px minmax(0, 1fr) 46px 46px;
 }
 
 .reference-first-scene .ring-control .swatch {
@@ -2152,9 +2152,9 @@ h1 {
 
 .reference-first-scene .ring-control button {
   display: grid;
-  width: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  width: 46px;
+  min-width: 46px;
+  min-height: 46px;
   padding: 0;
   border-radius: 50%;
   place-items: center;
@@ -2471,9 +2471,9 @@ h1 {
   }
 
   .reference-first-scene .puzzle-plaque button {
-    width: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 46px;
+    min-width: 46px;
+    min-height: 46px;
     padding: 0;
     border-radius: 50%;
   }
