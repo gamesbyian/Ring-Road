@@ -109,7 +109,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         {geometry.markerPoints.map(({ x, y }, marker) => (
-          <circle key={marker} cx={x} cy={y} r="2.6" className="marker" fill="url(#marker-recess)" />
+          <circle key={marker} cx={x} cy={y} r="2.35" className="marker" fill="url(#marker-recess)" />
         ))}
         <text className="ring-id" x={CENTER_X - radius} y={CENTER_Y} aria-hidden="true">
           {LABELS[index]}
