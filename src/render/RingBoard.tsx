@@ -1,6 +1,6 @@
 import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
-import paintGrain from "../assets/diorama/textures/paint-grain.png";
+import { DIORAMA_TEXTURES } from "../assets/diorama/manifest";
 import { RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#9259d6", "#5d6bd9", "#3fa5e8", "#4fbd72", "#f1c941", "#f28a3a", "#e84f59"];
@@ -172,7 +172,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               </g>
             ))}
             <pattern id="paint-grain-pattern" width="64" height="64" patternUnits="userSpaceOnUse">
-              <image href={paintGrain} width="64" height="64" opacity="0.22" />
+              <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.22" />
             </pattern>
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#f6e8cb" />
