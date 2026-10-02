@@ -1,31 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1000">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#74b9ed"/><stop offset=".62" stop-color="#b9dcf3"/><stop offset="1" stop-color="#e4edf0"/></linearGradient>
-    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b0a6aa"/><stop offset="1" stop-color="#7d8291"/></linearGradient>
-    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4aa7d5"/><stop offset="1" stop-color="#237cab"/></linearGradient>
-    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#93b76c"/><stop offset="1" stop-color="#5d8055"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#66b4eb"/><stop offset=".48" stop-color="#a9d4ef"/><stop offset="1" stop-color="#e7edf0"/>
+    </linearGradient>
+    <linearGradient id="mountainFar" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#aeb0bd"/><stop offset="1" stop-color="#78808f"/>
+    </linearGradient>
+    <linearGradient id="mountainNear" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#87929d"/><stop offset="1" stop-color="#596875"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#53add8"/><stop offset="1" stop-color="#277da8"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#91b66d"/><stop offset="1" stop-color="#587c52"/>
+    </linearGradient>
   </defs>
+
   <rect width="1440" height="1000" fill="url(#sky)"/>
-  <g fill="#fff8e8" opacity=".72">
-    <ellipse cx="160" cy="105" rx="105" ry="40"/><ellipse cx="250" cy="92" rx="78" ry="34"/>
-    <ellipse cx="1090" cy="115" rx="94" ry="36"/><ellipse cx="1180" cy="99" rx="70" ry="31"/>
+  <circle cx="1160" cy="138" r="64" fill="#f4c44f" opacity=".9"/>
+
+  <g fill="#fffaf0" opacity=".8">
+    <ellipse cx="115" cy="115" rx="98" ry="34"/><ellipse cx="205" cy="103" rx="70" ry="28"/>
+    <ellipse cx="328" cy="155" rx="82" ry="27"/><ellipse cx="385" cy="145" rx="54" ry="22"/>
+    <ellipse cx="1000" cy="90" rx="72" ry="25"/><ellipse cx="1060" cy="83" rx="48" ry="20"/>
   </g>
-  <g fill="url(#mountain)" opacity=".82">
-    <path d="M110 350 300 95 455 350Z"/><path d="M290 350 525 55 730 350Z"/>
-    <path d="M690 350 880 120 1035 350Z"/><path d="M930 350 1190 70 1395 350Z"/>
+
+  <g fill="url(#mountainFar)" opacity=".85">
+    <path d="M0 386 174 170 320 386Z"/>
+    <path d="M185 386 405 92 602 386Z"/>
+    <path d="M495 386 695 144 856 386Z"/>
+    <path d="M742 386 970 101 1160 386Z"/>
+    <path d="M1000 386 1260 118 1440 386Z"/>
   </g>
-  <g fill="#e7d4c8" opacity=".5">
-    <path d="M300 95 345 155 310 145 280 185Z"/><path d="M525 55 585 135 535 118 500 158Z"/>
-    <path d="M1190 70 1240 137 1200 122 1160 165Z"/>
+  <g fill="url(#mountainNear)" opacity=".58">
+    <path d="M0 420 245 245 430 420Z"/>
+    <path d="M845 420 1100 230 1325 420Z"/>
+    <path d="M1120 420 1375 262 1440 420Z"/>
   </g>
-  <path d="M0 310 C235 282 405 300 610 327 C820 289 1090 287 1440 326 V560 H0Z" fill="url(#water)"/>
-  <path d="M0 338 C260 318 460 330 675 350 C900 326 1155 329 1440 353" fill="none" stroke="#a8def1" stroke-width="8" opacity=".55"/>
-  <path d="M0 490 C150 405 290 420 425 500 C565 390 715 405 855 505 C1020 390 1195 410 1440 500 V1000 H0Z" fill="url(#grass)"/>
-  <g fill="#315f4e" opacity=".92">
-    <path d="M40 520 80 420l40 100Z"/><path d="M105 525 145 408l43 117Z"/>
-    <path d="M1240 525 1280 405l42 120Z"/><path d="M1310 532 1352 420l42 112Z"/>
-    <path d="M230 495 258 423l30 72Z"/><path d="M1130 493 1158 416l30 77Z"/>
+
+  <g fill="#ede2d9" opacity=".62">
+    <path d="M405 92 455 157 420 147 388 183Z"/>
+    <path d="M970 101 1018 159 978 147 946 182Z"/>
+    <path d="M1260 118 1303 166 1268 156 1236 187Z"/>
   </g>
-  <path d="M0 720 C225 665 450 676 690 730 C950 675 1200 675 1440 720 V1000 H0Z" fill="#d1ae72"/>
-  <path d="M0 805 C260 760 510 770 760 815 C1010 770 1240 774 1440 812 V1000 H0Z" fill="#b98e59"/>
+
+  <path d="M0 334 C225 303 437 316 635 348 C820 312 1080 304 1440 342 V585 H0Z" fill="url(#water)"/>
+  <path d="M0 374 C246 351 454 359 676 383 C898 357 1167 357 1440 382" fill="none" stroke="#b9e7f4" stroke-width="8" opacity=".55"/>
+  <path d="M0 431 C255 410 472 420 696 442 C920 416 1170 420 1440 444" fill="none" stroke="#d5eff5" stroke-width="4" opacity=".34"/>
+
+  <path d="M0 500 C145 420 290 425 432 506 C565 408 720 414 862 514 C1020 404 1200 418 1440 506 V1000 H0Z" fill="url(#grass)"/>
+  <path d="M0 616 C210 564 420 568 662 628 C912 565 1190 573 1440 626 V1000 H0Z" fill="#78935f" opacity=".72"/>
+
+  <g fill="#315f4d" opacity=".95">
+    <path d="M35 562 78 432l44 130Z"/><path d="M104 570 150 416l48 154Z"/>
+    <path d="M218 548 251 448l34 100Z"/><path d="M300 552 336 440l37 112Z"/>
+    <path d="M1085 548 1120 440l37 108Z"/><path d="M1210 565 1254 418l47 147Z"/>
+    <path d="M1305 573 1350 432l46 141Z"/>
+  </g>
+
+  <path d="M0 745 C225 682 452 696 700 748 C950 690 1205 689 1440 742 V1000 H0Z" fill="#d1ad70"/>
+  <path d="M0 833 C265 779 510 790 766 838 C1012 792 1240 794 1440 830 V1000 H0Z" fill="#b98d58"/>
+  <path d="M0 902 C278 861 536 865 780 906 C1030 868 1248 870 1440 899 V1000 H0Z" fill="#9d744b" opacity=".55"/>
 </svg>
