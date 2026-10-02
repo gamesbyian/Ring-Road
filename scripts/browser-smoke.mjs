@@ -210,11 +210,12 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       pointerEvents: getComputedStyle(img).pointerEvents,
       alt: img.getAttribute('alt'),
       desktopSrc: img.dataset.desktopSrc,
+      usesDesktopSrc: new URL(img.currentSrc).pathname === new URL(img.dataset.desktopSrc, location.href).pathname,
     }))`);
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not use the canonical landscape scenic package`);
+    assert(scenicLayers.every((layer) => layer.usesDesktopSrc), `${width}px viewport did not use the canonical landscape scenic package`);
     const portrait = portraitViewport;
 
     const presentation = await cdp.evaluate(`(() => {
@@ -355,6 +356,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         height: width,
         deviceScaleFactor: 1,
         mobile,
+        screenOrientation: {
+          type: "landscapePrimary",
+          angle: 90,
+        },
       });
       await waitFor(
         async () => await cdp.evaluate("matchMedia('(orientation: landscape)').matches"),
@@ -370,6 +375,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         height,
         deviceScaleFactor: 1,
         mobile,
+        screenOrientation: {
+          type: "portraitPrimary",
+          angle: 0,
+        },
       });
       await waitFor(
         async () => await cdp.evaluate("matchMedia('(orientation: portrait)').matches"),
