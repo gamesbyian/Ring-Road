@@ -4059,3 +4059,33 @@ h1 {
     background-size: 64px 64px, 100% 100%, auto;
   }
 }
+
+
+/* V17 concept-scenery isolation.
+   The original visual concept is useful as painterly source material, but
+   allowing the whole image to ghost through duplicates its board and HUD.
+   On the reference composition, confine it to a soft upper scenic window:
+   mountain atmosphere and distant castle texture only. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    opacity: 0.72;
+    background:
+      url("../../docs/3d-ring-renderer-concept.jpg") 50% 50% / cover no-repeat;
+    filter: saturate(1.05) contrast(1.01) brightness(1.035);
+    mix-blend-mode: soft-light;
+    -webkit-mask-image:
+      radial-gradient(ellipse 47% 27% at 56% 8%, #000 0 54%, #000a 68%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 47% 27% at 56% 8%, #000 0 54%, #000a 68%, transparent 100%);
+    transform: none;
+  }
+
+  .reference-first-scene .scene-art-backdrop img {
+    filter: saturate(1.08) contrast(1.015) brightness(1.02);
+  }
+
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.97;
+  }
+}
