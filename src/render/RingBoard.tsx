@@ -60,7 +60,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
             cx={CENTER_X}
             cy={CENTER_Y}
             r={radius}
-            stroke={WALL_COLORS[index]}
+            stroke={`url(#ring-wall-${index})`}
             strokeWidth="23"
             strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
           />
@@ -135,18 +135,31 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
         >
           <defs>
             {COLORS.map((color, index) => (
-              <linearGradient
-                key={color}
-                id={`ring-top-${index}`}
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop offset="0" stopColor={TOP_HIGHLIGHTS[index]} />
-                <stop offset="0.36" stopColor={color} />
-                <stop offset="1" stopColor={TOP_SHADOWS[index]} />
-              </linearGradient>
+              <g key={color}>
+                <linearGradient
+                  id={`ring-top-${index}`}
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0" stopColor={TOP_HIGHLIGHTS[index]} />
+                  <stop offset="0.34" stopColor={color} />
+                  <stop offset="0.78" stopColor={color} />
+                  <stop offset="1" stopColor={TOP_SHADOWS[index]} />
+                </linearGradient>
+                <linearGradient
+                  id={`ring-wall-${index}`}
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <stop offset="0" stopColor={WALL_COLORS[index]} />
+                  <stop offset="0.48" stopColor={WALL_COLORS[index]} />
+                  <stop offset="1" stopColor={TOP_SHADOWS[index]} />
+                </linearGradient>
+              </g>
             ))}
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#f6e8cb" />
@@ -171,6 +184,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
           <circle className="board-base-depth" cx={CENTER_X} cy={CENTER_Y + 12} r="208" />
           <circle className="board-base-rim" cx={CENTER_X} cy={CENTER_Y + 4} r="208" />
           <circle className="board-base" cx={CENTER_X} cy={CENTER_Y} r="202" />
+          <circle className="board-base-blocks" cx={CENTER_X} cy={CENTER_Y - 1} r="197" />
           <g style={{ transform: `rotate(${boardRotation}deg)`, transformOrigin: `${CENTER_X}px ${CENTER_Y}px` }}>
             {puzzle.ringCycles.map((cycle, index) => (
               <Ring
