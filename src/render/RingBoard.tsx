@@ -183,6 +183,11 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
             ))}
           </g>
           <circle className="hub" cx={CENTER_X} cy={CENTER_Y} r="25" />
+          <polygon
+            className="hub-sun"
+            aria-hidden="true"
+            points="210,187 213,197 220.5,189.8 218.5,200.5 228.2,197.5 220.5,205 231,208 220.5,211 228.2,218.5 218.5,215.5 220.5,226.2 213,219 210,229 207,219 199.5,226.2 201.5,215.5 191.8,218.5 199.5,211 189,208 199.5,205 191.8,197.5 201.5,200.5 199.5,189.8 207,197"
+          />
           <circle className={`ball ${completed ? "ball-fired" : ""}`} cx={CENTER_X} cy={CENTER_Y - 6} r="15" />
           <circle className={`ball-shine ${completed ? "ball-fired" : ""}`} cx={CENTER_X - 5} cy={CENTER_Y - 11} r="4" />
         </svg>
