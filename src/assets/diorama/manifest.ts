@@ -1,15 +1,12 @@
 import desktopBackdrop from "./desktop/backdrop.svg";
 import desktopRearArchitecture from "./desktop/rear-architecture.svg";
 import desktopForeground from "./desktop/foreground.svg";
-import mobileBackdrop from "./mobile/backdrop.svg";
-import mobileRearArchitecture from "./mobile/rear-architecture.svg";
-import mobileForeground from "./mobile/foreground.svg";
 import parchmentGrain from "./textures/parchment-grain.png";
 import stoneGrain from "./textures/stone-grain.png";
 import paintGrain from "./textures/paint-grain.png";
 
 export type DioramaAssetRole = "backdrop" | "rear-architecture" | "foreground";
-export type DioramaAssetVariant = "desktop" | "mobile";
+export type DioramaAssetVariant = "desktop";
 export type DioramaTextureRole = "parchment-grain" | "stone-grain" | "paint-grain";
 
 export interface DioramaAsset {
@@ -54,41 +51,6 @@ export const DIORAMA_ASSETS = {
       src: desktopForeground,
       width: 1440,
       height: 220,
-      format: "svg",
-      critical: true,
-      loading: "eager",
-      provenance: "authored-in-repo",
-    },
-  },
-  mobile: {
-    backdrop: {
-      role: "backdrop",
-      variant: "mobile",
-      src: mobileBackdrop,
-      width: 430,
-      height: 932,
-      format: "svg",
-      critical: true,
-      loading: "eager",
-      provenance: "authored-in-repo",
-    },
-    rearArchitecture: {
-      role: "rear-architecture",
-      variant: "mobile",
-      src: mobileRearArchitecture,
-      width: 500,
-      height: 240,
-      format: "svg",
-      critical: true,
-      loading: "eager",
-      provenance: "authored-in-repo",
-    },
-    foreground: {
-      role: "foreground",
-      variant: "mobile",
-      src: mobileForeground,
-      width: 430,
-      height: 115,
       format: "svg",
       critical: true,
       loading: "eager",
