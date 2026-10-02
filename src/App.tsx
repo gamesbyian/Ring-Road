@@ -86,8 +86,8 @@ export default function App() {
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
-              <span className={`swatch ring-${ring}`} aria-hidden="true" />
-              <span className="ring-name">Ring {7 - ring} <small>{LABELS[ring]} · {cycle} steps</small></span>
+              <span className={`swatch ring-${ring}`} aria-hidden="true"><i /></span>
+              <span className="ring-name">Ring {7 - ring} <small>{cycle} stops</small></span>
               <button
                 onClick={() => dispatch({ type: "rotate", ring, direction: -1 })}
                 disabled={state.completed}
