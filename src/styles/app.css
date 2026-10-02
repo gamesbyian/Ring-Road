@@ -3942,3 +3942,120 @@ h1 {
     box-shadow: inset 0 1px 2px #0003, 0 1px 0 #121a2a;
   }
 }
+
+
+/* V16 raster-material pass.
+   Small authored PNG tiles add real material variation without turning the
+   scene into one giant baked image. Existing gradients stay intact beneath
+   the texture layers so this is additive, not a replacement skin. */
+.reference-first-scene .puzzle-plaque,
+.reference-moves-card,
+.reference-goal-card {
+  background-image:
+    url("../assets/diorama/textures/parchment-grain.png"),
+    radial-gradient(circle at 18% 12%, #ffffff8a 0 1px, transparent 1.5px),
+    radial-gradient(circle at 76% 66%, #876d5028 0 1px, transparent 1.6px),
+    linear-gradient(180deg, #fff1d7f8, #ead6b7f8);
+  background-blend-mode: multiply, normal, normal, normal;
+  background-repeat: repeat, repeat, repeat, no-repeat;
+  background-size: 64px 64px, 19px 17px, 23px 21px, 100% 100%;
+}
+
+.reference-first-scene .ring-control {
+  background-image:
+    url("../assets/diorama/textures/parchment-grain.png"),
+    radial-gradient(circle at 19% 18%, #fff 0 1px, transparent 1.4px),
+    linear-gradient(180deg, #fff8e9 0%, #ead7ba 100%);
+  background-blend-mode: multiply, normal, normal;
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 64px 64px, 19px 17px, 100% 100%;
+}
+
+.reference-first-scene .reference-solution-card {
+  background-image:
+    url("../assets/diorama/textures/paint-grain.png"),
+    radial-gradient(circle at 18% 12%, #ffffff12 0 1px, transparent 1.5px),
+    linear-gradient(180deg, #2f3c59, #202a40);
+  background-blend-mode: soft-light, normal, normal;
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 64px 64px, 18px 18px, 100% 100%;
+}
+
+.reference-first-scene .title-tagline {
+  background-image:
+    url("../assets/diorama/textures/paint-grain.png"),
+    linear-gradient(180deg, #efb64d, #d4862f);
+  background-blend-mode: multiply, normal;
+  background-repeat: repeat, no-repeat;
+  background-size: 64px 64px, 100% 100%;
+}
+
+.reference-first-scene .ring-paint-grain {
+  fill: none;
+  opacity: 0.27;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-tower {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 31px, #9e774d32 31px 33px),
+      repeating-linear-gradient(90deg, transparent 0 34px, #87613d20 34px 36px),
+      linear-gradient(110deg, #f5ddb0, #d0a56d 56%, #987047);
+    background-blend-mode: multiply, normal, normal, normal;
+    background-repeat: repeat, repeat, repeat, no-repeat;
+    background-size: 64px 64px, auto, auto, 100% 100%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      radial-gradient(ellipse at 50% 27%, #fff8e4 0 43%, #e6c493 44% 52%, #c29058 53% 61%, #7d5737 62% 66%, transparent 67%);
+    background-blend-mode: multiply, normal;
+    background-repeat: repeat, no-repeat;
+    background-size: 64px 64px, 100% 100%;
+  }
+
+  .reference-first-scene .scene-board-plinth::before {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(90deg, transparent 0 7.5%, #7d57372c 7.5% 7.9%),
+      linear-gradient(180deg, #b48250, #89603d 68%, #68472f);
+    background-blend-mode: multiply, normal, normal;
+    background-repeat: repeat, repeat, no-repeat;
+    background-size: 64px 64px, auto, 100% 100%;
+  }
+
+  .reference-first-scene .scene-board-plinth::after {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(180deg, #e3c292 0 18%, #9f754b 18% 22%, #cfa978 22% 40%);
+    background-blend-mode: multiply, normal;
+    background-repeat: repeat, repeat;
+    background-size: 64px 64px, auto;
+  }
+
+  .reference-rear-road {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      linear-gradient(90deg, transparent 0 47%, #f7df9c 47% 49%, #74563b 49% 51%, #f7df9c 51% 53%, transparent 53%),
+      repeating-linear-gradient(0deg, transparent 0 25px, #72533830 25px 27px),
+      linear-gradient(90deg, #a97848, #d6b17a 18% 82%, #96683f);
+    background-blend-mode: multiply, normal, normal, normal;
+    background-repeat: repeat, no-repeat, repeat, no-repeat;
+    background-size: 64px 64px, 100% 100%, auto, 100% 100%;
+  }
+
+  .reference-front-road {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      linear-gradient(90deg, transparent 0 48%, #f4dfaa 48% 49%, #72523a 49% 51%, #f4dfaa 51% 52%, transparent 52%),
+      repeating-linear-gradient(0deg, #d6b47e 0 21%, #8d653f 21% 24%, #c79d68 24% 45%);
+    background-blend-mode: multiply, normal, normal;
+    background-repeat: repeat, no-repeat, repeat;
+    background-size: 64px 64px, 100% 100%, auto;
+  }
+}
