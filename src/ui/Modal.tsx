@@ -5,9 +5,10 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   closeLabel?: string;
+  variant?: "paper" | "completion";
 }
 
-export function Modal({ title, onClose, children, closeLabel = "Close" }: ModalProps) {
+export function Modal({ title, onClose, children, closeLabel = "Close", variant = "paper" }: ModalProps) {
   const panelRef = useRef<HTMLElement>(null);
   const titleId = useId();
 
@@ -45,7 +46,7 @@ export function Modal({ title, onClose, children, closeLabel = "Close" }: ModalP
 
   return (
     <div className="modal" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <article ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+      <article className={`modal-panel modal-${variant}`} ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className="modal-scroll">
           <h2 id={titleId}>{title}</h2>
           {children}
