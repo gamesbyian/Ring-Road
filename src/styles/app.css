@@ -3637,3 +3637,102 @@ h1 {
 .modal-completion .modal-footer button {
   background: linear-gradient(180deg, #f2e1c3, #ceb083);
 }
+
+
+/* V14.2 world-binding pass: connect the arena to the castle so the board is
+   part of the scene's architecture instead of a floating gameplay island. */
+.reference-rear-road,
+.reference-front-road {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-rear-road,
+  .reference-front-road {
+    position: absolute;
+    left: 55%;
+    display: block;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .reference-rear-road {
+    z-index: 1;
+    top: 12.5%;
+    width: min(22dvmax, 295px);
+    height: 32%;
+    clip-path: polygon(38% 0,62% 0,91% 100%,9% 100%);
+    background:
+      linear-gradient(90deg,
+        transparent 0 47%,
+        #f7df9c 47% 49%,
+        #74563b 49% 51%,
+        #f7df9c 51% 53%,
+        transparent 53%),
+      repeating-linear-gradient(0deg,
+        transparent 0 25px,
+        #72533830 25px 27px),
+      linear-gradient(90deg, #a97848, #d6b17a 18% 82%, #96683f);
+    border-bottom: 4px solid #765137;
+    filter:
+      drop-shadow(0 8px 7px #46301f42)
+      drop-shadow(0 -1px 0 #ffe8b25c);
+    opacity: 0.92;
+  }
+
+  .reference-rear-road::before,
+  .reference-rear-road::after {
+    position: absolute;
+    top: 6%;
+    width: 10px;
+    height: 90%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #e9c991, #9a7048);
+    box-shadow: 0 3px 0 #67482f;
+    content: "";
+  }
+
+  .reference-rear-road::before { left: 5%; }
+  .reference-rear-road::after { right: 5%; }
+
+  .reference-front-road {
+    z-index: 6;
+    top: 67%;
+    width: min(24dvmax, 325px);
+    height: 30%;
+    clip-path: polygon(24% 0,76% 0,100% 100%,0 100%);
+    background:
+      linear-gradient(90deg,
+        transparent 0 48%,
+        #f4dfaa 48% 49%,
+        #72523a 49% 51%,
+        #f4dfaa 51% 52%,
+        transparent 52%),
+      repeating-linear-gradient(0deg,
+        #d6b47e 0 21%,
+        #8d653f 21% 24%,
+        #c79d68 24% 45%);
+    border: 2px solid #775237;
+    border-top-width: 4px;
+    box-shadow:
+      0 12px 18px #3c2a1d40,
+      inset 0 2px 0 #f6ddb083;
+    opacity: 0.93;
+  }
+
+  .reference-front-road::before,
+  .reference-front-road::after {
+    position: absolute;
+    top: 8%;
+    width: 9px;
+    height: 88%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #e8c58d, #8f6340);
+    box-shadow: 0 2px 0 #60412e;
+    content: "";
+  }
+
+  .reference-front-road::before { left: 7%; }
+  .reference-front-road::after { right: 7%; }
+}
