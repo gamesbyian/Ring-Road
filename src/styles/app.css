@@ -3294,3 +3294,224 @@ h1 {
       0 3px 0 #121a2a;
   }
 }
+
+
+/* V14 title/control pass: finish the most prominent non-board elements so
+   they read like crafted objects from the same diorama rather than generic UI. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    overflow: visible;
+    border-color: #9a7043;
+    background:
+      radial-gradient(circle at 83% 22%, #efb640 0 7.5%, transparent 8%),
+      linear-gradient(145deg, transparent 0 58%, #56785b 58% 66%, transparent 66%) 79% 21% / 95px 57px no-repeat,
+      linear-gradient(36deg, transparent 0 53%, #385e4b 53% 66%, transparent 66%) 89% 31% / 78px 47px no-repeat,
+      radial-gradient(circle at 14% 18%, #fffdfa 0 1px, transparent 1.4px),
+      linear-gradient(180deg, #fff6e4 0%, #ecd5ae 66%, #d3ad78 100%);
+    background-size: auto, 95px 57px, 78px 47px, 21px 19px, auto;
+    box-shadow:
+      inset 0 2px 0 #fff,
+      inset 0 -2px 0 #b88452,
+      0 7px 0 #8a6038,
+      0 17px 28px #47321f40;
+  }
+
+  .reference-first-scene .title-plaque::before {
+    position: absolute;
+    inset: 7px;
+    border: 1px solid #9d75482e;
+    border-radius: 9px;
+    background: none;
+    content: "";
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .reference-first-scene .title-plaque::after {
+    position: absolute;
+    left: 1.2rem;
+    right: auto;
+    top: auto;
+    bottom: 0.58rem;
+    width: 72%;
+    height: 1.4rem;
+    border: 0;
+    border-bottom: 0.34rem solid #3d4652;
+    border-radius: 0 0 50% 50%;
+    background: none;
+    box-shadow:
+      0 0.14rem 0 #f5e8cc,
+      inset 0 -0.05rem 0 #1f2630;
+    content: "";
+    opacity: 1;
+    transform: rotate(-2.5deg);
+  }
+
+  .reference-first-scene .title-plaque h1::before,
+  .reference-first-scene .title-plaque h1::after {
+    display: none;
+  }
+
+  .reference-first-scene .title-plaque h1 {
+    width: 80%;
+    letter-spacing: -0.07em;
+    text-shadow:
+      0 2px 0 #fff8,
+      0 4px 0 #8c6c4830;
+  }
+
+  .reference-first-scene .title-plaque h1 span:first-child {
+    color: #343c48;
+    transform: translateX(0) rotate(-1deg);
+  }
+
+  .reference-first-scene .title-plaque h1 span:last-child {
+    color: #c84437;
+    transform: translateX(0.9em) rotate(-2deg);
+  }
+
+  .reference-first-scene .title-tagline {
+    left: 1rem;
+    right: auto;
+    bottom: -0.7rem;
+    width: 78%;
+    min-width: 0;
+    border-color: #a46b29;
+    border-bottom-width: 3px;
+    border-radius: 3px 3px 7px 7px;
+    background:
+      linear-gradient(180deg, #efb64d, #d4862f);
+    box-shadow:
+      inset 0 1px 0 #ffd98f,
+      0 4px 0 #8d5828,
+      0 8px 15px #4d351f35;
+    color: #3f3426;
+    font-size: clamp(0.68rem, 1.1dvmax, 0.92rem);
+    letter-spacing: 0.03em;
+  }
+
+  .reference-first-scene .scene-controls-slot {
+    width: min(255px, 19dvmax);
+  }
+
+  .reference-first-scene .ring-controls {
+    gap: 0.38rem;
+  }
+
+  .reference-first-scene .ring-control {
+    grid-template-columns: 27px minmax(0, 1fr) 46px 46px;
+    min-height: 54px;
+    gap: 0.36rem;
+    padding: 0.25rem 0.3rem 0.25rem 0.52rem;
+    border: 1px solid #ad8c66;
+    border-bottom-width: 3px;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 19% 18%, #fff 0 1px, transparent 1.4px),
+      linear-gradient(180deg, #fff8e9 0%, #ead7ba 100%);
+    background-size: 19px 17px, auto;
+    box-shadow:
+      inset 0 1px 0 #fff,
+      inset 0 -1px 0 #c2a17a55,
+      0 3px 0 #a47d54,
+      0 7px 12px #4d382628;
+  }
+
+  .reference-first-scene .ring-control .swatch {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    outline: 1px solid #5f4935;
+    box-shadow:
+      inset 0 3px 3px #ffffff80,
+      inset 0 -3px 3px #35271e38,
+      0 2px 2px #4b36252d;
+  }
+
+  .reference-first-scene .ring-control .swatch i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff7df;
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 1px 1px #3e2b1e66;
+    transform: translate(-50%, -50%);
+  }
+
+  .reference-first-scene .ring-name {
+    color: #30353d;
+    font-size: 0.86rem;
+    font-weight: 950;
+    line-height: 1.05;
+  }
+
+  .reference-first-scene .ring-name small {
+    margin-top: 0.16rem;
+    color: #716252;
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.055em;
+  }
+
+  .reference-first-scene .ring-control button {
+    border: 1px solid #8f6d49;
+    border-bottom-width: 3px;
+    border-radius: 50%;
+    color: #3f4145;
+    background:
+      radial-gradient(circle at 35% 28%, #ffffff 0 20%, #f7edd9 45%, #d8bf96 100%);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      inset 0 -2px 3px #86653f24,
+      0 3px 0 #8f6a43,
+      0 5px 8px #4c37242b;
+    font-size: 1.65rem;
+    font-weight: 900;
+  }
+
+  .reference-first-scene .ring-control button:hover {
+    background:
+      radial-gradient(circle at 35% 28%, #ffffff 0 24%, #fbf2e2 48%, #dfc79f 100%);
+  }
+
+  .reference-first-scene .ring-control button:active {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 2px 4px #7f5d3b28,
+      0 1px 0 #8f6a43;
+  }
+
+  .reference-first-scene .actions {
+    width: 90%;
+    margin-inline: auto;
+  }
+
+  .reference-first-scene .actions button:not(:nth-child(4)) {
+    border: 1px solid #96724e;
+    border-bottom-width: 3px;
+    border-radius: 9px;
+    color: #4a443b;
+    background: linear-gradient(180deg, #f8edda, #dfc6a0);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 3px 0 #8d6844;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+  }
+
+  .reference-first-scene .guide-button {
+    border: 1px solid #8e6945;
+    border-bottom-width: 3px;
+    background:
+      radial-gradient(circle at 35% 28%, #ffffff 0 15%, #f4ead8 35%, #d5ba91 100%);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 3px 0 #86613f,
+      0 7px 12px #4a34232e;
+  }
+}
