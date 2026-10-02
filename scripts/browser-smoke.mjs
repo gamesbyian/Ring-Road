@@ -176,6 +176,8 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
   }
 
   try {
+    const portraitViewport = height > width;
+
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
@@ -183,6 +185,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       height,
       deviceScaleFactor: 1,
       mobile,
+      screenOrientation: {
+        type: portraitViewport ? "portraitPrimary" : "landscapePrimary",
+        angle: portraitViewport ? 0 : 90,
+      },
     });
     await cdp.send("Page.navigate", { url: APP_URL });
 
@@ -209,7 +215,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    const portrait = height > width;
+    const portrait = portraitViewport;
     const logicalWidth = portrait ? height : width;
     const expectsMobileArt = logicalWidth <= 720;
 
