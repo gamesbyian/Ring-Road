@@ -2,10 +2,10 @@ import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
 import { RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
-const COLORS = ["#a67cff", "#6670f4", "#45b3ff", "#33cf83", "#efcc35", "#ff9147", "#f45d67"];
-const TOP_HIGHLIGHTS = ["#c9b2ff", "#9da4ff", "#91d1ff", "#84e4ae", "#f8df74", "#ffbf83", "#ff969d"];
-const TOP_SHADOWS = ["#7d55c9", "#4b53b9", "#2d8fc9", "#269b63", "#b79624", "#c76a34", "#bd414b"];
-const WALL_COLORS = ["#6948ad", "#3f47a3", "#2778a8", "#237d53", "#9d7f1f", "#aa5d2d", "#a33b43"];
+const COLORS = ["#9259d6", "#5d6bd9", "#3fa5e8", "#4fbd72", "#f1c941", "#f28a3a", "#e84f59"];
+const TOP_HIGHLIGHTS = ["#bd91ef", "#93a0f3", "#83ccf7", "#86d99a", "#ffe37a", "#ffb572", "#ff8991"];
+const TOP_SHADOWS = ["#713fae", "#4450ad", "#2d82b8", "#348f55", "#b99528", "#bd602d", "#b83b43"];
+const WALL_COLORS = ["#633b99", "#394595", "#246d99", "#2a7046", "#92751f", "#984b25", "#943138"];
 const LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 const CENTER_X = 210;
 const CENTER_Y = 208;
@@ -47,7 +47,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
             cx={CENTER_X}
             cy={CENTER_Y}
             r={radius}
-            strokeWidth="20"
+            strokeWidth="23"
             strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
           />
         </g>
@@ -61,7 +61,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
             cy={CENTER_Y}
             r={radius}
             stroke={WALL_COLORS[index]}
-            strokeWidth="20"
+            strokeWidth="23"
             strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
           />
           <circle
@@ -96,7 +96,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           cx={CENTER_X}
           cy={CENTER_Y}
           r={radius}
-          strokeWidth="21"
+          strokeWidth="24"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         <circle
@@ -105,7 +105,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           cy={CENTER_Y}
           r={radius}
           stroke={`url(#ring-top-${index})`}
-          strokeWidth="18"
+          strokeWidth="21"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
         {geometry.markerPoints.map(({ x, y }, marker) => (
