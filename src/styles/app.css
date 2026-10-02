@@ -4285,3 +4285,33 @@ h1 {
     display: none;
   }
 }
+
+
+/* V20 masonry-arena surface.
+   Put the block rhythm directly on the support that is actually visible
+   around the board. The live SVG covers the center, leaving this subtle
+   conic stone course exposed only around the arena perimeter. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-conic-gradient(
+        from -3deg,
+        #fff2d1 0deg 7deg,
+        #b48659 7deg 7.7deg,
+        #e5c393 7.7deg 14.8deg,
+        #9b704b 14.8deg 15.5deg
+      ),
+      radial-gradient(
+        ellipse at 50% 26%,
+        #fffaf0f5 0 43%,
+        #f1dcbaee 44% 52%,
+        #dbb783df 53% 61%,
+        #b78958d6 62% 66%,
+        transparent 67%
+      );
+    background-blend-mode: soft-light, multiply, normal;
+    background-size: 64px 64px, auto, 100% 100%;
+  }
+}
