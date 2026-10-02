@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { rm } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 
 const APP_PORT = 4173;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/Ring-Road/`;
@@ -135,6 +135,12 @@ async function applySolutionLines(cdp, lines, include = () => true) {
     if (!include(parsed)) continue;
     await clickRingMoves(cdp, parsed.color, parsed.direction, parsed.count);
   }
+}
+
+async function captureScreenshot(cdp, name) {
+  await mkdir("artifacts/screenshots", { recursive: true });
+  const shot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+  await writeFile(`artifacts/screenshots/${name}.png`, Buffer.from(shot.data, "base64"));
 }
 
 async function runViewport({ width, height, mobile, debugPort, fullFlow = true }) {
@@ -592,6 +598,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     assert(completionAccent?.active, `${width}px completion halo did not activate`);
     assert(completionAccent?.pointerEvents === "none", `${width}px completion halo can intercept input`);
     assert(completionAccent?.animationName === "completion-halo-pop", `${width}px completion halo lost its restrained one-shot animation`);
+
+    if (width === 1440 && height === 1000) {
+      await captureScreenshot(cdp, "completion-1440x1000");
+    }
 
     if (!mobile) {
       await cdp.evaluate("Array.from(document.querySelectorAll('.modal-scroll button')).find((button) => button.textContent === 'Next puzzle')?.click()");
