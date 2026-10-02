@@ -20,11 +20,8 @@ interface ScenicPictureProps {
 
 function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictureProps) {
   const desktop = DIORAMA_ASSETS.desktop[role];
-  const mobile = DIORAMA_ASSETS.mobile[role];
-
   return (
     <picture className={className} aria-hidden="true">
-      <source media="(orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px)" srcSet={mobile.src} />
       <img
         src={desktop.src}
         width={desktop.width}
@@ -34,7 +31,6 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
         decoding="async"
         fetchPriority={fetchPriority}
         draggable={false}
-        data-mobile-src={mobile.src}
         data-desktop-src={desktop.src}
       />
     </picture>

@@ -176,6 +176,8 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
   }
 
   try {
+    const portraitViewport = height > width;
+
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
@@ -183,6 +185,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       height,
       deviceScaleFactor: 1,
       mobile,
+      screenOrientation: {
+        type: portraitViewport ? "portraitPrimary" : "landscapePrimary",
+        angle: portraitViewport ? 0 : 90,
+      },
     });
     await cdp.send("Page.navigate", { url: APP_URL });
 
@@ -203,15 +209,14 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       currentSrc: img.currentSrc,
       pointerEvents: getComputedStyle(img).pointerEvents,
       alt: img.getAttribute('alt'),
-      mobileSrc: img.dataset.mobileSrc,
       desktopSrc: img.dataset.desktopSrc,
+      usesDesktopSrc: new URL(img.currentSrc).pathname === new URL(img.dataset.desktopSrc, location.href).pathname,
     }))`);
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    const portrait = height > width;
-    const logicalWidth = portrait ? height : width;
-    const expectsMobileArt = logicalWidth <= 720;
+    assert(scenicLayers.every((layer) => layer.usesDesktopSrc), `${width}px viewport did not use the canonical landscape scenic package`);
+    const portrait = portraitViewport;
 
     const presentation = await cdp.evaluate(`(() => {
       const shell = document.querySelector('.app-shell');
@@ -237,11 +242,6 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       assert(presentation.transform === "none", `${width}px landscape viewport unexpectedly transforms the game shell`);
     }
 
-    if (expectsMobileArt) {
-      assert(scenicLayers.every((layer) => layer.currentSrc === layer.mobileSrc), `${width}px viewport did not select the mobile diorama package`);
-    } else {
-      assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not select the desktop diorama package`);
-    }
     if (!portrait) {
       const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
         const rect = element.getBoundingClientRect();
@@ -356,6 +356,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         height: width,
         deviceScaleFactor: 1,
         mobile,
+        screenOrientation: {
+          type: "landscapePrimary",
+          angle: 90,
+        },
       });
       await waitFor(
         async () => await cdp.evaluate("matchMedia('(orientation: landscape)').matches"),
@@ -371,6 +375,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         height,
         deviceScaleFactor: 1,
         mobile,
+        screenOrientation: {
+          type: "portraitPrimary",
+          angle: 0,
+        },
       });
       await waitFor(
         async () => await cdp.evaluate("matchMedia('(orientation: portrait)').matches"),
