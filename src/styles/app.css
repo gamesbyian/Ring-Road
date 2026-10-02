@@ -4328,9 +4328,9 @@ h1 {
     mask:
       radial-gradient(
         ellipse at center,
-        transparent 0 74.5%,
-        #000 75.2% 91.5%,
-        transparent 92.2%
+        transparent 0 89.5%,
+        #000 90.2% 98.7%,
+        transparent 99.3%
       );
     opacity: 0.98;
     pointer-events: none;
