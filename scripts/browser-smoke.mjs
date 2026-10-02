@@ -205,33 +205,17 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport has horizontal overflow`,
     );
-    let scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
+    const scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
       currentSrc: img.currentSrc,
       pointerEvents: getComputedStyle(img).pointerEvents,
       alt: img.getAttribute('alt'),
-      mobileSrc: img.dataset.mobileSrc,
       desktopSrc: img.dataset.desktopSrc,
     }))`);
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
+    assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not use the canonical landscape scenic package`);
     const portrait = portraitViewport;
-    const logicalWidth = portrait ? height : width;
-    const expectsMobileArt = logicalWidth <= 720;
-
-    await waitFor(
-      async () => Boolean(await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).every((img) =>
-        img.currentSrc === (img.dataset.${expectsMobileArt ? "mobileSrc" : "desktopSrc"})
-      )`)),
-      `${width}px viewport did not settle on the expected diorama package`,
-    );
-    scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
-      currentSrc: img.currentSrc,
-      pointerEvents: getComputedStyle(img).pointerEvents,
-      alt: img.getAttribute('alt'),
-      mobileSrc: img.dataset.mobileSrc,
-      desktopSrc: img.dataset.desktopSrc,
-    }))`);
 
     const presentation = await cdp.evaluate(`(() => {
       const shell = document.querySelector('.app-shell');
@@ -257,11 +241,6 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       assert(presentation.transform === "none", `${width}px landscape viewport unexpectedly transforms the game shell`);
     }
 
-    if (expectsMobileArt) {
-      assert(scenicLayers.every((layer) => layer.currentSrc === layer.mobileSrc), `${width}px viewport did not select the mobile diorama package`);
-    } else {
-      assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not select the desktop diorama package`);
-    }
     if (!portrait) {
       const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
         const rect = element.getBoundingClientRect();
