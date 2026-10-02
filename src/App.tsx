@@ -217,7 +217,7 @@ export default function App() {
         </Modal>
       )}
       {state.completionOpen && (
-        <Modal title="Puzzle complete!" onClose={closeCompletion}>
+        <Modal title="Puzzle complete!" onClose={closeCompletion} variant="completion">
           <p>Aligned in exactly {state.history.length} moves.</p>
           {state.puzzleIndex < CAMPAIGN.length - 1 ? (
             <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next puzzle</button>
