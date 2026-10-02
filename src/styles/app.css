@@ -4606,3 +4606,35 @@ h1 {
       radial-gradient(circle, #d8c1ff30 0 42%, transparent 44%);
   }
 }
+
+
+/* V28 puzzle-ticket typography pass.
+   Match the reference's compact one-line "Puzzle 01" heading while retaining
+   the progress pips and the campaign total for smaller layouts. */
+.puzzle-numberline {
+  display: inline-block;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .puzzle-index::before {
+    content: none;
+  }
+
+  .reference-first-scene .puzzle-numberline {
+    color: #303640;
+    font-size: 0.94rem;
+    font-weight: 950;
+    letter-spacing: 0.015em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .reference-first-scene .puzzle-total {
+    display: none;
+  }
+
+  .reference-first-scene .puzzle-progress-dots {
+    margin-top: 0.16rem;
+  }
+}
