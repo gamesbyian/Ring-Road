@@ -1,39 +1,88 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 220">
   <defs>
     <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#e9cc96"/><stop offset=".58" stop-color="#bf925b"/><stop offset="1" stop-color="#805b39"/>
+      <stop stop-color="#f2d9a6"/><stop offset=".58" stop-color="#c89b63"/><stop offset="1" stop-color="#805b39"/>
+    </linearGradient>
+    <linearGradient id="stoneSide" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#8f653f"/><stop offset=".5" stop-color="#b98552"/><stop offset="1" stop-color="#6f4b31"/>
     </linearGradient>
     <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#69885c"/><stop offset="1" stop-color="#315441"/>
+      <stop stop-color="#779b63"/><stop offset="1" stop-color="#315441"/>
     </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff1a5"/><stop offset=".5" stop-color="#efbf45"/><stop offset="1" stop-color="#bc7426"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#4f3522" flood-opacity=".25"/>
+    </filter>
   </defs>
+
   <path d="M62 71 Q720 -7 1378 71 L1418 220H22Z" fill="#c39a61" stroke="#745134" stroke-width="4"/>
   <path d="M0 125 Q720 46 1440 125V220H0Z" fill="url(#stone)" stroke="#745134" stroke-width="4"/>
 
-  <g opacity=".58" stroke="#765438" stroke-width="3">
+  <g opacity=".52" stroke="#765438" stroke-width="3">
     <path d="M70 139Q720 73 1370 139"/><path d="M42 179Q720 111 1398 179"/>
     <path d="M160 120v100M300 101v119M445 86v134M995 86v134M1140 101v119M1280 120v100"/>
   </g>
 
-  <g fill="#9c7448" stroke="#68492f" stroke-width="3">
+  <g fill="#9c7448" stroke="#68492f" stroke-width="3" filter="url(#shadow)">
     <path d="M568 89h304v131H568Z"/><path d="M612 73h216v147H612Z"/>
   </g>
-  <g fill="#ead1a1" stroke="#89613d" stroke-width="3">
+  <g fill="#f0d4a5" stroke="#89613d" stroke-width="3">
     <path d="M604 116h232v23H604Z"/><path d="M588 145h264v25H588Z"/><path d="M570 176h300v28H570Z"/>
   </g>
-
-  <g fill="url(#grass)" stroke="#31503d" stroke-width="2">
-    <path d="M0 220 73 77l74 143Z"/><path d="M84 220 145 111l62 109Z"/><path d="M171 220 218 135l48 85Z"/>
-    <path d="M1174 220 1222 134l49 86Z"/><path d="M1258 220 1318 111l62 109Z"/><path d="M1340 220 1413 76l74 144Z"/>
+  <g fill="#b58653" opacity=".55">
+    <path d="M613 137h215v8H613zM590 168h260v8H590zM572 201h296v8H572z"/>
   </g>
 
-  <g fill="#345b8f">
-    <path d="M336 132h48v88h-48Z"/><path d="M1056 132h48v88h-48Z"/>
+  <!-- stair-flanking monument piers -->
+  <g filter="url(#shadow)" stroke="#765035" stroke-width="3">
+    <path d="M500 119h66v101h-66Z" fill="url(#stoneSide)"/>
+    <path d="M874 119h66v101h-66Z" fill="url(#stoneSide)"/>
+    <path d="M491 109h84v22h-84Z" fill="#e6c28f"/>
+    <path d="M865 109h84v22h-84Z" fill="#e6c28f"/>
+    <path d="M507 88h52l-9 22h-34Z" fill="#d4a66d"/>
+    <path d="M881 88h52l-9 22h-34Z" fill="#d4a66d"/>
   </g>
-  <g fill="#d0842c">
-    <path d="M402 146h38v74h-38Z"/><path d="M1000 146h38v74h-38Z"/>
+
+  <!-- gold lamp/crystal caps -->
+  <g fill="url(#gold)" stroke="#986329" stroke-width="2" filter="url(#shadow)">
+    <path d="M533 48 552 83 533 105 514 83Z"/>
+    <path d="M907 48 926 83 907 105 888 83Z"/>
+    <path d="M533 57 541 82 533 93 525 82Z" fill="#fff4bd" opacity=".72"/>
+    <path d="M907 57 915 82 907 93 899 82Z" fill="#fff4bd" opacity=".72"/>
+  </g>
+
+  <!-- banner strips on the arena front -->
+  <g stroke="#5e4936" stroke-width="2" filter="url(#shadow)">
+    <path d="M326 132h58v88h-58Z" fill="#345b8f"/>
+    <path d="M398 145h46v75h-46Z" fill="#d0842c"/>
+    <path d="M996 145h46v75h-46Z" fill="#d0842c"/>
+    <path d="M1056 132h58v88h-58Z" fill="#345b8f"/>
   </g>
   <g fill="#f0c84c">
-    <path d="M489 151 506 177 489 203 472 177Z"/><path d="M951 151 968 177 951 203 934 177Z"/>
+    <path d="M355 151 372 177 355 203 338 177Z"/><path d="M1085 151 1102 177 1085 203 1068 177Z"/>
+    <path d="M421 157 435 178 421 199 407 178Z"/><path d="M1019 157 1033 178 1019 199 1005 178Z"/>
+  </g>
+
+  <!-- denser toy-like foliage clusters -->
+  <g fill="url(#grass)" stroke="#31503d" stroke-width="2" filter="url(#shadow)">
+    <path d="M0 220 73 77l74 143Z"/><path d="M84 220 145 111l62 109Z"/><path d="M171 220 218 135l48 85Z"/>
+    <path d="M247 220 286 149l40 71Z"/>
+    <path d="M1115 220 1152 148l38 72Z"/>
+    <path d="M1174 220 1222 134l49 86Z"/><path d="M1258 220 1318 111l62 109Z"/><path d="M1340 220 1413 76l74 144Z"/>
+  </g>
+  <g fill="#5f8258" opacity=".9">
+    <circle cx="265" cy="194" r="24"/><circle cx="296" cy="198" r="20"/>
+    <circle cx="1143" cy="195" r="23"/><circle cx="1172" cy="200" r="18"/>
+  </g>
+
+  <!-- small stone footings around the central stairs -->
+  <g fill="#d7b27e" stroke="#765035" stroke-width="3">
+    <path d="M465 188h72v32h-72Z"/><path d="M903 188h72v32h-72Z"/>
+  </g>
+  <g fill="#f0c84c">
+    <path d="M501 193 514 205 501 217 488 205Z"/>
+    <path d="M939 193 952 205 939 217 926 205Z"/>
   </g>
 </svg>
