@@ -4315,3 +4315,47 @@ h1 {
     background-size: 64px 64px, auto, 100% 100%;
   }
 }
+
+
+/* V22 scenic-only raster matte.
+   This replaces the whole-screen concept underpainting with a baked derivative
+   that contains only atmospheric scenery. The board and every reference UI
+   region are transparent in the asset, so the live game remains the only
+   source of rings, controls, cards, and text. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    z-index: -2;
+    opacity: 0.66;
+    background:
+      url("../assets/diorama/desktop/reference-scenery-matte.webp") 50% 48% / cover no-repeat;
+    filter: saturate(1.04) contrast(1.02) brightness(1.02);
+    mix-blend-mode: normal;
+    -webkit-mask-image: none;
+    mask-image: none;
+    transform: none;
+  }
+
+  .reference-first-scene .scene-art-backdrop {
+    opacity: 0.92;
+  }
+
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.96;
+  }
+}
+
+
+/* V22.1 retained-screenshot correction: the matte was technically present but
+   too far behind the opaque authored backdrop to contribute. Since its board
+   and HUD regions are transparent, it can safely sit between the scenic props
+   and the live game, where the painterly fragments are actually visible. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    z-index: 2;
+    opacity: 0.54;
+    filter: saturate(1.06) contrast(1.015) brightness(1.015);
+    mix-blend-mode: soft-light;
+  }
+}

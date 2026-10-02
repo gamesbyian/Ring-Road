@@ -1,11 +1,12 @@
 import desktopBackdrop from "./desktop/backdrop.svg";
 import desktopRearArchitecture from "./desktop/rear-architecture.svg";
 import desktopForeground from "./desktop/foreground.svg";
+import referenceSceneryMatte from "./desktop/reference-scenery-matte.webp";
 import parchmentGrain from "./textures/parchment-grain.png";
 import stoneGrain from "./textures/stone-grain.png";
 import paintGrain from "./textures/paint-grain.png";
 
-export type DioramaAssetRole = "backdrop" | "rear-architecture" | "foreground";
+export type DioramaAssetRole = "backdrop" | "rear-architecture" | "foreground" | "reference-scenery-matte";
 export type DioramaAssetVariant = "desktop";
 export type DioramaTextureRole = "parchment-grain" | "stone-grain" | "paint-grain";
 
@@ -15,10 +16,10 @@ export interface DioramaAsset {
   readonly src: string;
   readonly width: number;
   readonly height: number;
-  readonly format: "svg";
+  readonly format: "svg" | "webp";
   readonly critical: true;
   readonly loading: "eager";
-  readonly provenance: "authored-in-repo";
+  readonly provenance: "authored-in-repo" | "derived-from-canonical-concept";
 }
 
 export const DIORAMA_ASSETS = {
@@ -55,6 +56,17 @@ export const DIORAMA_ASSETS = {
       critical: true,
       loading: "eager",
       provenance: "authored-in-repo",
+    },
+    referenceSceneryMatte: {
+      role: "reference-scenery-matte",
+      variant: "desktop",
+      src: referenceSceneryMatte,
+      width: 512,
+      height: 384,
+      format: "webp",
+      critical: true,
+      loading: "eager",
+      provenance: "derived-from-canonical-concept",
     },
   },
 } as const satisfies Record<DioramaAssetVariant, Record<string, DioramaAsset>>;
