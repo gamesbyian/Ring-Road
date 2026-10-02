@@ -2937,3 +2937,48 @@ h1 {
   filter: drop-shadow(0 1px 0 #fff0a76b);
   pointer-events: none;
 }
+
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque h1 {
+    position: relative;
+    width: 78%;
+    isolation: isolate;
+  }
+
+  .reference-first-scene .title-plaque h1::after {
+    position: absolute;
+    z-index: -1;
+    left: -0.18em;
+    bottom: -0.42em;
+    width: 2.85em;
+    height: 0.62em;
+    border-bottom: 0.16em solid #3c4654;
+    border-radius: 0 0 50% 50%;
+    box-shadow:
+      0 0.075em 0 #f5eee0,
+      inset 0 -0.035em 0 #202733;
+    content: "";
+    transform: rotate(-3deg);
+  }
+
+  .reference-first-scene .title-plaque h1::before {
+    position: absolute;
+    z-index: 1;
+    left: 0.22em;
+    bottom: -0.31em;
+    width: 2.05em;
+    height: 0.22em;
+    border-bottom: 0.025em dashed #f4dba5;
+    border-radius: 0 0 50% 50%;
+    content: "";
+    opacity: 0.92;
+    transform: rotate(-3deg);
+  }
+
+  .reference-first-scene .title-tagline {
+    min-width: 72%;
+    text-align: center;
+  }
+}
