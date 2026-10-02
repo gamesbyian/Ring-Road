@@ -4428,3 +4428,66 @@ h1 {
     mix-blend-mode: multiply;
   }
 }
+
+
+/* V24 logo-road pass: the canonical reference turns the wordmark into a
+   miniature sign with an actual curving road beneath it. Keep the text live,
+   and add the road as decorative chrome rather than baking the logo to pixels. */
+.title-road-mark {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    position: absolute;
+    z-index: 3;
+    left: 0.95rem;
+    bottom: 1.06rem;
+    display: block;
+    width: 72%;
+    height: 1.22rem;
+    border: 0.28rem solid #4a5058;
+    border-top: 0;
+    border-radius: 0 0 60% 60% / 0 0 100% 100%;
+    box-shadow:
+      0 0.1rem 0 #f7ead0,
+      0 0.22rem 0 #2e343b30;
+    transform: rotate(-2.8deg);
+    pointer-events: none;
+  }
+
+  .reference-first-scene .title-road-mark::before {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 0.15rem;
+    height: 0.08rem;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        #f5dfae 0 9%,
+        transparent 9% 16%
+      );
+    content: "";
+  }
+
+  .reference-first-scene .title-road-mark::after {
+    position: absolute;
+    right: 4%;
+    bottom: -0.02rem;
+    width: 0.42rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #d8bc87;
+    box-shadow: -0.22rem -0.03rem 0 #49515a;
+    content: "";
+    opacity: 0.85;
+  }
+
+  .reference-first-scene .title-tagline {
+    bottom: -0.78rem;
+    z-index: 4;
+  }
+}
