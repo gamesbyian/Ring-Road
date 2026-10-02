@@ -203,20 +203,49 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);
     assert(scenicLayers.every((layer) => layer.alt === ""), `${width}px decorative scenic art exposes non-empty alt text`);
-    const expectsMobileArt = width <= 720;
+    const portrait = height > width;
+    const logicalWidth = portrait ? height : width;
+    const expectsMobileArt = logicalWidth <= 720;
+
+    const presentation = await cdp.evaluate(`(() => {
+      const shell = document.querySelector('.app-shell');
+      if (!shell) return null;
+      const rect = shell.getBoundingClientRect();
+      return {
+        transform: getComputedStyle(shell).transform,
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+      };
+    })()`);
+    assert(presentation, `${width}px viewport did not expose the app presentation shell`);
+    if (portrait) {
+      assert(presentation.transform !== "none", `${width}px portrait viewport did not rotate the game shell`);
+      assert(Math.abs(presentation.width - width) <= 2, `${width}px rotated shell does not fill the physical viewport width`);
+      assert(Math.abs(presentation.height - height) <= 2, `${width}px rotated shell does not fill the physical viewport height`);
+      assert(Math.abs(presentation.left) <= 2 && Math.abs(presentation.top) <= 2, `${width}px rotated shell is not centered on the viewport`);
+    } else {
+      assert(presentation.transform === "none", `${width}px landscape viewport unexpectedly transforms the game shell`);
+    }
+
     if (expectsMobileArt) {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.mobileSrc), `${width}px viewport did not select the mobile diorama package`);
     } else {
       assert(scenicLayers.every((layer) => layer.currentSrc === layer.desktopSrc), `${width}px viewport did not select the desktop diorama package`);
     }
-    const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.left < -1 || rect.right > window.innerWidth + 1;
-    }).map((element) => element.getAttribute('aria-label') || element.textContent?.trim() || 'button')`);
-    assert(
-      Array.isArray(clippedInteractiveTargets) && clippedInteractiveTargets.length === 0,
-      `${width}px viewport clips interactive controls: ${clippedInteractiveTargets?.join(", ")}`,
-    );
+    if (!portrait) {
+      const clippedInteractiveTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.left < -1 || rect.right > window.innerWidth + 1;
+      }).map((element) => element.getAttribute('aria-label') || element.textContent?.trim() || 'button')`);
+      assert(
+        Array.isArray(clippedInteractiveTargets) && clippedInteractiveTargets.length === 0,
+        `${width}px viewport clips interactive controls: ${clippedInteractiveTargets?.join(", ")}`,
+      );
+    }
     const undersizedTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
       const rect = element.getBoundingClientRect();
       return rect.width < 44 || rect.height < 44;
@@ -299,9 +328,47 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       });
     })()`);
     assert(
-      layoutBounds.every((item) => !item.missing && item.width > 0 && item.height > 0 && item.left >= -1 && item.right <= width + 1),
-      `${width}px viewport has escaped or missing primary layout regions: ${JSON.stringify(layoutBounds)}`,
+      layoutBounds.every((item) => !item.missing && item.width > 0 && item.height > 0),
+      `${width}px viewport has missing primary layout regions: ${JSON.stringify(layoutBounds)}`,
     );
+    if (!portrait) {
+      assert(
+        layoutBounds.every((item) => item.left >= -1 && item.right <= width + 1),
+        `${width}px viewport has escaped primary layout regions: ${JSON.stringify(layoutBounds)}`,
+      );
+    }
+
+    if (portrait && fullFlow) {
+      await cdp.send("Emulation.setDeviceMetricsOverride", {
+        width: height,
+        height: width,
+        deviceScaleFactor: 1,
+        mobile,
+      });
+      await waitFor(
+        async () => await cdp.evaluate("matchMedia('(orientation: landscape)').matches"),
+        `${width}px viewport did not react to a portrait-to-landscape resize`,
+      );
+      assert(
+        await cdp.evaluate("getComputedStyle(document.querySelector('.app-shell')).transform === 'none'"),
+        `${width}px viewport retained portrait rotation after becoming landscape`,
+      );
+
+      await cdp.send("Emulation.setDeviceMetricsOverride", {
+        width,
+        height,
+        deviceScaleFactor: 1,
+        mobile,
+      });
+      await waitFor(
+        async () => await cdp.evaluate("matchMedia('(orientation: portrait)').matches"),
+        `${width}px viewport did not react to a landscape-to-portrait resize`,
+      );
+      assert(
+        await cdp.evaluate("getComputedStyle(document.querySelector('.app-shell')).transform !== 'none'"),
+        `${width}px viewport did not restore portrait rotation after resizing back`,
+      );
+    }
 
     if (!fullFlow) return;
 
