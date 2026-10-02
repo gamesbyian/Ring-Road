@@ -299,6 +299,10 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       `${width}px guide did not close`,
     );
 
+    if (width === 1440 && height === 1000) {
+      await captureScreenshot(cdp, "reference-layout-1440x1000");
+    }
+
     const boardCompositing = await cdp.evaluate(`(() => {
       const board = document.querySelector('.board');
       const rotor = document.querySelector('.ring-rotor');
