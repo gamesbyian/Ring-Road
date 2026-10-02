@@ -252,14 +252,16 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         `${width}px viewport clips interactive controls: ${clippedInteractiveTargets?.join(", ")}`,
       );
     }
-    const undersizedTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).filter((element) => {
+    const undersizedTargets = await cdp.evaluate(`Array.from(document.querySelectorAll('button')).flatMap((element) => {
       const rect = element.getBoundingClientRect();
-      return rect.width < 44 || rect.height < 44;
-    }).map((element) => ({
-      label: element.getAttribute('aria-label') || element.textContent?.trim() || 'button',
-      width: Math.round(element.getBoundingClientRect().width),
-      height: Math.round(element.getBoundingClientRect().height),
-    }))`);
+      const style = getComputedStyle(element);
+      if (style.display === 'none' || style.visibility === 'hidden' || rect.width === 0 || rect.height === 0) return [];
+      return [{
+        label: element.getAttribute('aria-label') || element.textContent?.trim() || 'button',
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      }];
+    }).filter(({ width, height }) => width < 44 || height < 44)`);
     assert(
       Array.isArray(undersizedTargets) && undersizedTargets.length === 0,
       `${width}px viewport has interactive targets below 44px: ${JSON.stringify(undersizedTargets)}`,
