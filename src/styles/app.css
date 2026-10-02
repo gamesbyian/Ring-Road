@@ -2927,3 +2927,13 @@ h1 {
     background-size: 19px 17px, 23px 21px, auto;
   }
 }
+
+
+.reference-first-scene .hub-sun {
+  fill: #efc85a;
+  stroke: #8e6637;
+  stroke-width: 0.8;
+  opacity: 0.72;
+  filter: drop-shadow(0 1px 0 #fff0a76b);
+  pointer-events: none;
+}
