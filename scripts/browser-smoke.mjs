@@ -199,7 +199,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport has horizontal overflow`,
     );
-    const scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
+    let scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
       currentSrc: img.currentSrc,
       pointerEvents: getComputedStyle(img).pointerEvents,
       alt: img.getAttribute('alt'),
@@ -212,6 +212,20 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     const portrait = height > width;
     const logicalWidth = portrait ? height : width;
     const expectsMobileArt = logicalWidth <= 720;
+
+    await waitFor(
+      async () => Boolean(await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).every((img) =>
+        img.currentSrc === (img.dataset.${expectsMobileArt ? "mobileSrc" : "desktopSrc"})
+      )`)),
+      `${width}px viewport did not settle on the expected diorama package`,
+    );
+    scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
+      currentSrc: img.currentSrc,
+      pointerEvents: getComputedStyle(img).pointerEvents,
+      alt: img.getAttribute('alt'),
+      mobileSrc: img.dataset.mobileSrc,
+      desktopSrc: img.dataset.desktopSrc,
+    }))`);
 
     const presentation = await cdp.evaluate(`(() => {
       const shell = document.querySelector('.app-shell');
