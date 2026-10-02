@@ -4538,3 +4538,25 @@ h1 {
     min-height: 51px;
   }
 }
+
+
+/* V26 tactile control glyph pass.
+   The reference uses rotational arrows, not navigation chevrons, on each ring
+   control. Keep the accessible labels unchanged and make the visible symbol
+   describe the actual action. */
+.reference-first-scene .ring-control .rotation-glyph {
+  display: block;
+  font-size: 1.36rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: translateY(-0.02em);
+  text-shadow: 0 1px 0 #fff9;
+}
+
+.reference-first-scene .ring-control .rotation-glyph-ccw {
+  transform: translate(-0.02em, -0.02em);
+}
+
+.reference-first-scene .ring-control .rotation-glyph-cw {
+  transform: translate(0.02em, -0.02em);
+}
