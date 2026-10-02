@@ -2,6 +2,8 @@
 
 ## Status and authority
 
+**Current orientation note (October 2026):** the later landscape-only presentation contract supersedes the older separate portrait/mobile art-direction passages in this document. Ring Road now has one canonical landscape scene. Portrait viewports rotate that same scene as a complete unit, so the former dedicated mobile scenic asset package has been retired rather than maintained as a second visual composition. Historical phase notes below remain useful as implementation history, but they no longer define current orientation behavior.
+
 **Active reference-first visual authority.** The previous V8 lightweight-vector finish line is superseded. The new priority is explicit: **match the supplied reference image as closely as practical first, and preserve technical robustness second.** Robustness remains required for a shippable game, but it no longer outranks visual fidelity when the two are in tension.
 
 The reference concept image is the canonical visual target for the **whole play experience**, including composition, HUD placement, scenic density, material character, board staging, and miniature-diorama impression. Ring Road does not need to copy every incidental prop literally, but a casual side-by-side comparison should read as the same visual concept rather than merely the same genre of scene.
