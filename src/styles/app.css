@@ -2571,3 +2571,128 @@ h1 {
     opacity: 0.88;
   }
 }
+
+
+/* V10.1: remove production chrome that the reference treats as invisible
+   structure, while retaining it semantically for assistive technology. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .eyebrow {
+    display: none;
+  }
+
+  .reference-first-scene .center-instruction {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .reference-first-scene .scene-status-slot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .reference-first-scene .marker {
+    opacity: 0.55;
+    stroke-width: 0.65;
+    filter:
+      drop-shadow(0 -0.5px 0 #fff7)
+      drop-shadow(0 0.7px 0 #33271f8f);
+  }
+
+  .reference-first-scene .ring-id {
+    opacity: 0.18;
+    font-size: 5px;
+  }
+
+  .reference-first-scene .ring-top {
+    filter:
+      saturate(1.14)
+      brightness(1.055)
+      drop-shadow(0 -1.4px 0 #ffffffa5)
+      drop-shadow(0 3px 1.5px #46312466);
+  }
+
+  .reference-first-scene .ring-top-bevel {
+    stroke: #fff5d748;
+    filter:
+      drop-shadow(0 -0.8px 0 #ffffff8a)
+      drop-shadow(0 1.5px 1px #5a402b28);
+  }
+
+  .reference-first-scene .ring-wall {
+    filter:
+      saturate(1.08)
+      brightness(0.76)
+      drop-shadow(0 3px 1.5px #3c291d72);
+  }
+
+  .reference-first-scene .board-base {
+    fill: #d8c29e;
+    stroke: #f7e8c9;
+  }
+
+  .reference-first-scene .board-base-rim {
+    fill: #c5a477;
+    stroke: #6f5034;
+  }
+
+  .reference-first-scene .board-base-depth {
+    fill: #8a6848;
+  }
+
+  .reference-first-scene .board-base-depth-low {
+    fill: #634933;
+  }
+
+  .reference-first-scene .title-plaque::before {
+    background:
+      radial-gradient(circle at 82% 24%, #f0b638 0 8%, transparent 8.5%),
+      linear-gradient(135deg, transparent 0 58%, #3f7657 58% 67%, transparent 67%) 79% 22% / 82px 50px no-repeat,
+      linear-gradient(45deg, transparent 0 54%, #315c49 54% 66%, transparent 66%) 88% 29% / 68px 42px no-repeat;
+    border: 0;
+    opacity: 0.9;
+  }
+
+  .reference-first-scene .title-plaque::after {
+    border-color: #9d75483d;
+  }
+
+  .reference-first-scene .guide-button {
+    top: auto;
+    left: 0.1rem;
+    bottom: -4.1rem;
+    width: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+  }
+
+  .reference-first-scene .guide-button::before {
+    content: "?";
+    font-size: 1.35rem;
+    font-weight: 950;
+    line-height: 1;
+  }
+
+  .reference-goal-heading {
+    padding-left: 2.5rem;
+  }
+
+  .reference-goal-badge {
+    display: none;
+  }
+}
