@@ -4,9 +4,13 @@ import desktopForeground from "./desktop/foreground.svg";
 import mobileBackdrop from "./mobile/backdrop.svg";
 import mobileRearArchitecture from "./mobile/rear-architecture.svg";
 import mobileForeground from "./mobile/foreground.svg";
+import parchmentGrain from "./textures/parchment-grain.png";
+import stoneGrain from "./textures/stone-grain.png";
+import paintGrain from "./textures/paint-grain.png";
 
 export type DioramaAssetRole = "backdrop" | "rear-architecture" | "foreground";
 export type DioramaAssetVariant = "desktop" | "mobile";
+export type DioramaTextureRole = "parchment-grain" | "stone-grain" | "paint-grain";
 
 export interface DioramaAsset {
   readonly role: DioramaAssetRole;
@@ -92,3 +96,39 @@ export const DIORAMA_ASSETS = {
     },
   },
 } as const satisfies Record<DioramaAssetVariant, Record<string, DioramaAsset>>;
+
+export interface DioramaTexture {
+  readonly role: DioramaTextureRole;
+  readonly src: string;
+  readonly width: 64;
+  readonly height: 64;
+  readonly format: "png";
+  readonly provenance: "authored-in-repo";
+}
+
+export const DIORAMA_TEXTURES = {
+  parchment: {
+    role: "parchment-grain",
+    src: parchmentGrain,
+    width: 64,
+    height: 64,
+    format: "png",
+    provenance: "authored-in-repo",
+  },
+  stone: {
+    role: "stone-grain",
+    src: stoneGrain,
+    width: 64,
+    height: 64,
+    format: "png",
+    provenance: "authored-in-repo",
+  },
+  paint: {
+    role: "paint-grain",
+    src: paintGrain,
+    width: 64,
+    height: 64,
+    format: "png",
+    provenance: "authored-in-repo",
+  },
+} as const satisfies Record<string, DioramaTexture>;
