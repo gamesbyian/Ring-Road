@@ -106,7 +106,7 @@ export default function App() {
         <button onClick={() => dispatch({ type: "undo" })} disabled={!state.history.length || state.completed}>Undo</button>
         <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
         <button onClick={() => dispatch({ type: "toggle-hint" })}>Hint</button>
-        <button onClick={() => dispatch({ type: "toggle-solution" })}>Solution</button>
+        <button className="solution-inline-action" onClick={() => dispatch({ type: "toggle-solution" })}>Solution</button>
       </div>
     </aside>
   );
@@ -154,7 +154,7 @@ export default function App() {
         <span />
         <span />
       </span>
-      <span className="reference-solution-action">View solution</span>
+      <button className="reference-solution-action" onClick={() => dispatch({ type: "toggle-solution" })}>View solution</button>
     </section>
   );
 
