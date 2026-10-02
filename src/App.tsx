@@ -163,11 +163,11 @@ export default function App() {
     <nav className="puzzle-plaque" aria-label="Puzzle navigation">
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
       <span className="puzzle-index">
-        <small>Puzzle </small>{puzzle.id}
+        <span className="puzzle-numberline">Puzzle {String(puzzle.id).padStart(2, "0")}</span>
         <span className="puzzle-progress-dots" aria-hidden="true">
           <i className="active" /><i /><i /><i /><i /><i />
         </span>
-        <small> of {CAMPAIGN.length}</small>
+        <small className="puzzle-total">of {CAMPAIGN.length}</small>
       </span>
       <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
     </nav>
