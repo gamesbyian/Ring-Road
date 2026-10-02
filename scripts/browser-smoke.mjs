@@ -494,16 +494,16 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Reset')?.click()");
     await waitFor(async () => (await moveCount()) === 0, `${width}px reset did not restore move count`);
 
-    const puzzleLabel = async () => await cdp.evaluate("document.querySelector('nav span')?.textContent");
+    const puzzleNumber = async () => Number(await cdp.evaluate(`document.querySelector('.puzzle-numberline')?.textContent?.match(/\\d+/)?.[0]`));
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px next navigation failed`);
+    await waitFor(async () => (await puzzleNumber()) === 2, `${width}px next navigation failed`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px previous navigation failed`);
+    await waitFor(async () => (await puzzleNumber()) === 1, `${width}px previous navigation failed`);
 
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px rapid-input setup could not reach puzzle 2`);
+    await waitFor(async () => (await puzzleNumber()) === 2, `${width}px rapid-input setup could not reach puzzle 2`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 3 of"), `${width}px rapid-input setup could not reach puzzle 3`);
+    await waitFor(async () => (await puzzleNumber()) === 3, `${width}px rapid-input setup could not reach puzzle 3`);
 
     const rapidInput = await cdp.evaluate(`(async () => {
       const group = Array.from(document.querySelectorAll('.ring-control'))
@@ -530,15 +530,15 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Reset')?.click()");
     await waitFor(async () => (await moveCount()) === 0, `${width}px reset failed after rapid input`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px rapid-input teardown could not reach puzzle 2`);
+    await waitFor(async () => (await puzzleNumber()) === 2, `${width}px rapid-input teardown could not reach puzzle 2`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px rapid-input teardown could not return to puzzle 1`);
+    await waitFor(async () => (await puzzleNumber()) === 1, `${width}px rapid-input teardown could not return to puzzle 1`);
 
     if (!mobile) {
       for (let step = 0; step < 6; step += 1) {
         await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
       }
-      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 7 of"), `${width}px under/over setup could not reach puzzle 7`);
+      await waitFor(async () => (await puzzleNumber()) === 7, `${width}px under/over setup could not reach puzzle 7`);
       const wrapSolutionLines = await readSolutionLines(cdp, width);
       await applySolutionLines(cdp, wrapSolutionLines, ({ color }) => color !== "Violet");
       await waitFor(
@@ -565,7 +565,7 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       for (let step = 0; step < 6; step += 1) {
         await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
       }
-      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px under/over teardown could not return to puzzle 1`);
+      await waitFor(async () => (await puzzleNumber()) === 1, `${width}px under/over teardown could not return to puzzle 1`);
     }
 
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Solution')?.click()");
@@ -619,11 +619,11 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
 
     if (!mobile) {
       await cdp.evaluate("Array.from(document.querySelectorAll('.modal-scroll button')).find((button) => button.textContent === 'Next puzzle')?.click()");
-      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px completion action did not advance to puzzle 2`);
+      await waitFor(async () => (await puzzleNumber()) === 2, `${width}px completion action did not advance to puzzle 2`);
       for (let step = 0; step < 10; step += 1) {
         await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
       }
-      await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 12 of"), `${width}px campaign-end setup could not reach puzzle 12`);
+      await waitFor(async () => (await puzzleNumber()) === 12, `${width}px campaign-end setup could not reach puzzle 12`);
       const finalSolutionLines = await readSolutionLines(cdp, width);
       await applySolutionLines(cdp, finalSolutionLines);
       await waitFor(
