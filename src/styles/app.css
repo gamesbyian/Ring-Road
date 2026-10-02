@@ -3889,3 +3889,56 @@ h1 {
     height: clamp(88px, 10dvmax, 145px);
   }
 }
+
+
+/* V15.1 final screenshot correction. */
+.solution-card-action {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    top: 44.5%;
+  }
+
+  .reference-first-scene .board {
+    transform: rotateX(43deg) translateY(-0.2%);
+  }
+
+  .reference-first-scene .board-surface::before {
+    transform: translate(-50%, -50%) rotateX(43deg);
+  }
+
+  .reference-first-scene .actions .solution-compact-action {
+    display: none;
+  }
+
+  .solution-card-action {
+    display: grid;
+    visibility: visible;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.35rem;
+    border: 1px solid #c7ab82;
+    border-radius: 9px;
+    place-items: center;
+    color: #f8edd8;
+    background: linear-gradient(180deg, #ffffff1e, #ffffff09);
+    box-shadow:
+      inset 0 1px 0 #ffffff28,
+      0 3px 0 #121a2a;
+    font-size: 0.66rem;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .solution-card-action:hover {
+    background: linear-gradient(180deg, #ffffff2a, #ffffff10);
+  }
+
+  .solution-card-action:active {
+    transform: translateY(2px);
+    box-shadow: inset 0 1px 2px #0003, 0 1px 0 #121a2a;
+  }
+}
