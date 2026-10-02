@@ -55,7 +55,7 @@ export default function App() {
     <header className="world-header">
       <div className="title-plaque world-plaque">
         <span className="eyebrow">Precision alignment puzzle</span>
-        <h1>Ring Road</h1>
+        <h1><span>Ring</span><span>Road</span></h1>
         <span className="title-tagline">Align the gaps. Clear the road.</span>
       </div>
       <button className="guide-button plaque-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
@@ -86,18 +86,18 @@ export default function App() {
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
-              <span className={`swatch ring-${ring}`} aria-hidden="true">{ring + 1}</span>
-              <span className="ring-name">{LABELS[ring]} <small>{cycle} steps</small></span>
+              <span className={`swatch ring-${ring}`} aria-hidden="true" />
+              <span className="ring-name">Ring {7 - ring} <small>{LABELS[ring]} · {cycle} steps</small></span>
               <button
                 onClick={() => dispatch({ type: "rotate", ring, direction: -1 })}
                 disabled={state.completed}
                 aria-label={`Rotate ${LABELS[ring]} counterclockwise`}
-              >↶</button>
+              ><span aria-hidden="true">‹</span></button>
               <button
                 onClick={() => dispatch({ type: "rotate", ring, direction: 1 })}
                 disabled={state.completed}
                 aria-label={`Rotate ${LABELS[ring]} clockwise`}
-              >↷</button>
+              ><span aria-hidden="true">›</span></button>
             </div>
           );
         })}
@@ -141,11 +141,11 @@ export default function App() {
 
   const solutionCard = (
     <section className="reference-solution-card" aria-label="Solution">
-      <div className="reference-solution-heading">
+      <span className="reference-solution-heading">
         <span className="reference-eye" aria-hidden="true" />
         <strong>Solution</strong>
-      </div>
-      <div className="reference-solution-preview" aria-hidden="true">
+      </span>
+      <span className="reference-solution-preview" aria-hidden="true">
         <span />
         <span />
         <span />
@@ -153,8 +153,8 @@ export default function App() {
         <span />
         <span />
         <span />
-      </div>
-      <span className="reference-solution-action">Move plan in controls</span>
+      </span>
+      <span className="reference-solution-action">View solution</span>
     </section>
   );
 
