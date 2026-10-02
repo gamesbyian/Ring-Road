@@ -4344,3 +4344,18 @@ h1 {
     opacity: 0.96;
   }
 }
+
+
+/* V22.1 retained-screenshot correction: the matte was technically present but
+   too far behind the opaque authored backdrop to contribute. Since its board
+   and HUD regions are transparent, it can safely sit between the scenic props
+   and the live game, where the painterly fragments are actually visible. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    z-index: 2;
+    opacity: 0.54;
+    filter: saturate(1.06) contrast(1.015) brightness(1.015);
+    mix-blend-mode: soft-light;
+  }
+}
