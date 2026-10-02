@@ -3084,3 +3084,211 @@ h1 {
     drop-shadow(0 2px 0 #5d412d52);
   pointer-events: none;
 }
+
+
+/* V13 HUD pass: give the supporting cards the same physical-paper / enamel
+   hierarchy as the reference while keeping the existing live controls. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .puzzle-plaque {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 0.4rem;
+    padding: 0.72rem 0.7rem 0.82rem;
+    border: 1px solid #9f7d58;
+    border-bottom-width: 4px;
+    border-radius: 10px 10px 14px 14px;
+    box-shadow:
+      inset 0 1px 0 #fff9,
+      inset 0 -1px 0 #b5906633,
+      0 5px 0 #9a7550,
+      0 13px 22px #4a34222e;
+    transform: rotate(0.4deg);
+  }
+
+  .reference-first-scene .puzzle-index {
+    display: grid;
+    min-height: 46px;
+    place-items: center;
+    align-content: center;
+    gap: 0.32rem;
+    color: #303640;
+    font-size: clamp(1rem, 1.35dvmax, 1.2rem);
+    font-weight: 950;
+    line-height: 1;
+  }
+
+  .reference-first-scene .puzzle-progress-dots {
+    display: flex;
+    gap: 0.28rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reference-first-scene .puzzle-progress-dots i {
+    display: block;
+    width: 9px;
+    height: 9px;
+    border: 1px solid #9b7a55;
+    border-radius: 50%;
+    background: #ead7b7;
+    box-shadow: inset 0 1px 1px #fff8;
+  }
+
+  .reference-first-scene .puzzle-progress-dots i.active {
+    background: #efb43d;
+    box-shadow:
+      inset 0 1px 0 #fff7,
+      0 0 0 1px #b47625;
+  }
+
+  .reference-first-scene .puzzle-plaque button {
+    width: 34px;
+    min-width: 34px;
+    min-height: 46px;
+    border: 0;
+    border-radius: 0;
+    color: #4b4f53;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .reference-first-scene .puzzle-plaque button::before {
+    font-size: 1.3rem;
+    font-weight: 950;
+  }
+
+  .reference-moves-card {
+    border: 1px solid #a07b55;
+    border-bottom-width: 4px;
+    box-shadow:
+      inset 0 1px 0 #fff9,
+      0 5px 0 #96714d,
+      0 12px 20px #4a342229;
+    transform: rotate(-0.5deg);
+  }
+
+  .reference-moves-card .reference-card-label {
+    color: #2f3338;
+    font-size: 1rem;
+    font-weight: 950;
+    letter-spacing: 0.01em;
+    text-transform: none;
+  }
+
+  .reference-moves-card strong {
+    color: #30343b;
+    text-shadow: 0 2px 0 #fff7;
+  }
+
+  .reference-moves-target {
+    color: #4f4538;
+    font-size: 0.72rem;
+  }
+
+  .reference-goal-card {
+    border: 1px solid #a17f58;
+    border-bottom-width: 4px;
+    box-shadow:
+      inset 0 1px 0 #fff9,
+      0 5px 0 #96714d,
+      0 15px 28px #4a342236;
+  }
+
+  .reference-goal-card::before {
+    position: absolute;
+    left: 1.05rem;
+    top: 0.92rem;
+    width: 29px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: #f5ead4;
+    background: #303944;
+    box-shadow: inset 0 1px 0 #ffffff24, 0 2px 0 #9d7e59;
+    content: "?";
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    font-weight: 950;
+  }
+
+  .reference-goal-card p {
+    max-width: 58%;
+    color: #3b352e;
+    line-height: 1.42;
+  }
+
+  .reference-goal-miniature {
+    right: 1rem;
+    bottom: 0.75rem;
+    border: 3px solid #bd8a55;
+    box-shadow:
+      0 4px 0 #8c633f,
+      0 8px 14px #4e37232d;
+  }
+
+  .reference-solution-card {
+    border: 1px solid #17233a;
+    border-bottom-width: 4px;
+    background:
+      radial-gradient(circle at 18% 12%, #ffffff12 0 1px, transparent 1.5px),
+      linear-gradient(180deg, #2f3c59, #202a40);
+    background-size: 18px 18px, auto;
+    box-shadow:
+      inset 0 1px 0 #ffffff1e,
+      0 5px 0 #151f31,
+      0 15px 28px #2a1e1838;
+    transform: rotate(0.4deg);
+  }
+
+  .reference-solution-heading {
+    font-size: 1rem;
+    font-weight: 950;
+  }
+
+  .reference-eye {
+    width: 27px;
+    height: 18px;
+    border: 3px solid #f4ead9;
+    border-radius: 70% 0 70% 0;
+    transform: rotate(45deg);
+  }
+
+  .reference-eye::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 7px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #f4ead9;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .reference-solution-preview {
+    border: 2px solid #b49570;
+    border-radius: 13px;
+    background: #273349;
+    box-shadow:
+      inset 0 0 0 4px #1d2739,
+      0 3px 0 #141d2d;
+  }
+
+  .reference-solution-preview span {
+    box-shadow:
+      inset 0 1px 1px #ffffff75,
+      0 0 0 1px #11182799;
+  }
+
+  .reference-first-scene .actions button:nth-child(4) {
+    right: 2.25rem;
+    bottom: 1.42rem;
+    width: min(160px, 12.5dvmax);
+    border: 1px solid #c7ab82;
+    border-radius: 9px;
+    color: #f8edd8;
+    background: linear-gradient(180deg, #ffffff1e, #ffffff09);
+    box-shadow:
+      inset 0 1px 0 #ffffff28,
+      0 3px 0 #121a2a;
+  }
+}
