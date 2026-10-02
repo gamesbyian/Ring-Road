@@ -3091,7 +3091,7 @@ h1 {
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
   .reference-first-scene .puzzle-plaque {
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
     gap: 0.4rem;
     padding: 0.72rem 0.7rem 0.82rem;
     border: 1px solid #9f7d58;
@@ -3142,8 +3142,8 @@ h1 {
   }
 
   .reference-first-scene .puzzle-plaque button {
-    width: 34px;
-    min-width: 34px;
+    width: 44px;
+    min-width: 44px;
     min-height: 46px;
     border: 0;
     border-radius: 0;
@@ -3246,6 +3246,8 @@ h1 {
   }
 
   .reference-eye {
+    position: relative;
+    display: inline-block;
     width: 27px;
     height: 18px;
     border: 3px solid #f4ead9;
