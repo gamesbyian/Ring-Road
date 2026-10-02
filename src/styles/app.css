@@ -3942,3 +3942,86 @@ h1 {
     box-shadow: inset 0 1px 2px #0003, 0 1px 0 #121a2a;
   }
 }
+
+
+/* V16 raster-material pass.
+   Small authored PNG tiles add real material variation without turning the
+   scene into one giant baked image. They repeat cheaply and preserve all live
+   layout, interaction and puzzle rendering. */
+.reference-first-scene .title-plaque,
+.reference-first-scene .puzzle-plaque,
+.reference-moves-card,
+.reference-goal-card,
+.modal-panel {
+  background-image:
+    linear-gradient(#fff8, #fff0),
+    url("../assets/diorama/textures/parchment-grain.png");
+  background-blend-mode: soft-light, multiply;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 100%, 64px 64px;
+}
+
+.reference-first-scene .ring-control {
+  background-image:
+    linear-gradient(180deg, #fff8e9e8 0%, #ead7bae8 100%),
+    url("../assets/diorama/textures/parchment-grain.png");
+  background-blend-mode: normal, multiply;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 100%, 64px 64px;
+}
+
+.reference-first-scene .reference-solution-card {
+  background-image:
+    linear-gradient(180deg, #2f3c59ef, #202a40ef),
+    url("../assets/diorama/textures/paint-grain.png");
+  background-blend-mode: normal, soft-light;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 100%, 64px 64px;
+}
+
+.reference-first-scene .title-tagline,
+.reference-banner {
+  background-image:
+    linear-gradient(180deg, #efb64de8, #d4862fe8),
+    url("../assets/diorama/textures/paint-grain.png");
+  background-blend-mode: normal, multiply;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 100%, 64px 64px;
+}
+
+.reference-first-scene .ring-paint-grain {
+  fill: none;
+  opacity: 0.27;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-tower,
+  .reference-first-scene .scene-board-plinth::before,
+  .reference-first-scene .scene-board-plinth::after,
+  .reference-rear-road,
+  .reference-front-road {
+    background-image:
+      linear-gradient(#ffffff12, #0000000d),
+      url("../assets/diorama/textures/stone-grain.png");
+    background-blend-mode: soft-light, multiply;
+    background-repeat: no-repeat, repeat;
+    background-size: 100% 100%, 64px 64px;
+  }
+
+  .reference-tower {
+    background-color: #d0a56d;
+  }
+
+  .reference-first-scene .scene-board-plinth::before {
+    background-color: #9d7047;
+  }
+
+  .reference-first-scene .scene-board-plinth::after,
+  .reference-rear-road,
+  .reference-front-road {
+    background-color: #c69a65;
+  }
+}
