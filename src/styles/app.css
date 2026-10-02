@@ -4089,3 +4089,13 @@ h1 {
     opacity: 0.97;
   }
 }
+
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    z-index: -2;
+    opacity: 0.46;
+    mix-blend-mode: soft-light;
+  }
+}
