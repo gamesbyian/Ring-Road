@@ -4359,3 +4359,72 @@ h1 {
     mix-blend-mode: soft-light;
   }
 }
+
+
+/* V23 matte road-slab pass.
+   The reference's rings read as painted toy-road pieces, not polished metal.
+   Pull back the chrome-like highlights while preserving thickness, readable
+   gaps, and the existing live geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-top {
+    filter:
+      saturate(1.02)
+      brightness(1.015)
+      drop-shadow(0 -0.7px 0 #fff6)
+      drop-shadow(0 3px 1.8px #3a281e52);
+  }
+
+  .reference-first-scene .ring-top-bevel {
+    stroke: #f6e2bc42;
+    stroke-width: 23;
+    filter:
+      drop-shadow(0 -0.45px 0 #fff7)
+      drop-shadow(0 1.2px 0 #6d4a3330);
+  }
+
+  .reference-first-scene .ring-outer-edge {
+    stroke: #5035228f;
+  }
+
+  .reference-first-scene .ring-inner-edge {
+    stroke: #6b4b3472;
+  }
+
+  .reference-first-scene .ring-wall {
+    filter:
+      saturate(0.98)
+      brightness(0.78)
+      drop-shadow(0 4px 1.4px #2e201846);
+  }
+
+  .reference-first-scene .notch-wall {
+    stroke: #6d4d3578;
+    stroke-width: 0.9;
+    filter:
+      drop-shadow(0 3px 1px #291d174c);
+  }
+
+  .reference-first-scene .notch-wall-lit {
+    fill-opacity: 0.82;
+    filter: brightness(0.9) saturate(0.98) drop-shadow(0 3px 1px #3021194b);
+  }
+
+  .reference-first-scene .notch-wall-shade {
+    fill-opacity: 0.75;
+    filter: brightness(0.62) saturate(1.02) drop-shadow(0 3px 1px #24191357);
+  }
+
+  .reference-first-scene .marker {
+    opacity: 0.31;
+    stroke: #6b4e388a;
+    filter:
+      drop-shadow(0 -0.35px 0 #fff7)
+      drop-shadow(0 0.8px 0 #2e211b75);
+  }
+
+  .reference-first-scene .ring-paint-grain {
+    opacity: 0.36;
+    mix-blend-mode: multiply;
+  }
+}
