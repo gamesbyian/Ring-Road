@@ -20,9 +20,9 @@ export interface RingGeometry {
 
 const CENTER_X = 210;
 const TOP_CENTER_Y = 208;
-export const RING_WALL_DEPTH = 13;
-const HALF_RING_THICKNESS = 9;
-const GAP_LENGTH = 20;
+export const RING_WALL_DEPTH = 17;
+const HALF_RING_THICKNESS = 10.5;
+const GAP_LENGTH = 22;
 const cache = new Map<string, RingGeometry>();
 
 const pointOnCircle = (radius: number, angle: number, yOffset = 0): Point => ({
