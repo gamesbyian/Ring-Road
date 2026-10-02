@@ -93,12 +93,12 @@ export default function App() {
                 onClick={() => dispatch({ type: "rotate", ring, direction: -1 })}
                 disabled={state.completed}
                 aria-label={`Rotate ${LABELS[ring]} counterclockwise`}
-              ><span aria-hidden="true">‹</span></button>
+              ><span className="rotation-glyph rotation-glyph-ccw" aria-hidden="true">↶</span></button>
               <button
                 onClick={() => dispatch({ type: "rotate", ring, direction: 1 })}
                 disabled={state.completed}
                 aria-label={`Rotate ${LABELS[ring]} clockwise`}
-              ><span aria-hidden="true">›</span></button>
+              ><span className="rotation-glyph rotation-glyph-cw" aria-hidden="true">↷</span></button>
             </div>
           );
         })}
