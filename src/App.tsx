@@ -154,7 +154,7 @@ export default function App() {
         <span />
         <span />
       </span>
-      <button className="reference-solution-action" onClick={() => dispatch({ type: "toggle-solution" })}>View solution</button>
+      <span className="reference-solution-action" aria-hidden="true">View solution</span>
     </section>
   );
 
