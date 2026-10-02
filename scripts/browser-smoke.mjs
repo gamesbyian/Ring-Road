@@ -494,16 +494,16 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
     await cdp.evaluate("Array.from(document.querySelectorAll('button')).find((button) => button.textContent === 'Reset')?.click()");
     await waitFor(async () => (await moveCount()) === 0, `${width}px reset did not restore move count`);
 
-    const puzzleLabel = async () => await cdp.evaluate("document.querySelector('nav span')?.textContent");
+    const puzzleNumber = async () => Number(await cdp.evaluate(`document.querySelector('.puzzle-numberline')?.textContent?.match(/\\d+/)?.[0]`));
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px next navigation failed`);
+    await waitFor(async () => (await puzzleNumber()) === 2, `${width}px next navigation failed`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Previous')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 1 of"), `${width}px previous navigation failed`);
+    await waitFor(async () => (await puzzleNumber()) === 1, `${width}px previous navigation failed`);
 
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 2 of"), `${width}px rapid-input setup could not reach puzzle 2`);
+    await waitFor(async () => (await puzzleNumber()) === 2, `${width}px rapid-input setup could not reach puzzle 2`);
     await cdp.evaluate("Array.from(document.querySelectorAll('nav button')).find((button) => button.textContent === 'Next')?.click()");
-    await waitFor(async () => (await puzzleLabel())?.includes("Puzzle 3 of"), `${width}px rapid-input setup could not reach puzzle 3`);
+    await waitFor(async () => (await puzzleNumber()) === 3, `${width}px rapid-input setup could not reach puzzle 3`);
 
     const rapidInput = await cdp.evaluate(`(async () => {
       const group = Array.from(document.querySelectorAll('.ring-control'))
