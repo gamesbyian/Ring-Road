@@ -4287,77 +4287,31 @@ h1 {
 }
 
 
-/* V20 masonry-arena rim.
-   The reference's arena reads as a ring of individual stone blocks rather
-   than one smooth cream saucer. Add a segmented annular masonry course under
-   the live board while preserving the existing support, stairs, and banners. */
-.arena-masonry-rim {
-  display: none;
-}
-
+/* V20 masonry-arena surface.
+   Put the block rhythm directly on the support that is actually visible
+   around the board. The live SVG covers the center, leaving this subtle
+   conic stone course exposed only around the arena perimeter. */
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
-  .reference-first-scene .arena-masonry-rim {
-    position: absolute;
-    z-index: 1;
-    inset: 0.6% 0.8% 7.5%;
-    display: block;
-    border-radius: 50%;
-    background:
+  .reference-first-scene .scene-board-plinth {
+    background-image:
       url("../assets/diorama/textures/stone-grain.png"),
       repeating-conic-gradient(
-        from -4deg,
-        #f2dab0 0deg 7deg,
-        #ba8b5d 7deg 7.7deg,
-        #dfbd8c 7.7deg 15deg,
-        #9f744f 15deg 15.7deg
-      );
-    background-blend-mode: soft-light, normal;
-    background-size: 64px 64px, auto;
-    box-shadow:
-      inset 0 4px 0 #fff6d78c,
-      inset 0 -6px 8px #74503940,
-      0 8px 10px #5138202b;
-    -webkit-mask:
+        from -3deg,
+        #fff2d1 0deg 7deg,
+        #b48659 7deg 7.7deg,
+        #e5c393 7.7deg 14.8deg,
+        #9b704b 14.8deg 15.5deg
+      ),
       radial-gradient(
-        ellipse at center,
-        transparent 0 89.5%,
-        #000 90.2% 98.7%,
-        transparent 99.3%
+        ellipse at 50% 26%,
+        #fffaf0f5 0 43%,
+        #f1dcbaee 44% 52%,
+        #dbb783df 53% 61%,
+        #b78958d6 62% 66%,
+        transparent 67%
       );
-    mask:
-      radial-gradient(
-        ellipse at center,
-        transparent 0 89.5%,
-        #000 90.2% 98.7%,
-        transparent 99.3%
-      );
-    opacity: 0.98;
-    pointer-events: none;
-  }
-
-  .reference-first-scene .arena-masonry-rim::before,
-  .reference-first-scene .arena-masonry-rim::after {
-    position: absolute;
-    left: 50%;
-    width: 86%;
-    border-radius: 50%;
-    content: "";
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  .reference-first-scene .arena-masonry-rim::before {
-    top: 3%;
-    height: 24%;
-    border-top: 3px solid #fff2c99c;
-    opacity: 0.75;
-  }
-
-  .reference-first-scene .arena-masonry-rim::after {
-    bottom: 5%;
-    height: 22%;
-    border-bottom: 4px solid #7e593b7a;
-    opacity: 0.6;
+    background-blend-mode: soft-light, multiply, normal;
+    background-size: 64px 64px, auto, 100% 100%;
   }
 }
