@@ -1,5 +1,6 @@
 import { memo } from "react";
 import type { Puzzle } from "../domain/puzzle";
+import paintGrain from "../assets/diorama/textures/paint-grain.png";
 import { RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#9259d6", "#5d6bd9", "#3fa5e8", "#4fbd72", "#f1c941", "#f28a3a", "#e84f59"];
@@ -108,6 +109,15 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
           strokeWidth="21"
           strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
         />
+        <circle
+          className="ring-paint-grain"
+          cx={CENTER_X}
+          cy={CENTER_Y}
+          r={radius}
+          stroke="url(#paint-grain-pattern)"
+          strokeWidth="20"
+          strokeDasharray={`${geometry.circumference - geometry.gapLength} ${geometry.gapLength}`}
+        />
         {geometry.markerPoints.map(({ x, y }, marker) => (
           <circle key={marker} cx={x} cy={y} r="2.35" className="marker" fill="url(#marker-recess)" />
         ))}
@@ -161,6 +171,9 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
                 </linearGradient>
               </g>
             ))}
+            <pattern id="paint-grain-pattern" width="64" height="64" patternUnits="userSpaceOnUse">
+              <image href={paintGrain} width="64" height="64" opacity="0.22" />
+            </pattern>
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#f6e8cb" />
               <stop offset="0.5" stopColor="#c7aa78" />
