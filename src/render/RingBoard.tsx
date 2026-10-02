@@ -175,15 +175,15 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.22" />
             </pattern>
             <radialGradient id="hub-material" cx="35%" cy="25%">
-              <stop offset="0" stopColor="#f6e8cb" />
-              <stop offset="0.5" stopColor="#c7aa78" />
-              <stop offset="1" stopColor="#7e6544" />
+              <stop offset="0" stopColor="#bfa1ee" />
+              <stop offset="0.52" stopColor="#8e68c8" />
+              <stop offset="1" stopColor="#5b3e8b" />
             </radialGradient>
             <radialGradient id="ball-material" cx="30%" cy="22%">
               <stop offset="0" stopColor="#ffffff" />
-              <stop offset="0.22" stopColor="#fff8e6" />
-              <stop offset="0.58" stopColor="#d7c9ac" />
-              <stop offset="1" stopColor="#8d795c" />
+              <stop offset="0.24" stopColor="#fffdf4" />
+              <stop offset="0.62" stopColor="#e7dcc6" />
+              <stop offset="1" stopColor="#9f8f78" />
             </radialGradient>
             <radialGradient id="marker-recess" cx="38%" cy="32%">
               <stop offset="0" stopColor="#2b241d" />
