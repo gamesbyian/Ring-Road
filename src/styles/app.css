@@ -3736,3 +3736,58 @@ h1 {
   .reference-front-road::before { left: 7%; }
   .reference-front-road::after { right: 7%; }
 }
+
+
+/* V14.3 center-piece pass: make the fire control read like the reference's
+   inset stone-and-brass centerpiece rather than a generic glossy ball. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .hub {
+    fill: url("#hub-material");
+    stroke: #7a5a38;
+    stroke-width: 6;
+    filter:
+      drop-shadow(0 -2px 0 #fff3c999)
+      drop-shadow(0 2px 0 #5c3f2d66)
+      drop-shadow(0 9px 5px #2d20196e);
+  }
+
+  .reference-first-scene .hub-sun {
+    fill: #e3b742;
+    stroke: #7b5732;
+    stroke-width: 1.15;
+    opacity: 0.9;
+    filter:
+      drop-shadow(0 -1px 0 #fff0a782)
+      drop-shadow(0 2px 0 #5d3e2870);
+  }
+
+  .reference-first-scene .ball {
+    fill: url("#ball-material");
+    stroke: #745d43;
+    stroke-width: 1.6;
+    filter:
+      drop-shadow(0 -1px 0 #ffffffd8)
+      drop-shadow(0 3px 1px #6c513c55)
+      drop-shadow(0 8px 4px #30231c66);
+  }
+
+  .reference-first-scene .ball-shine {
+    fill: #ffffffad;
+  }
+
+  .reference-first-scene .hub-button {
+    width: 62px;
+    min-height: 62px;
+  }
+
+  .reference-first-scene .hub-button:hover {
+    background:
+      radial-gradient(circle, #fff7d52b 0 42%, transparent 44%);
+  }
+
+  .reference-first-scene .hub-button:focus-visible {
+    outline: 3px solid #fff3c3;
+    outline-offset: 5px;
+  }
+}
