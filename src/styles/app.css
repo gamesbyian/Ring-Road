@@ -3070,3 +3070,17 @@ h1 {
     transform: translate(-50%, -50%) rotateX(33deg);
   }
 }
+
+
+.reference-first-scene .board-base-blocks {
+  fill: none;
+  stroke: #8f6b46;
+  stroke-width: 8;
+  stroke-dasharray: 17 4;
+  stroke-linecap: butt;
+  opacity: 0.62;
+  filter:
+    drop-shadow(0 -1px 0 #fff4d77a)
+    drop-shadow(0 2px 0 #5d412d52);
+  pointer-events: none;
+}
