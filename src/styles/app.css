@@ -4099,3 +4099,15 @@ h1 {
     mix-blend-mode: soft-light;
   }
 }
+
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    opacity: 0.38;
+    -webkit-mask-image:
+      radial-gradient(ellipse 28% 19% at 56% 9%, #000 0 50%, #000b 66%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 28% 19% at 56% 9%, #000 0 50%, #000b 66%, transparent 100%);
+  }
+}
