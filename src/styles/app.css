@@ -223,11 +223,30 @@ h1 {
   transform-style: preserve-3d;
 }
 
+/* Keep the large cast shadow outside the live SVG. A CSS filter on .board
+   forces the browser to re-filter the full tilted board whenever one ring
+   animates. This inert pseudo-element preserves the same visual weight while
+   letting ring motion invalidate only the SVG content that actually changes. */
+.board-surface::before {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 57%;
+  width: 91%;
+  height: 72%;
+  border-radius: 50%;
+  background: #463a2d54;
+  content: "";
+  filter: blur(26px);
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotateX(48deg);
+  transform-origin: 50% 50%;
+}
+
 .board {
   display: block;
   width: 100%;
   overflow: visible;
-  filter: drop-shadow(0 42px 28px #463a2d70);
   transform: rotateX(48deg) translateY(-1.5%);
   transform-origin: 50% 48%;
   will-change: transform;
@@ -266,7 +285,10 @@ h1 {
     drop-shadow(0 6px 5px #4b372452);
 }
 
-.ring-rotor { transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ring-rotor {
+  transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
 .ring-instant { transition: none; }
 
 .ring-shadow,
@@ -1559,10 +1581,17 @@ h1 {
   width: min(66vw, 840px);
 }
 
+.reference-first-scene .board-surface::before {
+  top: 57%;
+  width: 92%;
+  height: 74%;
+  background:
+    radial-gradient(ellipse at center, #3f2c1f66 0 42%, #4c34253d 58%, transparent 76%);
+  filter: blur(22px);
+  transform: translate(-50%, -50%) rotateX(47deg);
+}
+
 .reference-first-scene .board {
-  filter:
-    drop-shadow(0 42px 26px #3f2c1f70)
-    drop-shadow(0 9px 7px #4c34254d);
   transform: rotateX(47deg) translateY(-1%);
 }
 

@@ -264,6 +264,24 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       `${width}px guide did not close`,
     );
 
+    const boardCompositing = await cdp.evaluate(`(() => {
+      const board = document.querySelector('.board');
+      const rotor = document.querySelector('.ring-rotor');
+      if (!board || !rotor) return null;
+      const boardStyle = getComputedStyle(board);
+      const rotorStyle = getComputedStyle(rotor);
+      return {
+        boardFilter: boardStyle.filter,
+        rotorWillChange: rotorStyle.willChange,
+      };
+    })()`);
+    assert(boardCompositing, `${width}px viewport did not expose board compositing state`);
+    assert(boardCompositing.boardFilter === "none", `${width}px live board regained a full-SVG filter`);
+    assert(
+      boardCompositing.rotorWillChange.split(",").map((value) => value.trim()).includes("transform"),
+      `${width}px ring rotors lost their transform compositing hint`,
+    );
+
     const layoutBounds = await cdp.evaluate(`(() => {
       const selectors = ['.board-frame', '.control-monument', '.puzzle-plaque'];
       return selectors.map((selector) => {
