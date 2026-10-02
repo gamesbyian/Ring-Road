@@ -25,3 +25,11 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run browser:smoke
+      - name: Upload visual smoke captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-road-visual-smoke
+          path: artifacts/screenshots
+          if-no-files-found: ignore
+          retention-days: 7

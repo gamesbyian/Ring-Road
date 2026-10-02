@@ -65,8 +65,10 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
 
       <div className="scene-play-plane">
         <div className="scene-board-slot">
+          <div className="reference-rear-road" aria-hidden="true" />
           <div className="scene-board-plinth" aria-hidden="true" />
           {board}
+          <div className="reference-front-road" aria-hidden="true" />
           <div className="scene-status-slot">{status}</div>
         </div>
 
