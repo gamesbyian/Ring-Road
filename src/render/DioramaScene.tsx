@@ -24,7 +24,7 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
 
   return (
     <picture className={className} aria-hidden="true">
-      <source media="(max-width: 720px)" srcSet={mobile.src} />
+      <source media="(orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px)" srcSet={mobile.src} />
       <img
         src={desktop.src}
         width={desktop.width}

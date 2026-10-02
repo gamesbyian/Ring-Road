@@ -4,7 +4,7 @@
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
   --scene-max: 1320px;
-  --scene-board-size: min(64vw, 820px);
+  --scene-board-size: min(64dvmax, 820px);
   --scene-board-x: 50%;
   --scene-board-y: 56%;
   --stone-50: #fff9e9;
@@ -24,7 +24,7 @@ body,
 #root { min-width: 320px; min-height: 100%; }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   background: #8fc5ee;
 }
@@ -53,16 +53,59 @@ button:disabled { opacity: 0.42; cursor: default; transform: none; }
 
 .app-shell {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: clip;
+}
+
+/*
+ * Ring Road has one presentation orientation: landscape.
+ *
+ * In portrait, the existing app shell becomes a landscape-sized viewport
+ * (long edge = game width, short edge = game height) and the whole shell is
+ * rotated as one unit. Because modals and overlays live inside .app-shell,
+ * they inherit the same transform without duplicated orientation UI.
+ */
+@media (orientation: portrait) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100dvh;
+    height: 100dvw;
+    min-height: 0;
+    padding:
+      env(safe-area-inset-right)
+      env(safe-area-inset-bottom)
+      env(safe-area-inset-left)
+      env(safe-area-inset-top);
+    overflow: auto;
+    overscroll-behavior: contain;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .diorama-scene,
+  .reference-first-scene {
+    min-height: 100%;
+  }
 }
 
 .diorama-scene {
   position: relative;
   isolation: isolate;
   width: 100%;
-  min-height: 100vh;
-  padding: clamp(0.75rem, 2vw, 1.4rem) clamp(0.75rem, 3vw, 2.5rem) clamp(5.5rem, 10vw, 8rem);
+  min-height: 100dvmin;
+  padding: clamp(0.75rem, 2dvmax, 1.4rem) clamp(0.75rem, 3dvmax, 2.5rem) clamp(5.5rem, 10dvmax, 8rem);
   overflow: hidden;
   background:
     linear-gradient(180deg, #86c5f0 0 30%, #b8dca9 30% 49%, #d8be83 49% 100%);
@@ -110,7 +153,7 @@ button:disabled { opacity: 0.42; cursor: default; transform: none; }
   top: auto;
   right: auto;
   bottom: 41%;
-  width: min(88vw, 1120px);
+  width: min(88dvmax, 1120px);
   height: auto;
   aspect-ratio: 1180 / 420;
   transform: translateX(-50%);
@@ -164,7 +207,7 @@ button:disabled { opacity: 0.42; cursor: default; transform: none; }
 h1 {
   margin: 0.08rem 0 0;
   color: #283248;
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(2rem, 4dvmax, 3.25rem);
   line-height: 0.96;
   letter-spacing: -0.045em;
   text-shadow: 0 1px 0 #fff8;
@@ -183,7 +226,7 @@ h1 {
 .scene-play-plane {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(272px, 315px);
-  gap: clamp(0.8rem, 2vw, 1.8rem);
+  gap: clamp(0.8rem, 2dvmax, 1.8rem);
   align-items: center;
   margin-top: -1.2rem;
 }
@@ -199,7 +242,7 @@ h1 {
   z-index: -1;
   left: 50%;
   top: 54%;
-  width: min(68vw, 870px);
+  width: min(68dvmax, 870px);
   aspect-ratio: 1.22 / 1;
   border: 1px solid #a07743;
   border-radius: 50%;
@@ -574,7 +617,7 @@ nav button { min-width: 92px; }
   position: absolute;
   z-index: 2;
   inset: auto 0 0;
-  height: clamp(96px, 15vw, 220px);
+  height: clamp(96px, 15dvmax, 220px);
   overflow: hidden;
 }
 
@@ -594,7 +637,7 @@ nav button { min-width: 92px; }
   z-index: 20;
   inset: 0;
   display: grid;
-  padding: clamp(1.5rem, 5vh, 3.5rem) clamp(1.25rem, 5vw, 3.5rem);
+  padding: clamp(1.5rem, 5dvmin, 3.5rem) clamp(1.25rem, 5dvmax, 3.5rem);
   background: #26324880;
   backdrop-filter: blur(6px);
   place-items: center;
@@ -603,7 +646,7 @@ nav button { min-width: 92px; }
 .modal article {
   display: flex;
   width: min(460px, 100%);
-  max-height: min(78vh, 620px);
+  max-height: min(78dvmin, 620px);
   overflow: hidden;
   border: 1px solid #a67d49;
   border-radius: 22px;
@@ -631,15 +674,15 @@ nav button { min-width: 92px; }
 .modal p { color: #4e5665; line-height: 1.5; }
 .modal .campaign-complete { color: #147844; font-weight: 800; }
 
-@media (max-width: 720px) {
+@media (orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px) {
   :root {
-    --scene-board-size: min(90vw, 500px);
+    --scene-board-size: min(90dvmax, 500px);
     --scene-board-x: 50%;
     --scene-board-y: 41%;
   }
 
   .diorama-scene {
-    min-height: 100svh;
+    min-height: 100dvmin;
     padding: 0.55rem 0.6rem 5.7rem;
     background: linear-gradient(180deg, #8bc7ee 0 24%, #b7d9a2 24% 47%, #d4b97f 47% 100%);
   }
@@ -650,14 +693,14 @@ nav button { min-width: 92px; }
 
   .scene-art-rear {
     bottom: 62%;
-    width: 108vw;
+    width: 108dvmax;
     aspect-ratio: 500 / 240;
   }
 
   .scene-title-slot { min-height: 74px; }
   .world-header { align-items: flex-start; }
   .title-plaque { padding: 0.55rem 0.9rem 0.62rem; border-radius: 13px; }
-  h1 { font-size: clamp(1.75rem, 9vw, 2.4rem); }
+  h1 { font-size: clamp(1.75rem, 9dvmax, 2.4rem); }
   .eyebrow { font-size: 0.58rem; }
   .guide-button { min-width: 0; padding: 0.5rem 0.7rem; }
 
@@ -671,7 +714,7 @@ nav button { min-width: 92px; }
 
   .scene-board-plinth {
     top: 52%;
-    width: min(97vw, 535px);
+    width: min(97dvmax, 535px);
   }
 
   .board-surface { width: var(--scene-board-size); }
@@ -705,12 +748,12 @@ nav button { min-width: 92px; }
   }
 
   .modal { padding: 1.5rem 1.25rem; }
-  .modal article { max-height: calc(100vh - 3rem); }
+  .modal article { max-height: calc(100dvmin - 3rem); }
   .modal-scroll { padding: 1.35rem 1.35rem 1rem; }
   .modal-footer { padding: 0.8rem 1.35rem 1.2rem; }
 }
 
-@media (max-width: 360px) {
+@media (orientation: landscape) and (max-width: 360px), (orientation: portrait) and (max-height: 360px) {
   .ring-control { grid-template-columns: 27px 1fr 44px 44px; gap: 0.28rem; }
   .ring-name { font-size: 0.78rem; }
   aside { padding-inline: 0.55rem; }
@@ -751,7 +794,7 @@ nav button { min-width: 92px; }
 }
 
 .title-plaque {
-  min-width: min(420px, 56vw);
+  min-width: min(420px, 56dvmax);
   padding: 0.75rem 1.4rem 0.85rem 1.55rem;
   border: 2px solid #936b3d;
   border-bottom-width: 4px;
@@ -1085,10 +1128,10 @@ h1 {
     linear-gradient(180deg, #dfc292, #cda873);
 }
 
-@media (max-width: 720px) {
+@media (orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px) {
   .title-plaque {
     min-width: 0;
-    max-width: calc(100vw - 6.5rem);
+    max-width: calc(100dvmax - 6.5rem);
   }
 
   .control-monument {
@@ -1234,14 +1277,14 @@ h1 {
   transform: rotate(-1.5deg);
 }
 
-@media (min-width: 721px) {
+@media (orientation: landscape) and (min-width: 721px), (orientation: portrait) and (min-height: 721px) {
   .diorama-scene {
-    padding-bottom: clamp(6.6rem, 11vw, 9rem);
+    padding-bottom: clamp(6.6rem, 11dvmax, 9rem);
   }
 
   .scene-art-rear {
     bottom: 39%;
-    width: min(96vw, 1240px);
+    width: min(96dvmax, 1240px);
   }
 
   .scene-play-plane {
@@ -1259,7 +1302,7 @@ h1 {
     z-index: 5;
     top: 50%;
     left: 0;
-    width: min(300px, 23vw);
+    width: min(300px, 23dvmax);
     transform: translateY(-43%);
   }
 
@@ -1311,8 +1354,8 @@ h1 {
     position: absolute;
     z-index: 5;
     top: 5.5rem;
-    right: clamp(0.75rem, 3vw, 2.5rem);
-    width: min(330px, 28vw);
+    right: clamp(0.75rem, 3dvmax, 2.5rem);
+    width: min(330px, 28dvmax);
     margin: 0;
   }
 
@@ -1339,7 +1382,7 @@ h1 {
   }
 }
 
-@media (max-width: 720px) {
+@media (orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px) {
   .title-tagline {
     left: 0.78rem;
     bottom: -1.15rem;
@@ -1349,7 +1392,7 @@ h1 {
 
   .scene-art-rear {
     bottom: 58%;
-    width: 128vw;
+    width: 128dvmax;
   }
 }
 
@@ -1363,7 +1406,7 @@ h1 {
   --reference-ink: #30261d;
   --reference-navy: #25324f;
   --reference-gold: #dfa943;
-  min-height: 100svh;
+  min-height: 100dvmin;
   background: #b9d8e9;
 }
 
@@ -1517,7 +1560,7 @@ h1 {
 }
 
 .reference-first-scene .title-plaque {
-  width: min(310px, 25vw);
+  width: min(310px, 25dvmax);
   min-width: 250px;
   padding: 0.85rem 1.15rem 3rem;
   clip-path: polygon(2% 2%,16% 0,31% 2%,49% 0,66% 2%,84% 0,98% 3%,100% 18%,98% 38%,100% 58%,98% 78%,100% 96%,82% 100%,62% 98%,44% 100%,27% 98%,10% 100%,0 96%,2% 78%,0 59%,2% 39%,0 19%);
@@ -1532,7 +1575,7 @@ h1 {
 .reference-first-scene .title-plaque h1 {
   position: relative;
   z-index: 2;
-  font-size: clamp(2.7rem, 5vw, 4.6rem);
+  font-size: clamp(2.7rem, 5dvmax, 4.6rem);
   line-height: 0.78;
   transform: rotate(-1deg);
 }
@@ -1559,13 +1602,13 @@ h1 {
 
 .reference-first-scene .scene-board-slot {
   width: 100%;
-  min-height: min(76vw, 850px);
+  min-height: min(76dvmax, 850px);
   padding-top: 1rem;
 }
 
 .reference-first-scene .scene-board-plinth {
   top: 55%;
-  width: min(67vw, 900px);
+  width: min(67dvmax, 900px);
   border: 3px solid #8e633a;
   background:
     radial-gradient(ellipse at 50% 30%, #fff5daaa 0 36%, transparent 37%),
@@ -1578,7 +1621,7 @@ h1 {
 }
 
 .reference-first-scene .board-surface {
-  width: min(66vw, 840px);
+  width: min(66dvmax, 840px);
 }
 
 .reference-first-scene .board-surface::before {
@@ -1658,7 +1701,7 @@ h1 {
   position: absolute;
   top: 43%;
   left: 0;
-  width: min(285px, 22vw);
+  width: min(285px, 22dvmax);
   transform: translateY(-45%);
 }
 
@@ -1931,7 +1974,7 @@ h1 {
   position: absolute;
   left: 50%;
   bottom: 8.5rem;
-  width: min(620px, 48vw);
+  width: min(620px, 48dvmax);
   transform: translateX(-50%);
 }
 
@@ -1940,7 +1983,7 @@ h1 {
   backdrop-filter: blur(2px);
 }
 
-@media (max-width: 1100px) {
+@media (orientation: landscape) and (max-width: 1100px), (orientation: portrait) and (max-height: 1100px) {
   .reference-scene-matte {
     opacity: 0.45;
     background-position: 50% 28%;
@@ -2035,16 +2078,16 @@ h1 {
   }
 }
 
-@media (max-width: 720px) {
+@media (orientation: landscape) and (max-width: 720px), (orientation: portrait) and (max-height: 720px) {
   .reference-scene-matte {
     opacity: 0.28;
-    background-size: auto 58vh;
+    background-size: auto 58dvmin;
     background-position: 50% 0;
     background-repeat: no-repeat;
   }
 
   .reference-first-scene .title-plaque {
-    width: min(330px, 82vw);
+    width: min(330px, 82dvmax);
     min-width: 0;
   }
 
@@ -2064,6 +2107,6 @@ h1 {
   }
 
   .reference-first-scene .board-surface {
-    width: min(100%, 92vw);
+    width: min(100%, 92dvmax);
   }
 }
