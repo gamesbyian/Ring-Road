@@ -4229,3 +4229,59 @@ h1 {
       repeating-linear-gradient(0deg, #e2c08b 0 21%, #9f7349 21% 24%, #d1a46e 24% 45%);
   }
 }
+
+
+/* V18.1 retained-screenshot material correction. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      radial-gradient(
+        ellipse at 50% 26%,
+        #fffaf0 0 44%,
+        #f1dcba 45% 53%,
+        #dbb783 54% 61%,
+        #b78958 62% 66%,
+        transparent 67%
+      );
+    background-blend-mode: soft-light, normal;
+    filter:
+      drop-shadow(0 28px 22px #4f392646)
+      drop-shadow(0 6px 2px #fff6d96a);
+  }
+
+  .reference-first-scene .scene-board-plinth::before {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(90deg, transparent 0 7.5%, #87613d1d 7.5% 7.9%),
+      linear-gradient(180deg, #e7c99a, #cfa36d 66%, #a8784d);
+    background-blend-mode: soft-light, normal, normal;
+  }
+
+  .reference-first-scene .scene-board-plinth::after {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(
+        180deg,
+        #f3dcaf 0 18%,
+        #b58a5c 18% 22%,
+        #ddba86 22% 40%
+      );
+    background-blend-mode: soft-light, normal;
+  }
+
+  .reference-first-scene .arena-banner {
+    bottom: 5.5%;
+    height: 11.5%;
+  }
+
+  .reference-first-scene .arena-banner-1 { left: 21%; }
+  .reference-first-scene .arena-banner-2 { left: 36%; }
+  .reference-first-scene .arena-banner-4 { left: 64%; }
+  .reference-first-scene .arena-banner-5 { left: 79%; }
+
+  .reference-first-scene .arena-banner-3 {
+    display: none;
+  }
+}
