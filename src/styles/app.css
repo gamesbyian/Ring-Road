@@ -4491,3 +4491,50 @@ h1 {
     z-index: 4;
   }
 }
+
+
+/* V25 hardware-proportion pass.
+   The reference uses thick painted slabs with narrow shadow joints, not deep
+   exposed cylinders. Bring the live renderer closer without touching logical
+   radii, rotation states, gap angles, or hit targets. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-top {
+    stroke-width: 21.4px;
+  }
+
+  .reference-first-scene .ring-top-bevel {
+    stroke-width: 23.2px;
+  }
+
+  .reference-first-scene .ring-paint-grain {
+    stroke-width: 20.8px;
+  }
+
+  .reference-first-scene .ring-wall {
+    stroke-width: 21px;
+    filter:
+      saturate(0.98)
+      brightness(0.81)
+      drop-shadow(0 2.4px 1px #2e20183d);
+  }
+
+  .reference-first-scene .ring-shadow {
+    stroke-width: 21px;
+    opacity: 0.72;
+    filter: blur(0.7px);
+  }
+
+  .reference-first-scene .ring-name small {
+    display: none;
+  }
+
+  .reference-first-scene .ring-name {
+    align-self: center;
+    font-size: 0.92rem;
+  }
+
+  .reference-first-scene .ring-control {
+    min-height: 51px;
+  }
+}
