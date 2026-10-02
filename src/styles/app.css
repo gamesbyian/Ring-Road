@@ -4300,7 +4300,7 @@ h1 {
   .reference-first-scene .arena-masonry-rim {
     position: absolute;
     z-index: 1;
-    inset: 2.8% 2.5% 10.5%;
+    inset: 0.6% 0.8% 7.5%;
     display: block;
     border-radius: 50%;
     background:
@@ -4321,9 +4321,9 @@ h1 {
     -webkit-mask:
       radial-gradient(
         ellipse at center,
-        transparent 0 74.5%,
-        #000 75.2% 91.5%,
-        transparent 92.2%
+        transparent 0 89.5%,
+        #000 90.2% 98.7%,
+        transparent 99.3%
       );
     mask:
       radial-gradient(
