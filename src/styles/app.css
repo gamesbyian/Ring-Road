@@ -5294,3 +5294,20 @@ h1 {
     left: 53%;
   }
 }
+
+
+/* V41.5 vertical registration correction.
+   The latest retained 1440×1000 capture now matches the concept's width and
+   center closely, but the live tabletop still sits roughly 20–25px too low.
+   Lift the board and its decorative sandstone support together, preserving
+   the established scale and camera angle. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    top: 38.5%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    top: 45.5%;
+  }
+}
