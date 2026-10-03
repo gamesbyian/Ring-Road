@@ -5626,14 +5626,14 @@ h1 {
   .reference-first-scene .reference-central-gate {
     position: absolute;
     z-index: 1;
-    left: 56%;
-    top: 5.5%;
+    left: 57%;
+    top: 10.5%;
     display: block;
-    width: min(330px, 24dvmax);
-    height: 245px;
+    width: min(430px, 31dvmax);
+    height: 132px;
     border: 2px solid #84603f;
     border-bottom-width: 7px;
-    border-radius: 7px 7px 22px 22px;
+    border-radius: 6px 6px 14px 14px;
     background-image:
       url("../assets/diorama/textures/stone-grain.png"),
       repeating-linear-gradient(0deg, transparent 0 34px, #8b633d1e 34px 37px),
@@ -5651,10 +5651,10 @@ h1 {
 
   .reference-first-scene .reference-central-gate::before {
     position: absolute;
-    left: -12px;
-    top: -38px;
-    width: calc(100% + 24px);
-    height: 58px;
+    left: -10px;
+    top: -30px;
+    width: calc(100% + 20px);
+    height: 44px;
     border: 2px solid #7d5939;
     border-bottom-width: 5px;
     background:
@@ -5673,8 +5673,8 @@ h1 {
     position: absolute;
     left: 50%;
     bottom: -2px;
-    width: 39%;
-    height: 63%;
+    width: 24%;
+    height: 74%;
     border: 3px solid #735037;
     border-bottom: 0;
     border-radius: 52% 52% 0 0 / 31% 31% 0 0;
@@ -5690,10 +5690,10 @@ h1 {
   .reference-first-scene .reference-central-gate-banner {
     position: absolute;
     z-index: 2;
-    top: 24%;
+    top: 18%;
     display: block;
-    width: 36px;
-    height: 112px;
+    width: 30px;
+    height: 86px;
     border: 1px solid #29456680;
     clip-path: polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);
     background-image:
@@ -5719,6 +5719,6 @@ h1 {
     transform: translateX(-50%);
   }
 
-  .reference-first-scene .reference-central-gate-banner-left { left: 12%; }
-  .reference-first-scene .reference-central-gate-banner-right { right: 12%; }
+  .reference-first-scene .reference-central-gate-banner-left { left: 18%; }
+  .reference-first-scene .reference-central-gate-banner-right { right: 18%; }
 }
