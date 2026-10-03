@@ -5171,3 +5171,143 @@ h1 {
     width: 78px;
   }
 }
+
+
+/* V41 screenshot-registration pass.
+   The retained 1440×1000 capture still placed the live board noticeably lower
+   and farther right than the canonical reference. Re-register the complete
+   board monument as one unit so more castle/stair architecture survives below
+   it and the right-side HUD no longer crowds the outer ring. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    top: 41%;
+    left: 54%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    top: 48%;
+    left: 54%;
+  }
+
+  .reference-rear-road,
+  .reference-front-road {
+    left: 54%;
+  }
+}
+
+
+/* V41.1 platform silhouette correction.
+   The latest retained screenshot showed the sandstone support as an oversized
+   near-circular fan behind the rings. The concept uses a much tighter,
+   perspective-compressed arena rim. Flatten only the decorative plinth ellipse;
+   live SVG geometry and ring hit targets remain unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    aspect-ratio: 1.46 / 1;
+  }
+}
+
+
+/* V41.2 tabletop-perspective correction.
+   The retained 1440×1000 render still left the board about 15% too tall for
+   its width versus the concept. Keep the horizontal monument scale, but
+   compress the tabletop vertically with a steeper camera angle. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board {
+    transform: rotateX(50deg) translateY(-0.2%);
+  }
+
+  .reference-first-scene .board-surface::before {
+    transform: translate(-50%, -50%) rotateX(50deg);
+  }
+}
+
+
+/* V41.3 authored-raster scenic matte.
+   Use the deliberately isolated binary scenery asset instead of letting the
+   full canonical screenshot bleed through CSS. This keeps the painterly
+   mountain/water richness while avoiding ghost copies of the board and HUD. */
+.reference-scene-matte {
+  background: none;
+}
+
+.reference-scene-matte img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    opacity: 0.72;
+    filter: saturate(1.08) contrast(1.02) brightness(1.025);
+    mix-blend-mode: normal;
+    -webkit-mask-image:
+      linear-gradient(180deg, #000 0 44%, #000d 58%, #0005 72%, transparent 88%);
+    mask-image:
+      linear-gradient(180deg, #000 0 44%, #000d 58%, #0005 72%, transparent 88%);
+  }
+}
+
+
+/* V41.3.1: keep the isolated scenic raster decorative and CSS-owned.
+   Rendering it as a fourth live <img> interfered with the smoke harness's
+   canonical three scenic-picture contract. Let Vite fingerprint the same
+   authored WebP through CSS instead. */
+.reference-scene-matte {
+  background:
+    url("../assets/diorama/desktop/reference-scenery-matte.webp") 50% 48% / cover no-repeat;
+}
+
+.reference-scene-matte img {
+  display: none;
+}
+
+
+/* V41.4 final board registration against the retained 1440×1000 capture.
+   The live tabletop still measured a few percent wider than the canonical
+   reference and its visual center sat slightly too far right. Tighten the
+   monument without changing SVG geometry, then move the whole architectural
+   stack left together. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    left: 53%;
+    width: min(61dvmax, 860px);
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    left: 53%;
+    width: min(66dvmax, 930px);
+  }
+
+  .reference-rear-road,
+  .reference-front-road {
+    left: 53%;
+  }
+}
+
+
+/* V41.5 vertical registration correction.
+   The latest retained 1440×1000 capture now matches the concept's width and
+   center closely, but the live tabletop still sits roughly 20–25px too low.
+   Lift the board and its decorative sandstone support together, preserving
+   the established scale and camera angle. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    top: 38.5%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    top: 45.5%;
+  }
+}
