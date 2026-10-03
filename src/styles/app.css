@@ -4769,3 +4769,79 @@ h1 {
     bottom: -0.82rem;
   }
 }
+
+
+/* V32 utility-action medallions.
+   Keep Undo / Reset / Hint fully functional and text-addressable, but make
+   their large-layout presentation feel like part of the castle control panel
+   instead of a row of generic application buttons. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .actions {
+    display: flex;
+    width: 78%;
+    margin: 0.48rem auto 0;
+    padding-top: 0.42rem;
+    gap: 0.48rem;
+    justify-content: center;
+    border-top: 1px solid #99734a52;
+  }
+
+  .reference-first-scene .actions button:not(:nth-child(4)) {
+    position: relative;
+    display: grid;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    min-height: 46px;
+    padding: 0;
+    border: 1px solid #8f6d49;
+    border-bottom-width: 3px;
+    border-radius: 50%;
+    place-items: center;
+    overflow: hidden;
+    color: transparent;
+    background:
+      radial-gradient(circle at 35% 28%, #fffef8 0 19%, #f1dfbe 52%, #c99f68 100%);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      inset 0 -2px 3px #86653f24,
+      0 3px 0 #8f6a43,
+      0 5px 8px #4c372429;
+    text-shadow: none;
+  }
+
+  .reference-first-scene .actions button:not(:nth-child(4))::before {
+    color: #48433c;
+    font-size: 1.05rem;
+    font-weight: 950;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff9;
+  }
+
+  .reference-first-scene .actions button:nth-child(1)::before {
+    content: "↶";
+    font-size: 1.25rem;
+  }
+
+  .reference-first-scene .actions button:nth-child(2)::before {
+    content: "↺";
+    font-size: 1.22rem;
+  }
+
+  .reference-first-scene .actions button:nth-child(3)::before {
+    content: "?";
+  }
+
+  .reference-first-scene .actions button:not(:nth-child(4)):active {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 2px 4px #7f5d3b28,
+      0 1px 0 #8f6a43;
+  }
+
+  .reference-first-scene .actions button:not(:nth-child(4)):disabled {
+    opacity: 0.48;
+    filter: saturate(0.55);
+  }
+}
