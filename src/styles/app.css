@@ -5610,3 +5610,115 @@ h1 {
     filter: saturate(0.96) contrast(0.98) brightness(1.015);
   }
 }
+
+
+/* V47 central-gate architecture pass.
+   The canonical concept has a strong castle gate directly behind the upper
+   edge of the board. The live scene still opens into sky at center, so add a
+   shallow rear gatehouse that the board can overlap naturally. */
+.reference-central-gate,
+.reference-central-gate-banner {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-central-gate {
+    position: absolute;
+    z-index: 1;
+    left: 56%;
+    top: 5.5%;
+    display: block;
+    width: min(330px, 24dvmax);
+    height: 245px;
+    border: 2px solid #84603f;
+    border-bottom-width: 7px;
+    border-radius: 7px 7px 22px 22px;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 34px, #8b633d1e 34px 37px),
+      repeating-linear-gradient(90deg, transparent 0 52px, #7c573615 52px 55px),
+      linear-gradient(108deg, #f2d9aa 0 28%, #d6ae77 62%, #a67549 100%);
+    background-blend-mode: multiply, normal, normal, normal;
+    background-size: 64px 64px, auto, auto, 100% 100%;
+    box-shadow:
+      inset 11px 0 18px #fff3ce3f,
+      inset -12px 0 18px #65452d22,
+      0 18px 30px #46311f30;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .reference-central-gate::before {
+    position: absolute;
+    left: -12px;
+    top: -38px;
+    width: calc(100% + 24px);
+    height: 58px;
+    border: 2px solid #7d5939;
+    border-bottom-width: 5px;
+    background:
+      linear-gradient(90deg,
+        #eed29d 0 11%, transparent 11% 17%,
+        #eed29d 17% 28%, transparent 28% 34%,
+        #eed29d 34% 45%, transparent 45% 51%,
+        #eed29d 51% 62%, transparent 62% 68%,
+        #eed29d 68% 79%, transparent 79% 85%,
+        #eed29d 85% 96%, transparent 96%);
+    box-shadow: inset 0 2px 0 #fff5d36a;
+    content: "";
+  }
+
+  .reference-first-scene .reference-central-gate::after {
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    width: 39%;
+    height: 63%;
+    border: 3px solid #735037;
+    border-bottom: 0;
+    border-radius: 52% 52% 0 0 / 31% 31% 0 0;
+    background:
+      radial-gradient(ellipse at 50% 100%, #739fc0 0 14%, #42627b 57%, #283d53 100%);
+    box-shadow:
+      inset 0 13px 18px #1426344d,
+      0 -2px 0 #f0d19c55;
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .reference-central-gate-banner {
+    position: absolute;
+    z-index: 2;
+    top: 24%;
+    display: block;
+    width: 36px;
+    height: 112px;
+    border: 1px solid #29456680;
+    clip-path: polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);
+    background-image:
+      url("../assets/diorama/textures/paint-grain.png"),
+      linear-gradient(180deg, #315f9e, #294e83);
+    background-blend-mode: soft-light, normal;
+    background-size: 64px 64px, 100% 100%;
+    box-shadow:
+      inset 6px 0 8px #ffffff18,
+      inset -6px 0 9px #14294528,
+      0 7px 9px #46311f27;
+  }
+
+  .reference-first-scene .reference-central-gate-banner::after {
+    position: absolute;
+    left: 50%;
+    top: 29%;
+    width: 16px;
+    aspect-ratio: 1;
+    background: #efbd43;
+    clip-path: polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%);
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .reference-central-gate-banner-left { left: 12%; }
+  .reference-first-scene .reference-central-gate-banner-right { right: 12%; }
+}
