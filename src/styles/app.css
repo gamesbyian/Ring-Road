@@ -5224,3 +5224,35 @@ h1 {
     transform: translate(-50%, -50%) rotateX(50deg);
   }
 }
+
+
+/* V41.3 authored-raster scenic matte.
+   Use the deliberately isolated binary scenery asset instead of letting the
+   full canonical screenshot bleed through CSS. This keeps the painterly
+   mountain/water richness while avoiding ghost copies of the board and HUD. */
+.reference-scene-matte {
+  background: none;
+}
+
+.reference-scene-matte img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    opacity: 0.72;
+    filter: saturate(1.08) contrast(1.02) brightness(1.025);
+    mix-blend-mode: normal;
+    -webkit-mask-image:
+      linear-gradient(180deg, #000 0 44%, #000d 58%, #0005 72%, transparent 88%);
+    mask-image:
+      linear-gradient(180deg, #000 0 44%, #000d 58%, #0005 72%, transparent 88%);
+  }
+}
