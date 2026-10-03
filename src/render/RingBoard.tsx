@@ -4,9 +4,9 @@ import { DIORAMA_TEXTURES } from "../assets/diorama/manifest";
 import { RING_WALL_DEPTH, ringGeometry } from "./ring-geometry";
 
 const COLORS = ["#9259d6", "#5d6bd9", "#3fa5e8", "#4fbd72", "#f1c941", "#f28a3a", "#e84f59"];
-const TOP_HIGHLIGHTS = ["#bd91ef", "#93a0f3", "#83ccf7", "#86d99a", "#ffe37a", "#ffb572", "#ff8991"];
-const TOP_SHADOWS = ["#713fae", "#4450ad", "#2d82b8", "#348f55", "#b99528", "#bd602d", "#b83b43"];
-const WALL_COLORS = ["#633b99", "#394595", "#246d99", "#2a7046", "#92751f", "#984b25", "#943138"];
+const TOP_HIGHLIGHTS = ["#aa7fe3", "#7f89e4", "#68b9ef", "#72cd8d", "#f6d96d", "#f6a45f", "#f27079"];
+const TOP_SHADOWS = ["#7b49ba", "#4d58b7", "#338ac0", "#3d9d5c", "#cbaa34", "#d36f30", "#c7434a"];
+const WALL_COLORS = ["#68428f", "#404a8a", "#2d7094", "#337047", "#927b28", "#a35e2f", "#a43d43"];
 const LABELS = ["V", "I", "B", "G", "Y", "O", "R"];
 const CENTER_X = 210;
 const CENTER_Y = 208;
@@ -154,8 +154,8 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
                   y2="100%"
                 >
                   <stop offset="0" stopColor={TOP_HIGHLIGHTS[index]} />
-                  <stop offset="0.34" stopColor={color} />
-                  <stop offset="0.78" stopColor={color} />
+                  <stop offset="0.22" stopColor={color} />
+                  <stop offset="0.86" stopColor={color} />
                   <stop offset="1" stopColor={TOP_SHADOWS[index]} />
                 </linearGradient>
                 <linearGradient
