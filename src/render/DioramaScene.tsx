@@ -40,16 +40,7 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
 export function DioramaScene({ title, board, controls, status, navigation, moves, goal, solution }: DioramaSceneProps) {
   return (
     <section className="diorama-scene reference-first-scene" aria-label="Ring Road play area">
-      <div className="reference-scene-matte" aria-hidden="true">
-        <img
-          src={DIORAMA_ASSETS.desktop.referenceSceneryMatte.src}
-          width={DIORAMA_ASSETS.desktop.referenceSceneryMatte.width}
-          height={DIORAMA_ASSETS.desktop.referenceSceneryMatte.height}
-          alt=""
-          decoding="async"
-          draggable={false}
-        />
-      </div>
+      <div className="reference-scene-matte" aria-hidden="true" />
       <div className="reference-scene-props" aria-hidden="true">
         <span className="reference-tower reference-tower-left" />
         <span className="reference-tower reference-tower-right" />
