@@ -15,31 +15,37 @@
     <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#91b66d"/><stop offset="1" stop-color="#587c52"/>
     </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffeaa0" stop-opacity=".78"/>
+      <stop offset=".42" stop-color="#f5cf64" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#f5cf64" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
   <rect width="1440" height="1000" fill="url(#sky)"/>
-  <circle cx="1160" cy="138" r="64" fill="#f4c44f" opacity=".9"/>
+  <circle cx="1160" cy="138" r="86" fill="url(#sunGlow)"/>
+  <circle cx="1160" cy="138" r="34" fill="#f4c85d" opacity=".68"/>
 
   <g fill="#fffaf0" opacity=".8">
     <ellipse cx="115" cy="115" rx="98" ry="34"/><ellipse cx="205" cy="103" rx="70" ry="28"/>
     <ellipse cx="328" cy="155" rx="82" ry="27"/><ellipse cx="385" cy="145" rx="54" ry="22"/>
-    <ellipse cx="1000" cy="90" rx="72" ry="25"/><ellipse cx="1060" cy="83" rx="48" ry="20"/>
+    <ellipse cx="986" cy="92" rx="66" ry="22"/><ellipse cx="1046" cy="86" rx="44" ry="18"/>
   </g>
 
-  <g fill="url(#mountainFar)" opacity=".85">
+  <g fill="url(#mountainFar)" opacity=".8">
     <path d="M0 386 174 170 320 386Z"/>
     <path d="M185 386 405 92 602 386Z"/>
     <path d="M495 386 695 144 856 386Z"/>
     <path d="M742 386 970 101 1160 386Z"/>
     <path d="M1000 386 1260 118 1440 386Z"/>
   </g>
-  <g fill="url(#mountainNear)" opacity=".58">
+  <g fill="url(#mountainNear)" opacity=".5">
     <path d="M0 420 245 245 430 420Z"/>
     <path d="M845 420 1100 230 1325 420Z"/>
     <path d="M1120 420 1375 262 1440 420Z"/>
   </g>
 
-  <g fill="#ede2d9" opacity=".62">
+  <g fill="#f2e9df" opacity=".5">
     <path d="M405 92 455 157 420 147 388 183Z"/>
     <path d="M970 101 1018 159 978 147 946 182Z"/>
     <path d="M1260 118 1303 166 1268 156 1236 187Z"/>
