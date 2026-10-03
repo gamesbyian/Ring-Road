@@ -4,10 +4,10 @@
       <stop stop-color="#66b4eb"/><stop offset=".48" stop-color="#a9d4ef"/><stop offset="1" stop-color="#e7edf0"/>
     </linearGradient>
     <linearGradient id="mountainFar" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#aeb0bd"/><stop offset="1" stop-color="#78808f"/>
+      <stop stop-color="#baa69e"/><stop offset="1" stop-color="#817784"/>
     </linearGradient>
     <linearGradient id="mountainNear" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#87929d"/><stop offset="1" stop-color="#596875"/>
+      <stop stop-color="#9b8d8d"/><stop offset="1" stop-color="#69727b"/>
     </linearGradient>
     <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#53add8"/><stop offset="1" stop-color="#277da8"/>
@@ -23,10 +23,10 @@
   </defs>
 
   <rect width="1440" height="1000" fill="url(#sky)"/>
-  <circle cx="1160" cy="138" r="86" fill="url(#sunGlow)"/>
-  <circle cx="1160" cy="138" r="34" fill="#f4c85d" opacity=".68"/>
+  <circle cx="1160" cy="138" r="74" fill="url(#sunGlow)" opacity=".24"/>
+  
 
-  <g fill="#fffaf0" opacity=".8">
+  <g fill="#fffaf0" opacity=".68">
     <ellipse cx="115" cy="115" rx="98" ry="34"/><ellipse cx="205" cy="103" rx="70" ry="28"/>
     <ellipse cx="328" cy="155" rx="82" ry="27"/><ellipse cx="385" cy="145" rx="54" ry="22"/>
     <ellipse cx="986" cy="92" rx="66" ry="22"/><ellipse cx="1046" cy="86" rx="44" ry="18"/>
