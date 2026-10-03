@@ -5768,3 +5768,41 @@ h1 {
     opacity: 0.24;
   }
 }
+
+
+/* V49 horizontal registration pass.
+   The retained 1440×1000 capture is close in scale and vertical placement, but
+   the central tabletop and right HUD still sit about 20px too far right while
+   the left ring-control rail sits about 20px too far inward. Register those
+   major masses against the supplied reference without changing their sizes. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    left: 51.5%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    left: 51.5%;
+  }
+
+  .reference-rear-road,
+  .reference-front-road {
+    left: 51.5%;
+  }
+
+  .reference-first-scene .scene-controls-slot {
+    left: 1rem;
+  }
+
+  .reference-first-scene .scene-navigation-slot {
+    right: 3.2rem;
+  }
+
+  .reference-moves-slot {
+    right: 3rem;
+  }
+
+  .reference-solution-slot {
+    right: 2.7rem;
+  }
+}
