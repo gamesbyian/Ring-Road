@@ -44,7 +44,7 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
       <div className="reference-scene-props" aria-hidden="true">
         <span className="reference-tower reference-tower-left" />
         <span className="reference-tower reference-tower-right" />
-        <span className="reference-gatehouse" />
+        <span className="reference-gatehouse"><span className="reference-gate-banner" /></span>
         <span className="reference-banner reference-banner-left" />
         <span className="reference-banner reference-banner-right" />
         <span className="reference-tree reference-tree-a" />
