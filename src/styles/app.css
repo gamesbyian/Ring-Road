@@ -4943,3 +4943,58 @@ h1 {
     z-index: 3;
   }
 }
+
+
+/* V36 tower-lantern pass.
+   Reposition the existing crystal props onto the upper side architecture so
+   they function as the bright castle lanterns seen in the reference instead
+   of disappearing behind the board. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-crystal {
+    z-index: 4;
+    width: 30px;
+    height: 52px;
+    background:
+      linear-gradient(120deg, #fffad0 0 27%, #ffe074 28% 52%, #efa92e 53% 74%, #b96924 75%);
+    filter:
+      drop-shadow(0 0 7px #fff2a685)
+      drop-shadow(0 0 18px #f6c34d78);
+  }
+
+  .reference-first-scene .reference-crystal-a {
+    left: 21.2%;
+    top: 17.5%;
+  }
+
+  .reference-first-scene .reference-crystal-b {
+    right: 14.4%;
+    top: 20.5%;
+  }
+
+  .reference-first-scene .reference-crystal::before {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 88%;
+    width: 22px;
+    height: 20px;
+    border: 2px solid #795638;
+    border-radius: 3px 3px 6px 6px;
+    background:
+      linear-gradient(180deg, #e4c18b, #aa7b4d);
+    box-shadow:
+      inset 0 1px 0 #fff2cc80,
+      0 3px 0 #6c4b32;
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .reference-crystal::after {
+    top: 114%;
+    width: 52px;
+    height: 20px;
+    background: #f2b9402b;
+    filter: blur(8px);
+  }
+}
