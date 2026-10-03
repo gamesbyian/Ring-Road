@@ -4886,3 +4886,60 @@ h1 {
     height: 118px;
   }
 }
+
+
+/* V35 title-landmark pass.
+   Make the green mountain motif under the existing plaque sun legible without
+   replacing the live wordmark with a baked logo. */
+.title-mountain-mark {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-mountain-mark {
+    position: absolute;
+    z-index: 1;
+    top: 2.05rem;
+    right: 1.05rem;
+    display: block;
+    width: 92px;
+    height: 58px;
+    pointer-events: none;
+  }
+
+  .reference-first-scene .title-mountain-mark::before,
+  .reference-first-scene .title-mountain-mark::after {
+    position: absolute;
+    bottom: 0;
+    content: "";
+    transform-origin: bottom center;
+  }
+
+  .reference-first-scene .title-mountain-mark::before {
+    right: 0;
+    width: 70px;
+    height: 54px;
+    background: linear-gradient(145deg, #4d8c68, #2f694e);
+    clip-path: polygon(0 100%, 30% 42%, 45% 66%, 68% 12%, 100% 100%);
+    filter: drop-shadow(0 2px 0 #294a3940);
+  }
+
+  .reference-first-scene .title-mountain-mark::after {
+    left: 0;
+    width: 60px;
+    height: 44px;
+    background: linear-gradient(145deg, #73a46f, #437a5c);
+    clip-path: polygon(0 100%, 42% 22%, 100% 100%);
+    opacity: 0.96;
+  }
+
+  .reference-first-scene .title-plaque h1 {
+    z-index: 2;
+  }
+
+  .reference-first-scene .title-road-mark,
+  .reference-first-scene .title-tagline {
+    z-index: 3;
+  }
+}
