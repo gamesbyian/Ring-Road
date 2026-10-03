@@ -4664,3 +4664,70 @@ h1 {
     top: 50.7%;
   }
 }
+
+
+/* V30 miniature diagram pass.
+   The canonical concept shows complete concentric rings crossed by one narrow
+   straight road. Replace the old quarter-ring wedges with a cleaner schematic
+   without changing any live puzzle geometry. */
+.reference-goal-miniature,
+.reference-solution-preview {
+  overflow: hidden;
+}
+
+.reference-goal-miniature span,
+.reference-solution-preview span {
+  transform: translate(-50%, -50%);
+}
+
+.reference-goal-miniature span:nth-child(1),
+.reference-solution-preview span:nth-child(1) { border-right-color: #9c6cff !important; }
+.reference-goal-miniature span:nth-child(2),
+.reference-solution-preview span:nth-child(2) { border-right-color: #6366f1 !important; }
+.reference-goal-miniature span:nth-child(3),
+.reference-solution-preview span:nth-child(3) { border-right-color: #35a7ff !important; }
+.reference-goal-miniature span:nth-child(4),
+.reference-solution-preview span:nth-child(4) { border-right-color: #24c875 !important; }
+.reference-goal-miniature span:nth-child(5),
+.reference-solution-preview span:nth-child(5) { border-right-color: #e8c326 !important; }
+.reference-goal-miniature span:nth-child(6),
+.reference-solution-preview span:nth-child(6) { border-right-color: #ff8635 !important; }
+.reference-goal-miniature span:nth-child(7),
+.reference-solution-preview span:nth-child(7) { border-right-color: #f34e59 !important; }
+
+.reference-goal-miniature::after,
+.reference-solution-preview::after {
+  position: absolute;
+  z-index: 4;
+  top: 2%;
+  bottom: 2%;
+  left: 50%;
+  width: 7px;
+  border-radius: 4px;
+  background:
+    linear-gradient(
+      90deg,
+      #6f5339 0 1px,
+      #f8edcf 1px 6px,
+      #6f5339 6px 7px
+    );
+  box-shadow:
+    0 0 0 1px #fff5db66,
+    0 2px 2px #3d2b2038;
+  content: "";
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.reference-solution-preview::after {
+  background:
+    linear-gradient(
+      90deg,
+      #131d2e 0 1px,
+      #f7ead0 1px 6px,
+      #131d2e 6px 7px
+    );
+  box-shadow:
+    0 0 0 1px #ffffff2e,
+    0 2px 2px #080d1770;
+}
