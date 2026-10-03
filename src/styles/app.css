@@ -5311,3 +5311,92 @@ h1 {
     top: 45.5%;
   }
 }
+
+
+/* V42 upper-scene density pass.
+   The reference's upper-right quadrant is anchored by a substantial castle
+   gatehouse, while the live scene still reads as one narrow tower against sky.
+   Add a decorative sandstone gate mass behind the HUD and give the title sign
+   the extra vertical paper/ribbon weight visible in the concept. */
+.reference-gatehouse {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-gatehouse {
+    position: absolute;
+    z-index: 1;
+    top: 8.5%;
+    right: 1.5%;
+    display: block;
+    width: min(205px, 15dvmax);
+    height: 350px;
+    border: 2px solid #815b39;
+    border-bottom-width: 7px;
+    border-radius: 4px 4px 12px 12px;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 37px, #8b633d2a 37px 40px),
+      repeating-linear-gradient(90deg, transparent 0 44px, #7c57361d 44px 47px),
+      linear-gradient(105deg, #f0d4a2 0 30%, #d3a66e 62%, #9a7048 100%);
+    background-blend-mode: multiply, normal, normal, normal;
+    background-size: 64px 64px, auto, auto, 100% 100%;
+    box-shadow:
+      inset 10px 0 18px #fff1c632,
+      inset -14px 0 20px #65452d26,
+      0 20px 30px #47311f35;
+    pointer-events: none;
+  }
+
+  .reference-first-scene .reference-gatehouse::before {
+    position: absolute;
+    left: -11px;
+    top: -32px;
+    width: calc(100% + 22px);
+    height: 48px;
+    border: 2px solid #795334;
+    border-bottom-width: 5px;
+    background:
+      linear-gradient(90deg,
+        #e7c68f 0 13%, transparent 13% 20%,
+        #e7c68f 20% 33%, transparent 33% 40%,
+        #e7c68f 40% 53%, transparent 53% 60%,
+        #e7c68f 60% 73%, transparent 73% 80%,
+        #e7c68f 80% 93%, transparent 93%);
+    box-shadow: inset 0 2px 0 #fff5d367;
+    content: "";
+  }
+
+  .reference-first-scene .reference-gatehouse::after {
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: 58%;
+    height: 54%;
+    border: 3px solid #765035;
+    border-bottom: 0;
+    border-radius: 54% 54% 0 0 / 34% 34% 0 0;
+    background:
+      radial-gradient(ellipse at 50% 100%, #6fa3c0 0 20%, #41667e 52%, #263e55 100%);
+    box-shadow:
+      inset 0 12px 18px #172a374a,
+      0 -2px 0 #f5d9a050;
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .title-plaque {
+    min-height: 218px;
+    padding-bottom: 4rem;
+  }
+
+  .reference-first-scene .title-tagline {
+    bottom: -0.85rem;
+    padding-block: 0.52rem 0.58rem;
+  }
+
+  .reference-first-scene .guide-button {
+    bottom: -4.55rem;
+  }
+}
