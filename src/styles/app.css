@@ -4845,3 +4845,44 @@ h1 {
     filter: saturate(0.55);
   }
 }
+
+
+/* V33 goal-placard balance pass.
+   The concept gives the lower-left goal card more visual weight than our
+   current compact version. Enlarge it on the reference layout while keeping
+   the board and small-layout composition unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-goal-slot {
+    left: 1.25rem;
+    bottom: 1rem;
+    width: min(405px, 30dvmax);
+  }
+
+  .reference-goal-card {
+    min-height: 190px;
+    padding: 0.95rem 1rem;
+  }
+
+  .reference-goal-heading {
+    margin-bottom: 0.7rem;
+  }
+
+  .reference-goal-heading strong {
+    font-size: 1.68rem;
+  }
+
+  .reference-goal-card p {
+    width: 55%;
+    max-width: 55%;
+    font-size: 0.77rem;
+    line-height: 1.42;
+  }
+
+  .reference-goal-miniature {
+    right: 1rem;
+    bottom: 0.8rem;
+    width: 118px;
+    height: 118px;
+  }
+}
