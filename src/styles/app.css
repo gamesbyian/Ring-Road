@@ -5195,3 +5195,16 @@ h1 {
     left: 54%;
   }
 }
+
+
+/* V41.1 platform silhouette correction.
+   The latest retained screenshot showed the sandstone support as an oversized
+   near-circular fan behind the rings. The concept uses a much tighter,
+   perspective-compressed arena rim. Flatten only the decorative plinth ellipse;
+   live SVG geometry and ring hit targets remain unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    aspect-ratio: 1.46 / 1;
+  }
+}
