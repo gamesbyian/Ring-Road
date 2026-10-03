@@ -5596,10 +5596,14 @@ h1 {
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
   .reference-first-scene .reference-scene-matte {
-    z-index: -2;
-    opacity: 0.46;
-    mix-blend-mode: soft-light;
+    z-index: 2;
+    opacity: 0.78;
+    mix-blend-mode: normal;
     filter: saturate(1.08) contrast(1.03) brightness(1.02);
+  }
+
+  .reference-first-scene .scene-art-backdrop {
+    opacity: 0.82;
   }
 
   .reference-first-scene .scene-art-backdrop img {
