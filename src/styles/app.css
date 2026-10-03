@@ -5806,3 +5806,37 @@ h1 {
     right: 2.7rem;
   }
 }
+
+
+/* V51 solution-card pass.
+   The reference treats the dark Solution placard itself as the control and
+   does not show a separate action button beneath the preview. Make the entire
+   card the 44px+ interaction target so the visual hierarchy can match without
+   sacrificing keyboard/touch accessibility. */
+.reference-solution-card-button {
+  appearance: none;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.reference-solution-card-button:focus-visible {
+  outline: 3px solid #f2c95f;
+  outline-offset: 3px;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-solution-card {
+    min-height: 194px;
+    padding: 0.7rem 0.72rem 0.72rem;
+  }
+
+  .reference-first-scene .reference-solution-preview {
+    width: 112px;
+    height: 112px;
+    margin: 0.35rem auto 0;
+  }
+}

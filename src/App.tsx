@@ -142,7 +142,11 @@ export default function App() {
   );
 
   const solutionCard = (
-    <section className="reference-solution-card" aria-label="Solution">
+    <button
+      className="reference-solution-card reference-solution-card-button"
+      aria-label="View solution"
+      onClick={() => dispatch({ type: "toggle-solution" })}
+    >
       <span className="reference-solution-heading">
         <span className="reference-eye" aria-hidden="true" />
         <strong>Solution</strong>
@@ -156,8 +160,7 @@ export default function App() {
         <span />
         <span />
       </span>
-      <button className="reference-solution-action solution-card-action" onClick={() => dispatch({ type: "toggle-solution" })}>View solution</button>
-    </section>
+    </button>
   );
 
   const navigation = (
