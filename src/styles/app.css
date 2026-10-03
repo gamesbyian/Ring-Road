@@ -4998,3 +4998,21 @@ h1 {
     filter: blur(8px);
   }
 }
+
+
+/* V37 scenic-atmosphere test.
+   The scenic matte already excludes live board/UI regions. Let a little more
+   of its painterly mountain, water, and foliage information survive over the
+   vector scaffolding on large reference layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-scene-matte {
+    opacity: 0.66;
+    filter: saturate(1.04) contrast(1.01) brightness(1.01);
+    mix-blend-mode: soft-light;
+  }
+
+  .reference-first-scene .scene-art-backdrop img {
+    filter: saturate(1.02) contrast(1.01) brightness(1.015);
+  }
+}
