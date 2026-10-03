@@ -5584,3 +5584,25 @@ h1 {
     stroke-width: 3.2;
   }
 }
+
+
+/* V46 scenic-layer ordering pass.
+   The isolated painterly matte was correctly authored and loaded, but it still
+   sat at z-index -5 beneath the fully opaque vector scenic scaffold at -3.
+   Surface it one layer above that scaffold so the retained concept-derived
+   mountain/water/castle texture can actually contribute to the final frame.
+   It remains pointer-inert, masked away before the lower HUD, and below every
+   live game/UI layer. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-scene-matte {
+    z-index: -2;
+    opacity: 0.46;
+    mix-blend-mode: soft-light;
+    filter: saturate(1.08) contrast(1.03) brightness(1.02);
+  }
+
+  .reference-first-scene .scene-art-backdrop img {
+    filter: saturate(0.96) contrast(0.98) brightness(1.015);
+  }
+}
