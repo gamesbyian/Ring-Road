@@ -5561,3 +5561,26 @@ h1 {
     stroke: #8f795f59;
   }
 }
+
+
+/* V45 board-lip pass.
+   The retained 1440×1000 capture still shows a deep dark-brown stacked lip
+   beneath the outer ring, while the reference uses a shallower sandstone rim.
+   The SVG depth offsets are reduced in RingBoard; these colors keep the
+   remaining exposed edge warm and architectural instead of chocolate-brown. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-base-depth {
+    fill: #a27c52;
+  }
+
+  .reference-first-scene .board-base-depth-low {
+    fill: #7f5d3f;
+  }
+
+  .reference-first-scene .board-base-rim {
+    fill: #d3b587;
+    stroke: #7d5a3d;
+    stroke-width: 3.2;
+  }
+}
