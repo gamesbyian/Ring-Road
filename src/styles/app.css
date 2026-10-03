@@ -5256,3 +5256,17 @@ h1 {
       linear-gradient(180deg, #000 0 44%, #000d 58%, #0005 72%, transparent 88%);
   }
 }
+
+
+/* V41.3.1: keep the isolated scenic raster decorative and CSS-owned.
+   Rendering it as a fourth live <img> interfered with the smoke harness's
+   canonical three scenic-picture contract. Let Vite fingerprint the same
+   authored WebP through CSS instead. */
+.reference-scene-matte {
+  background:
+    url("../assets/diorama/desktop/reference-scenery-matte.webp") 50% 48% / cover no-repeat;
+}
+
+.reference-scene-matte img {
+  display: none;
+}
