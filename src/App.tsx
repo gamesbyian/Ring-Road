@@ -125,7 +125,11 @@ export default function App() {
   const goal = (
     <section className="reference-goal-card" aria-label="Puzzle goal">
       <div className="reference-goal-heading">
-        <span className="reference-goal-badge" aria-hidden="true">?</span>
+        <button
+          className="reference-goal-badge reference-goal-guide"
+          onClick={() => dispatch({ type: "toggle-guide" })}
+          aria-label="Open guide"
+        >?</button>
         <strong>Goal</strong>
       </div>
       <p>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</p>
