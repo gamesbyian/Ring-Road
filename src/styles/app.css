@@ -5531,3 +5531,33 @@ h1 {
     padding-block: 0.38rem;
   }
 }
+
+
+/* V44 board-trench material pass.
+   The reference exposes dark recessed mechanics through the ring gaps. The live
+   board still shows a pale sandstone bed beneath those openings, which makes
+   the gaps look cut from a tan platter rather than separate road slabs. Keep
+   the outer rim sandstone, but darken only the inner board bed visible through
+   gaps and narrow joints. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-base {
+    fill: #3f4142;
+    stroke: #bca984;
+    stroke-width: 2.2;
+  }
+
+  .reference-first-scene .board-base-blocks {
+    stroke: #8b7252;
+    stroke-width: 6;
+    opacity: 0.42;
+    filter:
+      drop-shadow(0 -0.7px 0 #e7d7b05a)
+      drop-shadow(0 1.5px 0 #1d1c1b85);
+  }
+
+  .reference-first-scene .ring-channel-floor {
+    fill: #25292d;
+    stroke: #8f795f59;
+  }
+}
