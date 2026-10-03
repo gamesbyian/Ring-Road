@@ -45,6 +45,10 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
         <span className="reference-tower reference-tower-left" />
         <span className="reference-tower reference-tower-right" />
         <span className="reference-gatehouse"><span className="reference-gate-banner" /></span>
+        <span className="reference-central-gate">
+          <span className="reference-central-gate-banner reference-central-gate-banner-left" />
+          <span className="reference-central-gate-banner reference-central-gate-banner-right" />
+        </span>
         <span className="reference-banner reference-banner-left" />
         <span className="reference-banner reference-banner-right" />
         <span className="reference-tree reference-tree-a" />
