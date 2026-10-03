@@ -5485,3 +5485,49 @@ h1 {
     font-size: clamp(2.9rem, 4.9dvmax, 4.65rem);
   }
 }
+
+
+/* V43 HUD registration pass.
+   With the board and castle now close to the concept, register the remaining
+   corner HUD against the retained 1440×1000 capture. Keep semantics and touch
+   targets intact; this is large-layout placement and density only. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-controls-slot {
+    top: 51%;
+  }
+
+  .reference-moves-slot {
+    top: 8.9rem;
+  }
+
+  .reference-goal-slot {
+    bottom: -0.15rem;
+  }
+
+  .reference-solution-slot {
+    right: 1.25rem;
+    bottom: -0.2rem;
+    width: min(220px, 17dvmax);
+  }
+
+  .reference-solution-card {
+    min-height: 208px;
+    padding: 0.65rem 0.7rem 0.62rem;
+  }
+
+  .reference-solution-heading {
+    margin-bottom: 0.35rem;
+  }
+
+  .reference-solution-preview {
+    width: 108px;
+    height: 108px;
+    margin: 0.25rem auto 0.45rem;
+  }
+
+  .solution-card-action {
+    min-height: 42px;
+    padding-block: 0.38rem;
+  }
+}
