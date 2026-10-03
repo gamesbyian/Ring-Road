@@ -5270,3 +5270,27 @@ h1 {
 .reference-scene-matte img {
   display: none;
 }
+
+
+/* V41.4 final board registration against the retained 1440×1000 capture.
+   The live tabletop still measured a few percent wider than the canonical
+   reference and its visual center sat slightly too far right. Tighten the
+   monument without changing SVG geometry, then move the whole architectural
+   stack left together. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    left: 53%;
+    width: min(61dvmax, 860px);
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    left: 53%;
+    width: min(66dvmax, 930px);
+  }
+
+  .reference-rear-road,
+  .reference-front-road {
+    left: 53%;
+  }
+}
