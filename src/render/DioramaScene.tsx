@@ -51,6 +51,8 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
         <span className="reference-tree reference-tree-c" />
         <span className="reference-crystal reference-crystal-a" />
         <span className="reference-crystal reference-crystal-b" />
+        <span className="reference-waterfall reference-waterfall-left" />
+        <span className="reference-waterfall reference-waterfall-right" />
       </div>
       <div className="scene-backdrop" aria-hidden="true">
         <ScenicPicture role="backdrop" className="scene-art scene-art-backdrop" fetchPriority="high" />
