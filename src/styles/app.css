@@ -4731,3 +4731,41 @@ h1 {
     0 0 0 1px #ffffff2e,
     0 2px 2px #080d1770;
 }
+
+
+/* V31 title-road presence pass.
+   Let the road read as part of the logo instead of a hairline hidden behind
+   the tagline. Keep the live text and existing plaque proportions. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    left: 0.82rem;
+    bottom: 0.72rem;
+    width: 84%;
+    height: 1.58rem;
+    border-width: 0.36rem;
+    border-top: 0;
+    border-radius: 0 0 58% 58% / 0 0 100% 100%;
+    box-shadow:
+      0 0.12rem 0 #f7ead0,
+      0 0.26rem 0 #2e343b35;
+  }
+
+  .reference-first-scene .title-road-mark::before {
+    left: 7%;
+    right: 7%;
+    bottom: 0.2rem;
+    height: 0.09rem;
+  }
+
+  .reference-first-scene .title-road-mark::after {
+    right: 3%;
+    bottom: -0.04rem;
+    width: 0.46rem;
+  }
+
+  .reference-first-scene .title-tagline {
+    width: 74%;
+    bottom: -0.82rem;
+  }
+}
