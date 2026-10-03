@@ -5051,3 +5051,76 @@ h1 {
     width: 75%;
   }
 }
+
+
+/* V39 side-waterfall pass.
+   Add restrained vertical water accents at the far edges of the castle scene,
+   behind all live gameplay and HUD, to echo the reference's fantasy setting. */
+.reference-waterfall {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    position: absolute;
+    z-index: 0;
+    display: block;
+    width: 74px;
+    height: 260px;
+    border-radius: 42% 42% 18% 18%;
+    background:
+      linear-gradient(90deg,
+        #3f98c600 0 5%,
+        #4aa9d6b8 6% 22%,
+        #ccecf2d8 23% 31%,
+        #67badcdf 32% 52%,
+        #dff7f7c8 53% 61%,
+        #3b96c4c2 62% 90%,
+        #2a79a100 91% 100%);
+    filter:
+      drop-shadow(0 6px 7px #245f7740)
+      saturate(0.95);
+    opacity: 0.82;
+    pointer-events: none;
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    position: absolute;
+    inset: 4% 13% 8%;
+    border-radius: 40%;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        #ffffff00 0 18px,
+        #dff9ff74 18px 21px,
+        #ffffff00 21px 39px
+      );
+    content: "";
+  }
+
+  .reference-first-scene .reference-waterfall::after {
+    position: absolute;
+    left: 50%;
+    bottom: -14px;
+    width: 120%;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, #d9f6fa9c 0 25%, #4aa3ca61 45%, transparent 72%);
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .reference-first-scene .reference-waterfall-left {
+    left: -0.6rem;
+    top: 20%;
+    transform: rotate(2deg);
+  }
+
+  .reference-first-scene .reference-waterfall-right {
+    right: -0.5rem;
+    top: 31%;
+    height: 230px;
+    transform: rotate(-1deg);
+  }
+}
