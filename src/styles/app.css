@@ -5208,3 +5208,19 @@ h1 {
     aspect-ratio: 1.46 / 1;
   }
 }
+
+
+/* V41.2 tabletop-perspective correction.
+   The retained 1440×1000 render still left the board about 15% too tall for
+   its width versus the concept. Keep the horizontal monument scale, but
+   compress the tabletop vertically with a steeper camera angle. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board {
+    transform: rotateX(50deg) translateY(-0.2%);
+  }
+
+  .reference-first-scene .board-surface::before {
+    transform: translate(-50%, -50%) rotateX(50deg);
+  }
+}
