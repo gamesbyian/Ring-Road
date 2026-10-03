@@ -5124,3 +5124,50 @@ h1 {
     transform: rotate(-1deg);
   }
 }
+
+
+/* V39.1 retained-screenshot waterfall correction. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    width: 86px;
+    border-radius: 18% 22% 12% 16%;
+    clip-path: polygon(14% 0, 84% 3%, 96% 100%, 4% 100%);
+    background:
+      linear-gradient(90deg,
+        #3f98c600 0 8%,
+        #4aa9d68d 9% 24%,
+        #d7f1f4aa 25% 34%,
+        #67badca3 35% 55%,
+        #e7fbf7a1 56% 63%,
+        #3b96c495 64% 90%,
+        #2a79a100 91% 100%);
+    filter:
+      drop-shadow(0 5px 7px #245f7730)
+      saturate(0.82)
+      brightness(1.02);
+    opacity: 0.62;
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    opacity: 0.5;
+  }
+
+  .reference-first-scene .reference-waterfall::after {
+    width: 112%;
+    height: 24px;
+    background: radial-gradient(ellipse, #d9f6fa70 0 24%, #4aa3ca3d 46%, transparent 72%);
+    filter: blur(7px);
+  }
+
+  .reference-first-scene .reference-waterfall-left {
+    left: -1rem;
+    top: 21%;
+  }
+
+  .reference-first-scene .reference-waterfall-right {
+    right: -0.9rem;
+    top: 32%;
+    width: 78px;
+  }
+}
