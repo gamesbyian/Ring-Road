@@ -5016,3 +5016,38 @@ h1 {
     filter: saturate(1.02) contrast(1.01) brightness(1.015);
   }
 }
+
+
+/* V38 title-plaque scale pass.
+   The reference gives the title sign a little more visual mass. Increase the
+   large-layout plaque rather than making the board smaller again. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    width: min(390px, 29dvmax);
+    min-width: 330px;
+    padding: 0.95rem 1.25rem 3.25rem;
+  }
+
+  .reference-first-scene .title-plaque h1 {
+    width: 82%;
+    font-size: clamp(3rem, 5.25dvmax, 4.95rem);
+  }
+
+  .reference-first-scene .title-mountain-mark {
+    top: 2.2rem;
+    right: 1.2rem;
+    transform: scale(1.08);
+    transform-origin: top right;
+  }
+
+  .reference-first-scene .title-road-mark {
+    left: 0.95rem;
+    width: 83%;
+  }
+
+  .reference-first-scene .title-tagline {
+    left: 1.1rem;
+    width: 75%;
+  }
+}
