@@ -5171,3 +5171,27 @@ h1 {
     width: 78px;
   }
 }
+
+
+/* V41 screenshot-registration pass.
+   The retained 1440×1000 capture still placed the live board noticeably lower
+   and farther right than the canonical reference. Re-register the complete
+   board monument as one unit so more castle/stair architecture survives below
+   it and the right-side HUD no longer crowds the outer ring. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    top: 41%;
+    left: 54%;
+  }
+
+  .reference-first-scene .scene-board-plinth {
+    top: 48%;
+    left: 54%;
+  }
+
+  .reference-rear-road,
+  .reference-front-road {
+    left: 54%;
+  }
+}
