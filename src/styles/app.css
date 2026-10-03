@@ -5840,3 +5840,64 @@ h1 {
     margin: 0.35rem auto 0;
   }
 }
+
+
+/* V52 guide-control integration.
+   The supplied reference has no separate floating Guide button under the logo.
+   Reuse the existing Goal-card question badge as the visible guide affordance
+   on the large reference layout, preserving a full accessible control while
+   removing one of the last pieces of non-reference chrome. */
+.reference-goal-guide {
+  appearance: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.reference-goal-guide:focus-visible {
+  outline: 3px solid #efbf4a;
+  outline-offset: 3px;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .guide-button {
+    position: absolute;
+    width: 1px;
+    min-width: 1px;
+    height: 1px;
+    min-height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .reference-first-scene .reference-goal-guide {
+    display: grid;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    margin: -0.32rem 0.45rem -0.2rem -0.25rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid #1e2730;
+    border-radius: 50%;
+    color: #f6ead3;
+    background: #303944;
+    box-shadow:
+      inset 0 1px 0 #ffffff24,
+      0 3px 0 #9d7e59;
+    font-size: 1.08rem;
+    font-weight: 950;
+    line-height: 1;
+  }
+
+  .reference-first-scene .reference-goal-card::before {
+    display: none;
+  }
+}
