@@ -144,6 +144,22 @@
     <path d="M1002 161 1037 220 1002 220Z"/><path d="M1044 150 1083 220 1044 220Z"/>
   </g>
 
+  <!-- scattered faceted rubble at the planted arena base; keep these low
+       and lateral so they enrich the miniature foreground without covering the
+       stair centerline, HUD, or live board -->
+  <g filter="url(#shadow)" stroke="#76563a" stroke-width="2">
+    <path d="M286 220 301 194 329 197 340 220Z" fill="#b78b5b"/>
+    <path d="M304 197 317 184 332 198 322 211Z" fill="#d2aa74"/>
+    <path d="M338 220 350 203 372 205 383 220Z" fill="#9e7149"/>
+    <path d="M1057 220 1068 203 1090 205 1102 220Z" fill="#9e7149"/>
+    <path d="M1100 220 1111 197 1138 194 1154 220Z" fill="#b78b5b"/>
+    <path d="M1118 198 1132 184 1145 197 1135 211Z" fill="#d2aa74"/>
+  </g>
+  <g fill="#f0d4a5" opacity=".55">
+    <path d="M301 194 329 197 318 203Z"/><path d="M350 203 372 205 361 210Z"/>
+    <path d="M1068 203 1090 205 1079 210Z"/><path d="M1111 197 1138 194 1127 203Z"/>
+  </g>
+
   <!-- small stone footings around the central stairs -->
   <g fill="#d7b27e" stroke="#765035" stroke-width="3">
     <path d="M465 188h72v32h-72Z"/><path d="M903 188h72v32h-72Z"/>
