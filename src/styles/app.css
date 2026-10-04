@@ -6754,3 +6754,17 @@ h1 {
     width: 28%;
   }
 }
+
+
+/* V87.1 retained-screenshot correction.
+   Larger flags alone stayed hidden behind the live tabletop. Hang the same
+   four flags farther down the decorative front fascia so their cloth bodies,
+   not just their tips, survive beneath the board as they do in the reference. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .arena-banner {
+    bottom: -4.5%;
+    width: 7.8%;
+    height: 22%;
+  }
+}
