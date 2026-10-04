@@ -77,6 +77,19 @@
   <path d="M0 374 C246 351 454 359 676 383 C898 357 1167 357 1440 382" fill="none" stroke="#b9e7f4" stroke-width="8" opacity=".55"/>
   <path d="M0 431 C255 410 472 420 696 442 C920 416 1170 420 1440 444" fill="none" stroke="#d5eff5" stroke-width="4" opacity=".34"/>
 
+  <!-- localized broken reflections where the water remains visible around the
+       arena; these read as miniature foam/ripples rather than long flat bands -->
+  <g fill="none" stroke-linecap="round">
+    <g stroke="#e6f7f8" opacity=".58">
+      <path d="M12 405c44-9 87-8 128 1M38 438c48-8 94-6 137 3M3 476c61-10 117-7 169 2" stroke-width="7"/>
+      <path d="M1264 401c55-8 108-5 160 5M1208 441c65-10 126-8 185 1M1261 481c58-8 112-6 166 3" stroke-width="7"/>
+    </g>
+    <g stroke="#7fc7df" opacity=".52">
+      <path d="M62 420c32-5 63-4 94 2M18 458c39-6 78-5 116 1" stroke-width="4"/>
+      <path d="M1288 421c37-5 74-4 110 2M1234 461c43-6 84-5 124 1" stroke-width="4"/>
+    </g>
+  </g>
+
   <path d="M0 500 C145 420 290 425 432 506 C565 408 720 414 862 514 C1020 404 1200 418 1440 506 V1000 H0Z" fill="url(#grass)"/>
   <path d="M0 616 C210 564 420 568 662 628 C912 565 1190 573 1440 626 V1000 H0Z" fill="#78935f" opacity=".72"/>
 
