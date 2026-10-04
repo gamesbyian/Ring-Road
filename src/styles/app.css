@@ -6249,3 +6249,37 @@ h1 {
     height: clamp(205px, 18dvmax, 270px);
   }
 }
+
+
+/* V65 arena-masonry pass.
+   The board support still reads as one smooth tan drum. The reference exposes
+   distinct sandstone courses and block joints around the arena front. Add a
+   restrained masonry rhythm to the existing curved support without changing
+   its silhouette or the live board. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth::before {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 32px,
+        #7f5a3b2b 32px 35px,
+        transparent 35px 67px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 7.2%,
+        #79533635 7.2% 7.7%,
+        transparent 7.7% 14.9%
+      ),
+      linear-gradient(180deg, #e8c99a, #cfa36d 64%, #9f7048);
+    background-blend-mode: soft-light, normal, normal, normal;
+    background-repeat: repeat, repeat, repeat, no-repeat;
+    background-size: 64px 64px, auto, auto, 100% 100%;
+    box-shadow:
+      inset 0 8px 11px #fff0c144,
+      inset 0 -9px 12px #5b3d2a32,
+      0 2px 0 #6f4d343d;
+  }
+}
