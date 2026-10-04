@@ -26,10 +26,24 @@
   <circle cx="1160" cy="138" r="74" fill="url(#sunGlow)" opacity=".24"/>
   
 
-  <g fill="#fffaf0" opacity=".68">
-    <ellipse cx="115" cy="115" rx="98" ry="34"/><ellipse cx="205" cy="103" rx="70" ry="28"/>
-    <ellipse cx="328" cy="155" rx="82" ry="27"/><ellipse cx="385" cy="145" rx="54" ry="22"/>
-    <ellipse cx="986" cy="92" rx="66" ry="22"/><ellipse cx="1046" cy="86" rx="44" ry="18"/>
+  <!-- chunky faceted cloud banks: layered highlight and blue-gray lower
+       planes keep the upper sky in the same miniature language as the mountains -->
+  <g opacity=".86">
+    <g fill="#eef1ef">
+      <path d="M16 126Q35 92 72 96Q92 58 132 73Q159 50 189 78Q230 72 247 104Q272 105 285 132H16Z"/>
+      <path d="M258 168Q278 138 309 141Q327 111 360 125Q387 108 409 133Q438 132 450 162H258Z"/>
+      <path d="M925 110Q943 81 973 84Q993 57 1023 70Q1044 56 1065 77Q1090 78 1102 105H925Z"/>
+    </g>
+    <g fill="#c9d8df" opacity=".68">
+      <path d="M16 126H285Q249 147 205 140Q167 151 132 140Q83 149 40 137Z"/>
+      <path d="M258 168H450Q420 185 388 177Q351 187 317 178Q286 183 266 175Z"/>
+      <path d="M925 110H1102Q1073 126 1041 120Q1008 130 978 121Q947 126 931 118Z"/>
+    </g>
+    <g fill="#fffdf6" opacity=".72">
+      <path d="M47 111Q67 84 95 92Q112 69 137 80Q158 65 176 87Q203 86 218 108Q176 101 146 109Q98 101 47 111Z"/>
+      <path d="M286 156Q304 132 327 139Q344 120 365 131Q386 121 402 142Q365 136 338 144Q311 138 286 156Z"/>
+      <path d="M948 99Q966 77 986 83Q1002 66 1021 76Q1037 67 1052 85Q1019 81 994 88Q970 82 948 99Z"/>
+    </g>
   </g>
 
   <g fill="url(#mountainFar)" opacity=".97">
