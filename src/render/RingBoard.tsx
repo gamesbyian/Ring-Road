@@ -83,7 +83,7 @@ const Ring = memo(function Ring({ index, cycle, state, rotationMotion }: RingPro
       </g>
 
       <g className={rotorClass} style={rotorStyle}>
-        <polygon points={geometry.channelFloor} className="ring-channel-floor" />
+        <polygon points={geometry.channelFloor} className="ring-channel-floor" style={{ fill: "url(#gap-floor-material)" }} />
         {geometry.notchFaces.map((points, face) => (
           <polygon
             key={face}
@@ -174,6 +174,11 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
             <pattern id="paint-grain-pattern" width="64" height="64" patternUnits="userSpaceOnUse">
               <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.34" />
             </pattern>
+            <linearGradient id="gap-floor-material" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0" stopColor="#76604a" />
+              <stop offset="0.32" stopColor="#5a493b" />
+              <stop offset="1" stopColor="#302923" />
+            </linearGradient>
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#bfa1ee" />
               <stop offset="0.52" stopColor="#8e68c8" />
