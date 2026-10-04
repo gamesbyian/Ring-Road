@@ -6887,3 +6887,29 @@ h1 {
     bottom: 1.28rem;
   }
 }
+
+
+/* V101 title-sun ray pass.
+   The canonical logo uses a small graphic sunburst behind the mountain mark.
+   Keep the existing sun disk and add restrained rays inside the same inert
+   decorative element, with no title or plaque geometry changes. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-mountain-mark {
+    background:
+      radial-gradient(
+        circle at 31% 34%,
+        #ffe27a 0 15px,
+        #f6bf35 16px 22px,
+        transparent 23px
+      ),
+      repeating-conic-gradient(
+        from -4deg at 31% 34%,
+        #e7a92c 0deg 4deg,
+        transparent 4deg 18deg
+      );
+    background-repeat: no-repeat;
+    background-size: 100% 100%, 62px 62px;
+    background-position: 0 0, 0 0;
+  }
+}
