@@ -6768,3 +6768,14 @@ h1 {
     height: 22%;
   }
 }
+
+/* V89 ring-label cleanup.
+   The tiny V/I/B/G/Y/O/R glyphs are aria-hidden decorative helpers and are
+   absent from the canonical tabletop. Named controls retain non-color ring
+   identity, so remove only these surface glyphs on the large reference view. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-id {
+    display: none;
+  }
+}
