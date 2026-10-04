@@ -25,6 +25,25 @@
     <path d="M160 120v100M300 101v119M445 86v134M995 86v134M1140 101v119M1280 120v100"/>
   </g>
 
+  <!-- inset moat/shadow channels break up the broad sandstone apron and
+       anchor the central stair as a real miniature gateway rather than a flat
+       stack of rectangles -->
+  <g filter="url(#shadow)">
+    <path d="M456 126 548 111 548 220H430Z" fill="#6c8ca2" stroke="#5a4937" stroke-width="3"/>
+    <path d="M984 126 892 111 892 220h118Z" fill="#6c8ca2" stroke="#5a4937" stroke-width="3"/>
+    <path d="M466 132 536 121 536 220h-92Z" fill="#8fc2d4" opacity=".78"/>
+    <path d="M974 132 904 121 904 220h92Z" fill="#8fc2d4" opacity=".78"/>
+    <path d="M442 160 548 144M434 193 548 178M998 160 892 144M1006 193 892 178"
+          fill="none" stroke="#d8edf0" stroke-width="4" opacity=".55"/>
+  </g>
+
+  <!-- deeper stairwell and flanking retaining walls -->
+  <g filter="url(#shadow)" stroke="#68492f" stroke-width="3">
+    <path d="M548 104 612 88v132h-64Z" fill="#8b623f"/>
+    <path d="M892 104 828 88v132h64Z" fill="#745036"/>
+    <path d="M612 88h216l-14 27H626Z" fill="#6f4c34"/>
+  </g>
+
   <g fill="#9c7448" stroke="#68492f" stroke-width="3" filter="url(#shadow)">
     <path d="M568 89h304v131H568Z"/><path d="M612 73h216v147H612Z"/>
   </g>
