@@ -6351,3 +6351,26 @@ h1 {
     pointer-events: none;
   }
 }
+
+
+/* V68 title-type depth pass.
+   The concept's wordmark is chunky printed/painted lettering with a slight
+   raised-cardboard extrusion. The live title is compositionally close now,
+   but still reads flatter. Add restrained per-word depth without changing
+   text, layout, or accessible markup. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque h1 span:first-child {
+    text-shadow:
+      0 1px 0 #fff8e9,
+      0 3px 0 #20293624,
+      0 5px 8px #4d38242a;
+  }
+
+  .reference-first-scene .title-plaque h1 span:last-child {
+    text-shadow:
+      0 1px 0 #f6b0a6,
+      0 3px 0 #8f302b42,
+      0 5px 8px #5430242d;
+  }
+}
