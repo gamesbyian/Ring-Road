@@ -115,6 +115,26 @@
     <rect x="1314" y="198" width="10" height="22" rx="2"/>
   </g>
 
+  <!-- low faceted stair-flank foliage: keep it below the board safe zone
+       while recovering the dense planted foreground visible in the reference -->
+  <g filter="url(#shadow)" stroke="#31503d" stroke-width="2">
+    <path d="M365 220 403 150l39 70Z" fill="#315b46"/>
+    <path d="M405 220 438 161l34 59Z" fill="#477552"/>
+    <path d="M452 220 478 173l27 47Z" fill="#5d8459"/>
+    <path d="M935 220 962 173l27 47Z" fill="#5d8459"/>
+    <path d="M968 220 1002 161l35 59Z" fill="#477552"/>
+    <path d="M1006 220 1044 150l39 70Z" fill="#315b46"/>
+  </g>
+  <g fill="#8aaa6c" opacity=".48">
+    <path d="M403 150 403 220 383 220Z"/><path d="M438 161 438 220 421 220Z"/>
+    <path d="M478 173 478 220 464 220Z"/><path d="M962 173 962 220 949 220Z"/>
+    <path d="M1002 161 1002 220 985 220Z"/><path d="M1044 150 1044 220 1024 220Z"/>
+  </g>
+  <g fill="#24453a" opacity=".55">
+    <path d="M403 150 442 220 403 220Z"/><path d="M438 161 472 220 438 220Z"/>
+    <path d="M1002 161 1037 220 1002 220Z"/><path d="M1044 150 1083 220 1044 220Z"/>
+  </g>
+
   <!-- small stone footings around the central stairs -->
   <g fill="#d7b27e" stroke="#765035" stroke-width="3">
     <path d="M465 188h72v32h-72Z"/><path d="M903 188h72v32h-72Z"/>
