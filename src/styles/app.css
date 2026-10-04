@@ -6283,3 +6283,40 @@ h1 {
       0 2px 0 #6f4d343d;
   }
 }
+
+
+/* V66 utility-control reveal pass.
+   The supplied reference ends the left rail after Ring 7; the always-visible
+   Undo/Reset/Hint medallions are useful application controls but conspicuous
+   non-reference chrome. Keep their full 46px targets and tab order, but tuck
+   them visually into the monument until the rail is hovered or keyboard focus
+   enters the utility row. Compact/mobile layouts remain unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .actions {
+    margin-top: 0.18rem;
+    opacity: 0;
+    transform: translateY(-7px) scale(0.94);
+    transform-origin: 50% 0;
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .reference-first-scene .control-monument:hover .actions,
+  .reference-first-scene .actions:focus-within {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .reference-first-scene .actions button:focus-visible {
+    outline: 3px solid #efbf4a;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reference-first-scene .actions {
+    transition: none;
+  }
+}
