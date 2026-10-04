@@ -6508,3 +6508,42 @@ h1 {
       drop-shadow(0 14px 22px #4b35242b);
   }
 }
+
+
+/* V76 side-tower material pass.
+   The freestanding castle towers are now among the few large scenic shapes
+   still built from smooth gradients. Give their stone faces and battlements
+   the same coarse miniature material language as the newer gate structures,
+   without changing placement or silhouette. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-tower {
+    border-color: #79563599;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 31px, #74513420 31px 33px),
+      linear-gradient(90deg, #9f7547 0 7%, transparent 7% 93%, #8d653d 93%),
+      linear-gradient(180deg, #f0d8a8, #c69a62 58%, #a87847);
+    background-size: 64px 64px, auto, 100% 100%, 100% 100%;
+    background-blend-mode: multiply, normal, normal, normal;
+    box-shadow:
+      inset 7px 0 10px #fff1c53b,
+      inset -8px 0 11px #62432a24,
+      0 15px 24px #51391f3a;
+  }
+
+  .reference-first-scene .reference-tower::before {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      linear-gradient(180deg, #f4dfb6, #c79a5f);
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
+    filter: drop-shadow(0 4px 2px #50372024);
+  }
+
+  .reference-first-scene .reference-tower::after {
+    box-shadow:
+      inset 0 10px 12px #172a3842,
+      0 -2px 0 #efd39c4d;
+  }
+}
