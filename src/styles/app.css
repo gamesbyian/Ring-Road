@@ -6629,3 +6629,31 @@ h1 {
       );
   }
 }
+
+
+/* V83 waterfall-proportion pass.
+   The canonical edge cascades are narrow scenic accents, while the live
+   versions still read as broad translucent blue bands. Tighten and slightly
+   strengthen the existing decorative falls without changing their vertical
+   registration or introducing new scene geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    width: 58px;
+    opacity: 0.78;
+    filter:
+      drop-shadow(0 5px 7px #245f7738)
+      saturate(0.98)
+      contrast(1.04)
+      brightness(1.01);
+  }
+
+  .reference-first-scene .reference-waterfall-left {
+    left: -0.65rem;
+  }
+
+  .reference-first-scene .reference-waterfall-right {
+    right: -0.55rem;
+    width: 54px;
+  }
+}
