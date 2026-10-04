@@ -5917,3 +5917,45 @@ h1 {
     filter: drop-shadow(0 -5px 9px #5c43252f);
   }
 }
+
+
+/* V55 castle-masonry material pass.
+   The latest retained frame still makes the rear gatehouse and towers read as
+   dark brown slabs, while the supplied reference uses pale sunlit sandstone.
+   Keep the authored stone grain and depth, but switch it from multiply-heavy
+   treatment to a lighter carved-stone palette on large reference layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-tower,
+  .reference-first-scene .reference-gatehouse,
+  .reference-first-scene .reference-central-gate {
+    background-blend-mode: soft-light, normal, normal, normal;
+    box-shadow:
+      inset 11px 0 18px #fff7da52,
+      inset -11px 0 18px #76533818,
+      0 18px 28px #4d38242b;
+  }
+
+  .reference-first-scene .reference-tower {
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, #9e774d24 31px 33px),
+      repeating-linear-gradient(90deg, transparent 0 34px, #87613d17 34px 36px),
+      linear-gradient(110deg, #f7e5c2, #dfbe8b 58%, #bc8d5c);
+  }
+
+  .reference-first-scene .reference-gatehouse {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 38px, #8b633d18 38px 41px),
+      repeating-linear-gradient(90deg, transparent 0 46px, #7c573612 46px 49px),
+      linear-gradient(105deg, #f8e6c0 0 30%, #e2c18e 62%, #bf8e5c 100%);
+  }
+
+  .reference-first-scene .reference-central-gate {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(0deg, transparent 0 34px, #8b633d18 34px 37px),
+      repeating-linear-gradient(90deg, transparent 0 52px, #7c573610 52px 55px),
+      linear-gradient(108deg, #f6e1b7 0 28%, #dfbb86 62%, #bd8a58 100%);
+  }
+}
