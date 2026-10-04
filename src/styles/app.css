@@ -6003,3 +6003,27 @@ h1 {
     background-size: 64px 64px, 100% 100%;
   }
 }
+
+
+/* V57 title-banner material pass.
+   The retained frame still makes the orange slogan ribbon look muddy brown.
+   The reference uses a brighter painted ochre banner with crisp dark lettering.
+   Keep the authored paint grain, but let it act as texture instead of darkening
+   the whole ribbon. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-tagline {
+    border: 1px solid #a66a2e;
+    border-bottom-width: 3px;
+    color: #3e2b1c;
+    background-image:
+      url("../assets/diorama/textures/paint-grain.png"),
+      linear-gradient(180deg, #f5bd55 0%, #e89a38 58%, #d9842d 100%);
+    background-blend-mode: soft-light, normal;
+    box-shadow:
+      inset 0 1px 0 #fff4bc8c,
+      0 4px 0 #9b6029,
+      0 8px 14px #51341f2e;
+    text-shadow: 0 1px 0 #fff0b052;
+  }
+}
