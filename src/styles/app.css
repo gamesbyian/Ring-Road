@@ -6579,3 +6579,17 @@ h1 {
     mix-blend-mode: multiply;
   }
 }
+
+
+/* V79 rear-architecture opacity correction.
+   The retained reference-layout capture shows the authored castle layer still
+   reading as translucent scaffolding. The late V75 rule left this layer at
+   0.34 opacity even though it now composites normally. Raise the existing
+   board-free decorative architecture to a solid miniature value without
+   moving or resizing any scene element. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.68;
+  }
+}
