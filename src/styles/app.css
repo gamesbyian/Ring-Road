@@ -6856,3 +6856,34 @@ h1 {
     bottom: -6.5%;
   }
 }
+
+
+/* V98 title-road wrap pass.
+   The canonical logo road visibly sweeps around the lower wordmark rather
+   than collapsing into a thin underline. Keep the existing live text and
+   slogan ribbon, but give the same decorative U-road enough height to expose
+   its side arcs at review scale. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    left: 0.55rem;
+    bottom: 0.18rem;
+    width: 91%;
+    height: 4.8rem;
+    border-width: 0.56rem;
+    border-radius: 0 0 54% 54% / 0 0 78% 78%;
+    transform: rotate(-4deg);
+  }
+
+  .reference-first-scene .title-road-mark::before {
+    left: 7%;
+    right: 7%;
+    bottom: 0.29rem;
+    height: 0.12rem;
+  }
+
+  .reference-first-scene .title-road-mark::after {
+    right: -0.5%;
+    bottom: 1.28rem;
+  }
+}
