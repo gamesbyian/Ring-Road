@@ -6779,3 +6779,19 @@ h1 {
     display: none;
   }
 }
+
+
+/* V93 gap-recess material pass.
+   The canonical cuts are deep but warm, reading as shadowed wood/stone rather
+   than near-black voids. Warm only the channel floor and its edge light; keep
+   the exact gap geometry, notch faces, ring colors, markers and transforms. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-channel-floor {
+    fill: #3a3430;
+    stroke: #b0936a66;
+    filter:
+      drop-shadow(0 4px 1.6px #2319145c)
+      drop-shadow(0 -0.7px 0 #f3dab52e);
+  }
+}
