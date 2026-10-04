@@ -6825,9 +6825,9 @@ h1 {
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
   .reference-first-scene .scene-board-plinth::before {
-    top: 49%;
+    top: 58%;
     width: 96%;
-    height: 64%;
+    height: 54%;
     border-width: 3px 3px 5px;
     border-radius: 0 0 49% 49% / 0 0 56% 56%;
     background-image:
@@ -6853,6 +6853,6 @@ h1 {
   }
 
   .reference-first-scene .arena-banner {
-    bottom: -8%;
+    bottom: -6.5%;
   }
 }
