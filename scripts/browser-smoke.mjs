@@ -457,7 +457,9 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         `${width}px Escape did not close modal`,
       );
       assert(
-        await cdp.evaluate("document.activeElement?.textContent === 'Guide'"),
+        await cdp.evaluate(
+          "document.activeElement?.matches('.reference-goal-guide') || document.activeElement?.getAttribute('aria-label') === 'Open guide'",
+        ),
         `${width}px modal did not restore focus to its trigger`,
       );
 
