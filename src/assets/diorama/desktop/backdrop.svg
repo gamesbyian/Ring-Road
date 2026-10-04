@@ -73,6 +73,21 @@
     <path d="M1305 573 1350 432l46 141Z"/>
   </g>
 
+  <!-- faceted distant conifers: small asymmetrical light/shade planes keep
+       these background silhouettes in the same toy-miniature language as the
+       foreground trees without increasing their footprint -->
+  <g fill="#6f9568" opacity=".56">
+    <path d="M78 432 78 562 55 562Z"/><path d="M150 416 150 570 124 570Z"/>
+    <path d="M251 448 251 548 233 548Z"/><path d="M336 440 336 552 316 552Z"/>
+    <path d="M1120 440 1120 548 1101 548Z"/><path d="M1254 418 1254 565 1228 565Z"/>
+    <path d="M1350 432 1350 573 1325 573Z"/>
+  </g>
+  <g fill="#214638" opacity=".5">
+    <path d="M78 432 122 562 78 562Z"/><path d="M150 416 198 570 150 570Z"/>
+    <path d="M336 440 373 552 336 552Z"/><path d="M1120 440 1157 548 1120 548Z"/>
+    <path d="M1254 418 1301 565 1254 565Z"/><path d="M1350 432 1396 573 1350 573Z"/>
+  </g>
+
   <path d="M0 745 C225 682 452 696 700 748 C950 690 1205 689 1440 742 V1000 H0Z" fill="#d1ad70"/>
   <path d="M0 833 C265 779 510 790 766 838 C1012 792 1240 794 1440 830 V1000 H0Z" fill="#b98d58"/>
   <path d="M0 902 C278 861 536 865 780 906 C1030 868 1248 870 1440 899 V1000 H0Z" fill="#9d744b" opacity=".55"/>
