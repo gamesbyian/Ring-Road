@@ -6027,3 +6027,26 @@ h1 {
     text-shadow: 0 1px 0 #fff0b052;
   }
 }
+
+
+/* V58 right-gate registration pass.
+   The reference's main arched castle gate sits behind the board near the
+   upper-right third, while the live gatehouse had drifted to the extreme edge
+   and mostly became a background slab behind the HUD. Pull it inward so its
+   arch, banner, and battlements participate in the same composition. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-gatehouse {
+    top: 5.5%;
+    right: 10.5%;
+    width: min(230px, 17dvmax);
+    height: 355px;
+  }
+
+  .reference-first-scene .reference-gate-banner {
+    left: 12%;
+    top: 18%;
+    width: 40px;
+    height: 126px;
+  }
+}
