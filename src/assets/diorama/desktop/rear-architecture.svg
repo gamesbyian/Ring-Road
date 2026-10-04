@@ -74,6 +74,26 @@
   </g>
   <path d="M517 420V316c0-47 31-85 73-85s73 38 73 85v104Z" fill="#7ba0bb" opacity=".8"/>
 
+  <!-- shallow voussoir blocks around the central arch give the opening the
+       chunky toy-stone framing visible in the reference without changing its
+       silhouette or registration -->
+  <g fill="#efd2a0" stroke="#8a603e" stroke-width="2" filter="url(#softShadow)">
+    <path d="M513 285 529 259 542 269 528 294Z"/>
+    <path d="M535 249 555 231 565 244 547 261Z"/>
+    <path d="M565 226 588 218 592 233 572 240Z"/>
+    <path d="M592 218 615 226 608 240 588 233Z"/>
+    <path d="M615 231 635 249 623 261 605 244Z"/>
+    <path d="M641 259 657 285 642 294 628 269Z"/>
+  </g>
+  <g fill="#fff0c9" opacity=".48">
+    <path d="M519 282 530 264 536 269 526 286Z"/>
+    <path d="M541 247 555 235 560 241 548 253Z"/>
+    <path d="M570 228 587 222 589 229 574 234Z"/>
+    <path d="M593 222 610 228 606 234 591 229Z"/>
+    <path d="M620 235 634 247 628 253 616 241Z"/>
+    <path d="M650 282 639 264 633 269 643 286Z"/>
+  </g>
+
   <g fill="#274764" opacity=".88">
     <path d="M77 245c0-27 12-46 27-46s27 19 27 46v72H77Z"/>
     <path d="M1049 245c0-27 12-46 27-46s27 19 27 46v72h-54Z"/>
