@@ -6320,3 +6320,41 @@ h1 {
     transition: none;
   }
 }
+
+
+/* V63 arena-masonry pass.
+   The foreground face of the arena still reads as one smooth tan pill. The
+   reference resolves that face into large sandstone blocks with visible
+   vertical joints and a lighter top course. Strengthen that existing front
+   face without changing board registration or gameplay geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth::before {
+    border-color: #85603f;
+    border-top-color: #efd5a6;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 8.1%,
+        #8a644329 8.1% 8.55%,
+        transparent 8.55% 16.2%
+      ),
+      linear-gradient(
+        180deg,
+        #edd2a3 0 13%,
+        #d9b17e 13% 52%,
+        #c09361 52% 78%,
+        #9f7049 78% 100%
+      );
+    background-blend-mode: soft-light, normal, normal;
+    box-shadow:
+      inset 0 9px 0 #f8e4bb62,
+      inset 0 -10px 14px #65462e21,
+      0 8px 12px #4d35232a;
+  }
+
+  .reference-first-scene .arena-banner {
+    filter: drop-shadow(0 3px 2px #4a33222f);
+  }
+}
