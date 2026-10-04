@@ -5901,3 +5901,19 @@ h1 {
     display: none;
   }
 }
+
+
+/* V54 foreground-architecture depth pass.
+   The foreground SVG is authored at 220px high, but a late reference-layout
+   override compressed it to at most 145px. That leaves a broad beige dead zone
+   below the board, while the supplied reference carries castle masonry,
+   stairs, banners, and foliage much farther up the frame. Let the authored
+   foreground use nearly its full height on large layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-foreground {
+    height: clamp(160px, 15dvmax, 220px);
+    opacity: 0.99;
+    filter: drop-shadow(0 -5px 9px #5c43252f);
+  }
+}
