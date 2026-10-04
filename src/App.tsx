@@ -60,7 +60,6 @@ export default function App() {
         <span className="title-road-mark" aria-hidden="true" />
         <span className="title-tagline">Align the gaps. Clear the road.</span>
       </div>
-      <button className="guide-button plaque-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
     </header>
   );
 
