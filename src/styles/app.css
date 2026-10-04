@@ -6236,3 +6236,16 @@ h1 {
     z-index: 5;
   }
 }
+
+
+/* V64 foreground-rise pass.
+   The retained frame still leaves a broad flat beige strip beneath the board.
+   The supplied reference brings the castle's masonry, stairs, banners, and
+   foliage much farther up behind the arena. Let the existing authored
+   foreground rise higher on large reference layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-foreground {
+    height: clamp(205px, 18dvmax, 270px);
+  }
+}
