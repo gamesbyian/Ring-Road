@@ -6610,3 +6610,22 @@ h1 {
     );
   }
 }
+
+
+/* V82 title-sun landmark pass.
+   The canonical wordmark places a warm sun behind the green mountain motif.
+   Reuse the mountain mark's otherwise-empty background layer so the landmark
+   gains that missing mass without new DOM or any text/layout change. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-mountain-mark {
+    background:
+      radial-gradient(
+        circle at 31% 34%,
+        #ffe27a 0 15px,
+        #f6bf35 16px 22px,
+        #e99b2526 23px 27px,
+        transparent 28px
+      );
+  }
+}
