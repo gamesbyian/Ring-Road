@@ -6795,3 +6795,23 @@ h1 {
       drop-shadow(0 -0.7px 0 #f3dab52e);
   }
 }
+
+
+/* V94 outer-support lip material pass.
+   The measured board silhouette is settled; only lift the exposed support
+   colors under the red ring toward the canonical sandstone/gold rim. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-base-depth {
+    fill: #b38b60;
+  }
+
+  .reference-first-scene .board-base-depth-low {
+    fill: #936b49;
+  }
+
+  .reference-first-scene .board-base-rim {
+    fill: #dcc299;
+    stroke: #806044;
+  }
+}
