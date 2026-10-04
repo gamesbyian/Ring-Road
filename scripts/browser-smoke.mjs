@@ -410,12 +410,15 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
 
     if (!mobile) {
       await cdp.evaluate("(() => { document.body.tabIndex = -1; document.body.focus(); })()");
-      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
-      await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
-      await waitFor(
-        async () => Boolean(await cdp.evaluate("document.activeElement?.textContent === 'Guide'")),
-        `${width}px keyboard Tab did not reach the Guide control`,
-      );
+      let guideReached = false;
+      for (let tabIndex = 0; tabIndex < 40 && !guideReached; tabIndex += 1) {
+        await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+        await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+        guideReached = Boolean(await cdp.evaluate(
+          "document.activeElement?.matches('.reference-goal-guide') || document.activeElement?.getAttribute('aria-label') === 'Open guide'",
+        ));
+      }
+      assert(guideReached, `${width}px keyboard Tab did not reach the Guide control`);
       const focusOutline = await cdp.evaluate(`(() => {
         const button = document.activeElement;
         if (!(button instanceof HTMLElement)) return null;
@@ -454,7 +457,9 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         `${width}px Escape did not close modal`,
       );
       assert(
-        await cdp.evaluate("document.activeElement?.textContent === 'Guide'"),
+        await cdp.evaluate(
+          "document.activeElement?.matches('.reference-goal-guide') || document.activeElement?.getAttribute('aria-label') === 'Open guide'",
+        ),
         `${width}px modal did not restore focus to its trigger`,
       );
 

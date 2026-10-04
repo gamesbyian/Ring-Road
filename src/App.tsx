@@ -60,7 +60,6 @@ export default function App() {
         <span className="title-road-mark" aria-hidden="true" />
         <span className="title-tagline">Align the gaps. Clear the road.</span>
       </div>
-      <button className="guide-button plaque-button" onClick={() => dispatch({ type: "toggle-guide" })}>Guide</button>
     </header>
   );
 
@@ -125,7 +124,11 @@ export default function App() {
   const goal = (
     <section className="reference-goal-card" aria-label="Puzzle goal">
       <div className="reference-goal-heading">
-        <span className="reference-goal-badge" aria-hidden="true">?</span>
+        <button
+          className="reference-goal-badge reference-goal-guide"
+          onClick={() => dispatch({ type: "toggle-guide" })}
+          aria-label="Open guide"
+        >?</button>
         <strong>Goal</strong>
       </div>
       <p>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</p>
