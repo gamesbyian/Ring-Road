@@ -6320,3 +6320,34 @@ h1 {
     transition: none;
   }
 }
+
+
+/* V67 reference-atmosphere underpainting.
+   Use the canonical binary concept itself only in a tightly clipped upper
+   scenic window, where it contains mountains/sky rather than live UI. This
+   adds the painterly distant depth the vector scaffold still cannot reproduce
+   without baking any board or control surfaces into the game. */
+.reference-scene-matte::before {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-scene-matte::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    display: block;
+    background:
+      url("../../docs/3d-ring-renderer-concept.jpg") 50% 50% / cover no-repeat;
+    clip-path: polygon(23% 0,81% 0,78% 27%,26% 27%);
+    opacity: 0.48;
+    filter: saturate(0.96) contrast(0.98) brightness(1.03);
+    -webkit-mask-image:
+      linear-gradient(180deg, #000 0 52%, #000c 67%, #0005 82%, transparent 100%);
+    mask-image:
+      linear-gradient(180deg, #000 0 52%, #000c 67%, #0005 82%, transparent 100%);
+    content: "";
+    pointer-events: none;
+  }
+}
