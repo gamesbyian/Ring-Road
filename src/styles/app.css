@@ -6405,3 +6405,16 @@ h1 {
     transform: translate(-50%, -50%) rotateX(49deg);
   }
 }
+
+
+/* V70.1 measured scale finish.
+   After the registration correction, the red-ring bbox is centered within
+   0.1% of the reference and matches projected height almost exactly. Its
+   normalized width remains ~0.62% of the viewport narrower than target, so
+   recover only that final few pixels. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .board-frame {
+    width: min(61dvmax, 868px);
+  }
+}
