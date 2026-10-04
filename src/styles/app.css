@@ -6138,3 +6138,52 @@ h1 {
 .reference-first-scene .ring-control button:disabled .rotation-glyph::after {
   border-left-color: #6d6f72;
 }
+
+
+/* V61 low-poly conifer pass.
+   The far-right scenery still reads as flat stacked triangles. Build the same
+   decorative tree props from faceted, overlapping evergreen tiers so they
+   better match the chunky miniature conifers in the supplied reference. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-tree {
+    width: 54px;
+    height: 86px;
+    border: 0;
+    clip-path: polygon(50% 0,100% 68%,72% 68%,100% 100%,0 100%,28% 68%,0 68%);
+    background:
+      linear-gradient(112deg, #6f8d58 0 38%, #3e6749 39% 68%, #244f42 69% 100%);
+    filter:
+      drop-shadow(8px 10px 0 #2e46343d)
+      drop-shadow(0 9px 7px #304b3733);
+    transform-origin: 50% 100%;
+  }
+
+  .reference-first-scene .reference-tree::before {
+    position: absolute;
+    left: 9px;
+    top: 20px;
+    width: 36px;
+    height: 50px;
+    border: 0;
+    clip-path: polygon(50% 0,100% 100%,0 100%);
+    background: linear-gradient(105deg, #78985e 0 45%, #456e4e 46% 72%, #2c5745 73%);
+    content: "";
+  }
+
+  .reference-first-scene .reference-tree::after {
+    position: absolute;
+    left: 23px;
+    bottom: -10px;
+    width: 9px;
+    height: 18px;
+    border: 0;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #7f5a3d, #5d422f);
+    content: "";
+  }
+
+  .reference-first-scene .reference-tree-a { transform: scale(0.96); }
+  .reference-first-scene .reference-tree-b { transform: scale(1.12); }
+  .reference-first-scene .reference-tree-c { transform: scale(1.18); }
+}
