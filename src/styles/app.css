@@ -7017,3 +7017,17 @@ h1 {
     display: none;
   }
 }
+
+
+/* V110 duplicate-right-gate cleanup.
+   With the authored rear castle now solid, the older CSS gatehouse behind the
+   upper-right HUD reads as another large rectangular overlay. Retire that
+   duplicate wall/banner pair on the large reference view while keeping the
+   authored right tower/arches and HUD untouched. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-gatehouse,
+  .reference-first-scene .reference-gate-banner {
+    display: none;
+  }
+}
