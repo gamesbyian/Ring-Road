@@ -6657,3 +6657,24 @@ h1 {
     width: 54px;
   }
 }
+
+
+/* V84 rear-castle solidity pass.
+   The latest retained frame still leaves the upper crenellated wall and arches
+   visibly translucent versus the canonical miniature. Strengthen the existing
+   board-free authored layer one final step while preserving its registration
+   and keeping the board as the sharpest focal object. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.82;
+  }
+
+  .reference-first-scene .scene-art-rear img {
+    filter:
+      saturate(0.96)
+      contrast(1.035)
+      brightness(1.005)
+      drop-shadow(0 14px 22px #4b352436);
+  }
+}
