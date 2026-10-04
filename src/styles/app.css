@@ -6418,3 +6418,27 @@ h1 {
     width: min(61dvmax, 868px);
   }
 }
+
+
+/* V73 title-sign material pass.
+   The title silhouette and registration are already close to the reference,
+   but the face still reads as a smooth CSS card. Reuse the authored parchment
+   grain to give it the lightly mottled printed-board surface visible in the
+   canonical miniature without changing its footprint or accessible content. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    background-image:
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(105deg, #fff7df 0 18%, #ead3a5 18% 82%, #d3ae73 82% 100%);
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
+    box-shadow:
+      inset 0 2px 0 #fff,
+      inset 0 -3px 0 #a97c4d,
+      inset 8px 0 14px #fff0c72e,
+      inset -8px 0 14px #76502a1f,
+      0 7px 0 #805a35,
+      0 16px 28px #6247213d;
+  }
+}
