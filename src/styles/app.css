@@ -6943,3 +6943,63 @@ h1 {
     pointer-events: none;
   }
 }
+
+
+/* V103 waterfall-material pass.
+   Proportion is already settled. Replace the remaining glass-ribbon read with
+   irregular white-water streaks and a slightly broken silhouette, preserving
+   the existing edge positions and decorative-only role. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    clip-path: polygon(
+      18% 0, 77% 2%, 86% 14%, 80% 28%, 94% 43%, 83% 59%,
+      97% 76%, 89% 100%, 8% 100%, 16% 84%, 4% 66%, 14% 48%,
+      5% 31%, 15% 16%
+    );
+    background:
+      radial-gradient(ellipse at 30% 18%, #f5ffffb5 0 5%, transparent 13%),
+      radial-gradient(ellipse at 67% 52%, #ecfbff9c 0 4%, transparent 12%),
+      radial-gradient(ellipse at 38% 78%, #ffffff90 0 5%, transparent 13%),
+      linear-gradient(
+        90deg,
+        #2d87b700 0 5%,
+        #318fbecc 7% 20%,
+        #bfe9f2d9 21% 30%,
+        #4aa7d0df 31% 48%,
+        #effffff0 49% 57%,
+        #62b3d6df 58% 75%,
+        #2d88b7c9 76% 93%,
+        #277aa500 95% 100%
+      );
+    opacity: 0.9;
+    filter:
+      drop-shadow(0 6px 7px #245f7744)
+      saturate(1.08)
+      contrast(1.07)
+      brightness(1.015);
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    inset: 2% 8% 6%;
+    border-radius: 38%;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        transparent 0 14px,
+        #f2ffff9c 14px 17px,
+        transparent 17px 31px,
+        #bfeef68a 31px 34px,
+        transparent 34px 48px
+      );
+    opacity: 0.74;
+  }
+
+  .reference-first-scene .reference-waterfall::after {
+    width: 140%;
+    height: 31px;
+    background:
+      radial-gradient(ellipse, #f4ffffc4 0 18%, #9bdce98c 32%, #4097bd4f 52%, transparent 73%);
+    filter: blur(5px);
+  }
+}
