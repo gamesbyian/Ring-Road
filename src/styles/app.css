@@ -7003,3 +7003,17 @@ h1 {
     filter: blur(5px);
   }
 }
+
+
+/* V108 duplicate-central-gate cleanup.
+   The authored rear architecture is now solid and dimensional enough to own
+   the castle center. The older CSS central-gate prop has become a second,
+   rectangular layer that reads as translucent construction scaffolding in the
+   retained frame. Retire only that duplicate prop on the large reference view. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-central-gate,
+  .reference-first-scene .reference-central-gate-banner {
+    display: none;
+  }
+}
