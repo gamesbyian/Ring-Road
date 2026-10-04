@@ -6815,3 +6815,44 @@ h1 {
     stroke: #806044;
   }
 }
+
+
+/* V95 arena-drum silhouette pass.
+   The canonical board sits on a deep cylindrical sandstone monument whose
+   front wall remains visible below the rings. The live plinth body is still
+   compressed into a thin lip. Deepen only the decorative plinth face while
+   preserving the measured live board position and size. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth::before {
+    top: 49%;
+    width: 96%;
+    height: 64%;
+    border-width: 3px 3px 5px;
+    border-radius: 0 0 49% 49% / 0 0 56% 56%;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 28px,
+        #815b3b24 28px 31px,
+        transparent 31px 59px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 6.8%,
+        #7b553735 6.8% 7.25%,
+        transparent 7.25% 13.6%
+      ),
+      linear-gradient(180deg, #efd6aa, #d6ae78 54%, #a9784c 100%);
+    background-blend-mode: soft-light, normal, normal, normal;
+    box-shadow:
+      inset 0 10px 12px #fff4cf55,
+      inset 0 -12px 15px #5b3c2a38,
+      0 3px 0 #68483145;
+  }
+
+  .reference-first-scene .arena-banner {
+    bottom: -8%;
+  }
+}
