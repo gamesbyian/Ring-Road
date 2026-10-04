@@ -6728,3 +6728,43 @@ h1 {
     transform: rotate(0.35deg);
   }
 }
+
+
+/* V87 arena-banner visibility pass.
+   The canonical arena front carries a clear repeated blue/gold flag rhythm.
+   The live scene already has four authored plinth banners in the right places,
+   but the retained 1440×1000 frame reduces them to tiny slivers. Enlarge those
+   existing decorative flags only, keeping their positions and the board/plinth
+   registration untouched. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .arena-banner {
+    bottom: 1.8%;
+    width: 7.4%;
+    height: 17.5%;
+    opacity: 1;
+    box-shadow:
+      inset 0 1px 0 #ffffff38,
+      inset 5px 0 7px #ffffff12,
+      inset -5px 0 7px #1327431f,
+      0 4px 5px #49311f38;
+  }
+
+  .reference-first-scene .arena-banner::after {
+    width: 28%;
+  }
+}
+
+
+/* V87.1 retained-screenshot correction.
+   Larger flags alone stayed hidden behind the live tabletop. Hang the same
+   four flags farther down the decorative front fascia so their cloth bodies,
+   not just their tips, survive beneath the board as they do in the reference. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .arena-banner {
+    bottom: -4.5%;
+    width: 7.8%;
+    height: 22%;
+  }
+}
