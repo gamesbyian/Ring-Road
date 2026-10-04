@@ -6708,3 +6708,23 @@ h1 {
     filter: drop-shadow(0 8px 7px #48331f32);
   }
 }
+
+
+/* V86 puzzle-card paper pass.
+   Keep the Previous/Next controls fully visible and focusable, but pull the
+   navigation plaque away from a polished rounded app-card silhouette toward
+   the slightly skewed cut-paper piece in the canonical reference. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .puzzle-plaque {
+    border-radius: 9px 12px 8px 11px;
+    border-bottom-width: 3px;
+    box-shadow:
+      inset 0 2px 0 #fff8,
+      inset 5px 0 9px #fff0cb22,
+      inset -5px 0 9px #72502d17,
+      0 4px 0 #875f38,
+      0 11px 20px #4e3a2334;
+    transform: rotate(0.35deg);
+  }
+}
