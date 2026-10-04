@@ -6815,3 +6815,23 @@ h1 {
     stroke: #806044;
   }
 }
+
+
+/* V95 rear-castle solidity pass.
+   The authored rear architecture still composites at 0.82 opacity in the
+   retained frame. Lift only that board-free scenic layer toward solid
+   miniature masonry while keeping every castle and board coordinate fixed. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.94;
+  }
+
+  .reference-first-scene .scene-art-rear img {
+    filter:
+      saturate(0.98)
+      contrast(1.075)
+      brightness(1.0)
+      drop-shadow(0 14px 22px #4b352442);
+  }
+}
