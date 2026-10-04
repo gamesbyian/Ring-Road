@@ -41,17 +41,17 @@
   <g filter="url(#shadow)" stroke="#68492f" stroke-width="3">
     <path d="M548 104 612 88v132h-64Z" fill="#8b623f"/>
     <path d="M892 104 828 88v132h64Z" fill="#745036"/>
-    <path d="M612 88h216l-14 27H626Z" fill="#6f4c34"/>
+    <path d="M635 88h170l-12 27H647Z" fill="#6f4c34"/>
   </g>
 
   <g fill="#9c7448" stroke="#68492f" stroke-width="3" filter="url(#shadow)">
     <path d="M568 89h304v131H568Z"/><path d="M612 73h216v147H612Z"/>
   </g>
   <g fill="#f0d4a5" stroke="#89613d" stroke-width="3">
-    <path d="M604 116h232v23H604Z"/><path d="M588 145h264v25H588Z"/><path d="M570 176h300v28H570Z"/>
+    <path d="M629 116h182v23H629Z"/><path d="M617 145h206v25H617Z"/><path d="M603 176h234v28H603Z"/>
   </g>
   <g fill="#b58653" opacity=".55">
-    <path d="M613 137h215v8H613zM590 168h260v8H590zM572 201h296v8H572z"/>
+    <path d="M633 137h174v8H633zM619 168h202v8H619zM605 201h230v8H605z"/>
   </g>
 
   <!-- stair-flanking monument piers -->
