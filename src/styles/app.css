@@ -6442,3 +6442,48 @@ h1 {
       0 16px 28px #6247213d;
   }
 }
+
+
+/* V74 HUD paper-material pass.
+   The large cream HUD placards still read cleaner and flatter than the
+   canonical miniature. Give the three reference-facing paper cards the same
+   restrained authored parchment tooth as the title without altering layout,
+   dimensions, copy, controls, or focus behavior. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-moves-card {
+    background-image:
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(180deg, #fff6e6f2, #e2c79cf5);
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
+    box-shadow:
+      inset 0 2px 0 #fff9,
+      inset 5px 0 10px #fff1d42b,
+      inset -5px 0 10px #79563018,
+      0 7px 0 #906a42,
+      0 18px 32px #48331f3b;
+  }
+
+  .reference-first-scene .puzzle-plaque {
+    background-image:
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(180deg, #f7e5bd, #d5b278);
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
+  }
+
+  .reference-first-scene .reference-goal-card {
+    background-image:
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(180deg, #fff6e7f5, #e3caa4f4);
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
+    box-shadow:
+      inset 0 1px 0 #fff8,
+      inset 7px 0 12px #fff0cf28,
+      inset -7px 0 12px #76502b18,
+      0 6px 0 #9a7349,
+      0 16px 36px #3f2c1c3d;
+  }
+}
