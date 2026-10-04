@@ -6565,3 +6565,17 @@ h1 {
       brightness(0.99);
   }
 }
+
+
+/* V78 ring-surface grain pass.
+   The canonical focal board has visibly tactile painted/card stock surfaces.
+   The live renderer already moves an authored grain stroke with every ring;
+   make that existing material contribution survive at 1440×1000 without
+   changing geometry, color identity, rotation, markers, gaps, or hit targets. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-paint-grain {
+    opacity: 0.48;
+    mix-blend-mode: multiply;
+  }
+}
