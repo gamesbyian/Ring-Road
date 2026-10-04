@@ -6547,3 +6547,21 @@ h1 {
       0 -2px 0 #efd39c4d;
   }
 }
+
+
+/* V77 scenic-contrast pass.
+   Direct comparison with the canonical concept shows the live board is already
+   closely registered, while the distant world is still substantially more
+   washed out. Strengthen only the isolated, board/HUD-free scenic matte so the
+   mountains, water, trees, and castle atmosphere carry the same miniature
+   weight without introducing ghost gameplay or text. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-scene-matte {
+    opacity: 0.88;
+    filter:
+      saturate(1.16)
+      contrast(1.075)
+      brightness(0.99);
+  }
+}
