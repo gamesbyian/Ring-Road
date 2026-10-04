@@ -6629,3 +6629,28 @@ h1 {
       );
   }
 }
+
+
+/* V83 waterfall-presence pass.
+   The canonical composition uses saturated side waterfalls as strong cool
+   anchors. In the retained live frame the existing falls are so translucent
+   they read as glass bands. Strengthen only those decorative edge elements. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    opacity: 0.82;
+    filter:
+      drop-shadow(0 7px 9px #245f7747)
+      saturate(1.08)
+      contrast(1.06)
+      brightness(1.01);
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    opacity: 0.68;
+  }
+
+  .reference-first-scene .reference-waterfall::after {
+    background: radial-gradient(ellipse, #e8fbff9e 0 24%, #4aa3ca62 46%, transparent 72%);
+  }
+}
