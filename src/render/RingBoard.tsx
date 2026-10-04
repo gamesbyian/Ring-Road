@@ -172,7 +172,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               </g>
             ))}
             <pattern id="paint-grain-pattern" width="64" height="64" patternUnits="userSpaceOnUse">
-              <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.22" />
+              <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.34" />
             </pattern>
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#bfa1ee" />
