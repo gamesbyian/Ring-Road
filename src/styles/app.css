@@ -5959,3 +5959,47 @@ h1 {
       linear-gradient(108deg, #f6e1b7 0 28%, #dfbb86 62%, #bd8a58 100%);
   }
 }
+
+
+/* V56 paper-material pass.
+   The retained frame's regular white-dot pattern makes the HUD read as printed
+   stationery. The reference uses mottled parchment/card stock instead. Keep
+   the existing authored grain tile and gradients, but retire the repeating
+   polka-dot overlays on the large reference composition. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    background-image:
+      radial-gradient(circle at 83% 22%, #efb640 0 7.5%, transparent 8%),
+      linear-gradient(145deg, transparent 0 58%, #56785b 58% 66%, transparent 66%),
+      linear-gradient(36deg, transparent 0 53%, #385e4b 53% 66%, transparent 66%),
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(180deg, #fff6e4 0%, #ecd5ae 66%, #d3ad78 100%);
+    background-position:
+      0 0,
+      79% 21%,
+      89% 31%,
+      0 0,
+      0 0;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    background-size:
+      auto,
+      95px 57px,
+      78px 47px,
+      64px 64px,
+      100% 100%;
+    background-blend-mode: normal, normal, normal, multiply, normal;
+  }
+
+  .reference-first-scene .puzzle-plaque,
+  .reference-moves-card,
+  .reference-goal-card,
+  .reference-first-scene .ring-control {
+    background-image:
+      url("../assets/diorama/textures/parchment-grain.png"),
+      linear-gradient(180deg, #fff3dc 0%, #ead7b9 100%);
+    background-blend-mode: multiply, normal;
+    background-repeat: repeat, no-repeat;
+    background-size: 64px 64px, 100% 100%;
+  }
+}
