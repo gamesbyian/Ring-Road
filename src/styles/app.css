@@ -6913,3 +6913,33 @@ h1 {
     background-position: 0 0, 0 0;
   }
 }
+
+
+/* V101.1 title-diamond landmark.
+   The large reference layout already suppresses the eyebrow visually. Reuse
+   that semantic span as the small orange diamond above the wordmark while
+   keeping its text in the accessibility tree. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque .eyebrow {
+    position: absolute;
+    z-index: 4;
+    top: 0.72rem;
+    left: 61%;
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    overflow: hidden;
+    color: transparent;
+    background: linear-gradient(135deg, #f0a32f, #d77b23);
+    box-shadow:
+      inset 1px 1px 0 #ffd27a,
+      0 2px 1px #80502740;
+    font-size: 0;
+    line-height: 0;
+    letter-spacing: 0;
+    transform: rotate(45deg);
+    pointer-events: none;
+  }
+}
