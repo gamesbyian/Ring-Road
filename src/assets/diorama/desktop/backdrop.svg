@@ -32,20 +32,28 @@
     <ellipse cx="986" cy="92" rx="66" ry="22"/><ellipse cx="1046" cy="86" rx="44" ry="18"/>
   </g>
 
-  <g fill="url(#mountainFar)" opacity=".8">
+  <g fill="url(#mountainFar)" opacity=".92">
     <path d="M0 386 174 170 320 386Z"/>
     <path d="M185 386 405 92 602 386Z"/>
     <path d="M495 386 695 144 856 386Z"/>
     <path d="M742 386 970 101 1160 386Z"/>
     <path d="M1000 386 1260 118 1440 386Z"/>
   </g>
-  <g fill="url(#mountainNear)" opacity=".5">
+  <g fill="url(#mountainNear)" opacity=".68">
     <path d="M0 420 245 245 430 420Z"/>
     <path d="M845 420 1100 230 1325 420Z"/>
     <path d="M1120 420 1375 262 1440 420Z"/>
   </g>
 
-  <g fill="#f2e9df" opacity=".5">
+  <g opacity=".48">
+    <path d="M174 170 250 386 320 386Z" fill="#6f6777"/>
+    <path d="M405 92 492 386 602 386Z" fill="#70687a"/>
+    <path d="M695 144 776 386 856 386Z" fill="#726b79"/>
+    <path d="M970 101 1068 386 1160 386Z" fill="#6e6675"/>
+    <path d="M1260 118 1350 386 1440 386Z" fill="#71697a"/>
+  </g>
+
+  <g fill="#eadfd8" opacity=".62">
     <path d="M405 92 455 157 420 147 388 183Z"/>
     <path d="M970 101 1018 159 978 147 946 182Z"/>
     <path d="M1260 118 1303 166 1268 156 1236 187Z"/>
