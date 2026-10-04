@@ -200,6 +200,18 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
           <ellipse className="board-cast-shadow" cx={CENTER_X + 4} cy={CENTER_Y + 31} rx="204" ry="189" />
           <circle className="board-base-depth board-base-depth-low" cx={CENTER_X} cy={CENTER_Y + 10} r="208" />
           <circle className="board-base-depth" cx={CENTER_X} cy={CENTER_Y + 6} r="208" />
+          <circle
+            aria-hidden="true"
+            cx={CENTER_X}
+            cy={CENTER_Y + 12}
+            r="205"
+            fill="none"
+            stroke="#6f5138"
+            strokeWidth="5"
+            strokeDasharray="7 5"
+            strokeLinecap="butt"
+            opacity="0.58"
+          />
           <circle className="board-base-rim" cx={CENTER_X} cy={CENTER_Y + 4} r="208" />
           <circle className="board-base" cx={CENTER_X} cy={CENTER_Y} r="202" />
           <circle className="board-base-blocks" cx={CENTER_X} cy={CENTER_Y - 1} r="197" />
