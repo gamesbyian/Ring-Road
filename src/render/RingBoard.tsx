@@ -181,9 +181,9 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
             </radialGradient>
             <radialGradient id="ball-material" cx="30%" cy="22%">
               <stop offset="0" stopColor="#ffffff" />
-              <stop offset="0.24" stopColor="#fffdf4" />
-              <stop offset="0.62" stopColor="#e7dcc6" />
-              <stop offset="1" stopColor="#9f8f78" />
+              <stop offset="0.28" stopColor="#fffefe" />
+              <stop offset="0.66" stopColor="#e6dfeb" />
+              <stop offset="1" stopColor="#92889f" />
             </radialGradient>
             <radialGradient id="marker-recess" cx="38%" cy="32%">
               <stop offset="0" stopColor="#2b241d" />
@@ -215,8 +215,19 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
             aria-hidden="true"
             points="210,187 213,197 220.5,189.8 218.5,200.5 228.2,197.5 220.5,205 231,208 220.5,211 228.2,218.5 218.5,215.5 220.5,226.2 213,219 210,229 207,219 199.5,226.2 201.5,215.5 191.8,218.5 199.5,211 189,208 199.5,205 191.8,197.5 201.5,200.5 199.5,189.8 207,197"
           />
-          <circle className={`ball ${completed ? "ball-fired" : ""}`} cx={CENTER_X} cy={CENTER_Y - 6} r="15" />
-          <circle className={`ball-shine ${completed ? "ball-fired" : ""}`} cx={CENTER_X - 5} cy={CENTER_Y - 11} r="4" />
+          <ellipse
+            className={`ball ${completed ? "ball-fired" : ""}`}
+            cx={CENTER_X}
+            cy={CENTER_Y - 6}
+            rx="10.5"
+            ry="14"
+          />
+          <circle
+            className={`ball-shine ${completed ? "ball-fired" : ""}`}
+            cx={CENTER_X - 3.5}
+            cy={CENTER_Y - 11}
+            r="2.6"
+          />
         </svg>
         <span className={`completion-halo ${completed ? "completion-halo-active" : ""}`} aria-hidden="true" />
         <button className="hub-button" onClick={onFire} disabled={!canFire || completed} aria-label={fireLabel}>
