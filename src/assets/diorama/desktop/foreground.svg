@@ -77,6 +77,25 @@
     <circle cx="1143" cy="195" r="23"/><circle cx="1172" cy="200" r="18"/>
   </g>
 
+  <!-- faceted highlights and trunks keep the foreground trees toy-like rather
+       than reading as flat silhouette triangles -->
+  <g fill="#91ad72" opacity=".55">
+    <path d="M73 77 73 220 34 220Z"/><path d="M145 111 145 220 112 220Z"/>
+    <path d="M218 135 218 220 192 220Z"/><path d="M286 149 286 220 265 220Z"/>
+    <path d="M1152 148 1152 220 1132 220Z"/><path d="M1222 134 1222 220 1196 220Z"/>
+    <path d="M1318 111 1318 220 1286 220Z"/><path d="M1413 76 1413 220 1374 220Z"/>
+  </g>
+  <g fill="#26483b" opacity=".52">
+    <path d="M73 77 147 220 73 220Z"/><path d="M145 111 207 220 145 220Z"/>
+    <path d="M1222 134 1271 220 1222 220Z"/><path d="M1318 111 1380 220 1318 220Z"/>
+  </g>
+  <g fill="#6c4b34" opacity=".95">
+    <rect x="68" y="198" width="10" height="22" rx="2"/>
+    <rect x="140" y="201" width="9" height="19" rx="2"/>
+    <rect x="1218" y="199" width="9" height="21" rx="2"/>
+    <rect x="1314" y="198" width="10" height="22" rx="2"/>
+  </g>
+
   <!-- small stone footings around the central stairs -->
   <g fill="#d7b27e" stroke="#765035" stroke-width="3">
     <path d="M465 188h72v32h-72Z"/><path d="M903 188h72v32h-72Z"/>
