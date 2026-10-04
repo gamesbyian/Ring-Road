@@ -32,6 +32,21 @@
     <path d="M725 183h140v-42h-27v-28h-30v28h-27v-28h-30v28h-26Z" fill="#e7c68f"/>
   </g>
 
+  <!-- battlement cap thickness: dark lower planes make the castle read as
+       stacked miniature masonry instead of a flat cutout silhouette -->
+  <g fill="#9c7047" opacity=".76" stroke="#785437" stroke-width="2">
+    <path d="M22 138h112v15H22Z"/>
+    <path d="M1046 138h112v15h-112Z"/>
+    <path d="M193 253h794v18H193Z"/>
+    <path d="M315 183h140v15H315Z"/>
+    <path d="M725 183h140v15H725Z"/>
+  </g>
+  <g fill="#f6dfb1" opacity=".62">
+    <path d="M27 138h102v5H27Z"/><path d="M1051 138h102v5h-102Z"/>
+    <path d="M202 253h776v6H202Z"/>
+    <path d="M321 183h128v5H321Z"/><path d="M731 183h128v5H731Z"/>
+  </g>
+
   <g opacity=".32" stroke="#8b6644" stroke-width="3">
     <path d="M18 183h122M18 238h122M18 293h122M18 348h122"/>
     <path d="M1040 183h122M1040 238h122M1040 293h122M1040 348h122"/>
