@@ -175,9 +175,9 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               <image href={DIORAMA_TEXTURES.paint.src} width="64" height="64" opacity="0.34" />
             </pattern>
             <linearGradient id="gap-floor-material" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0" stopColor="#8b735a" />
-              <stop offset="0.32" stopColor="#6f5a47" />
-              <stop offset="1" stopColor="#4b3b31" />
+              <stop offset="0" stopColor="#b39168" />
+              <stop offset="0.34" stopColor="#927151" />
+              <stop offset="1" stopColor="#6c503d" />
             </linearGradient>
             <radialGradient id="hub-material" cx="35%" cy="25%">
               <stop offset="0" stopColor="#bfa1ee" />
