@@ -100,6 +100,20 @@
   <path d="M0 500 C145 420 290 425 432 506 C565 408 720 414 862 514 C1020 404 1200 418 1440 506 V1000 H0Z" fill="url(#grass)"/>
   <path d="M0 616 C210 564 420 568 662 628 C912 565 1190 573 1440 626 V1000 H0Z" fill="#78935f" opacity=".72"/>
 
+  <!-- V170 right-side castle courtyard. -->
+  <g opacity=".94">
+    <path d="M1045 430 C1150 402 1275 394 1440 414 V724 C1330 702 1210 688 1114 696 C1080 618 1058 525 1045 430Z"
+          fill="#d7bd91" stroke="#8d6847" stroke-width="3"/>
+    <path d="M1084 466 C1190 445 1312 442 1440 454" fill="none" stroke="#f3dfba" stroke-width="5" opacity=".58"/>
+    <path d="M1074 518 C1192 499 1315 499 1440 511" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".32"/>
+    <path d="M1089 575 C1204 561 1323 563 1440 578" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".3"/>
+    <path d="M1110 635 C1217 626 1328 631 1440 648" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".28"/>
+    <g stroke="#96704c" stroke-width="2.5" opacity=".32">
+      <path d="M1160 410 1118 696"/><path d="M1244 400 1228 692"/>
+      <path d="M1328 402 1344 704"/><path d="M1404 410 1440 690"/>
+    </g>
+  </g>
+
   <g fill="#315f4d" opacity=".95">
     <path d="M35 562 78 432l44 130Z"/><path d="M104 570 150 416l48 154Z"/>
     <path d="M218 548 251 448l34 100Z"/><path d="M300 552 336 440l37 112Z"/>
@@ -120,6 +134,20 @@
     <path d="M78 432 122 562 78 562Z"/><path d="M150 416 198 570 150 570Z"/>
     <path d="M336 440 373 552 336 552Z"/><path d="M1120 440 1157 548 1120 548Z"/>
     <path d="M1254 418 1301 565 1254 565Z"/><path d="M1350 432 1396 573 1350 573Z"/>
+  </g>
+
+  <!-- V170 crystal pedestal landmark in the right courtyard. -->
+  <g filter="url(#softShadow)" stroke="#7c583a" stroke-width="3">
+    <path d="M1280 520h54V374h-54Z" fill="#c69a67"/>
+    <path d="M1272 386h70v22h-70Z" fill="#e3c18d"/>
+    <path d="M1277 449h60M1277 488h60" fill="none" stroke="#9a7149" stroke-width="2" opacity=".55"/>
+    <path d="M1287 520h40l7 18h-54Z" fill="#a8794e"/>
+  </g>
+  <g stroke="#986329" stroke-width="2" filter="url(#softShadow)">
+    <path d="M1307 318 1328 359 1307 385 1286 359Z" fill="#efbd43"/>
+    <path d="M1307 318 1307 385 1286 359Z" fill="#ffd96a" opacity=".78"/>
+    <path d="M1307 318 1328 359 1307 385Z" fill="#c9852c" opacity=".72"/>
+    <path d="M1307 329 1316 357 1307 371 1298 357Z" fill="#fff4bd" opacity=".72"/>
   </g>
 
   <!-- V150 tiered midground conifers. Reuse one faceted three-tier tree
