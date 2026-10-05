@@ -17,12 +17,12 @@
     </filter>
   </defs>
 
-  <path d="M250 108 Q720 -18 1190 108 L1240 220H200Z" fill="#d2ad78" stroke="#795438" stroke-width="4"/>
-  <path d="M205 154 Q720 35 1235 154 L1280 220H160Z" fill="url(#stone)" stroke="#795438" stroke-width="4"/>
+  <path d="M390 148 Q720 78 1050 148 L1110 220H330Z" fill="#d2ad78" stroke="#795438" stroke-width="4"/>
+  <path d="M335 180 Q720 108 1105 180 L1160 220H280Z" fill="url(#stone)" stroke="#795438" stroke-width="4"/>
 
   <g opacity=".52" stroke="#765438" stroke-width="3">
-    <path d="M190 143Q720 66 1250 143"/><path d="M168 182Q720 103 1272 182"/>
-    <path d="M245 128v92M360 103v117M468 84v136M972 84v136M1080 103v117M1195 128v92"/>
+    <path d="M375 163Q720 101 1065 163"/><path d="M320 195Q720 136 1120 195"/>
+    <path d="M420 155v65M520 132v88M920 132v88M1020 155v65"/>
   </g>
 
   <!-- inset moat/shadow channels break up the broad sandstone apron and
