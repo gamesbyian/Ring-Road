@@ -7777,3 +7777,17 @@ h1 {
     background-repeat: repeat, repeat, no-repeat;
   }
 }
+
+
+/* V167 scenic-matte recovery pass.
+   The matte now sits correctly beneath the authored rear architecture, so it
+   can carry slightly more of the canonical painterly distance without glazing
+   over the castle. Restore only a modest amount of opacity; preserve all
+   scenic geometry, stacking, HUD, gameplay and compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-backdrop .reference-scene-matte {
+    opacity: 0.56;
+    filter: saturate(1.04) contrast(1.02) brightness(1.01);
+  }
+}
