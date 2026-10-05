@@ -7694,3 +7694,17 @@ h1 {
       drop-shadow(0 14px 20px #4b35243b);
   }
 }
+
+
+/* V161 rear-castle registration pass.
+   Direct upper-scene comparison shows the authored castle spread too wide:
+   its outer towers sit near the viewport edges while the canonical banner
+   tower and parapets cluster much closer behind the board. Tighten and lift
+   only the authored rear architecture; preserve board/HUD/game geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-rear {
+    top: 1%;
+    width: min(70dvmax, 1000px);
+  }
+}

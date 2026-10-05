@@ -58,13 +58,11 @@
   <g fill="url(#roof)" stroke="#6b4c33" stroke-width="4">
     <path d="M30 83 78 18l48 65Z"/>
     <path d="M1054 83 1102 18l48 65Z"/>
-    <path d="M335 143 385 78l50 65Z"/>
-    <path d="M745 143 795 78l50 65Z"/>
   </g>
 
   <g fill="#f4c74a" stroke="#8d602c" stroke-width="2">
-    <path d="M78 18v-25M1102 18v-25M385 78V48M795 78V48"/>
-    <path d="M78-7h34l-11 12 11 12H78ZM1102-7h-34l11 12-11 12h34ZM385 48h28l-9 10 9 10h-28ZM795 48h-28l9 10-9 10h28Z"/>
+    <path d="M78 18v-25M1102 18v-25"/>
+    <path d="M78-7h34l-11 12 11 12H78ZM1102-7h-34l11 12-11 12h34Z"/>
   </g>
 
   <g fill="url(#arch)" stroke="#6b4c33" stroke-width="4">
