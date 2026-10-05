@@ -226,24 +226,24 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
               />
             ))}
           </g>
-          <circle className="hub" cx={CENTER_X} cy={CENTER_Y} r="25" />
+          <circle className="hub" cx={CENTER_X} cy={CENTER_Y} r="22.5" />
           <polygon
             className="hub-sun"
             aria-hidden="true"
-            points="210,187 213,197 220.5,189.8 218.5,200.5 228.2,197.5 220.5,205 231,208 220.5,211 228.2,218.5 218.5,215.5 220.5,226.2 213,219 210,229 207,219 199.5,226.2 201.5,215.5 191.8,218.5 199.5,211 189,208 199.5,205 191.8,197.5 201.5,200.5 199.5,189.8 207,197"
+            points="210,189 214.6,203.4 229,208 214.6,212.6 210,227 205.4,212.6 191,208 205.4,203.4"
           />
           <ellipse
             className={`ball ${completed ? "ball-fired" : ""}`}
             cx={CENTER_X}
             cy={CENTER_Y - 6}
-            rx="10.5"
-            ry="14"
+            rx="9.5"
+            ry="12.5"
           />
           <circle
             className={`ball-shine ${completed ? "ball-fired" : ""}`}
-            cx={CENTER_X - 3.5}
-            cy={CENTER_Y - 11}
-            r="2.6"
+            cx={CENTER_X - 3.2}
+            cy={CENTER_Y - 10}
+            r="2.3"
           />
         </svg>
         <span className={`completion-halo ${completed ? "completion-halo-active" : ""}`} aria-hidden="true" />
