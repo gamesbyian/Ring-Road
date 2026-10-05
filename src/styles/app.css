@@ -7395,3 +7395,64 @@ h1 {
     width: min(170px, 13dvmax);
   }
 }
+
+
+/* V138 waterfall registration/material pass.
+   In the normalized reference the left cascade is a tall irregular white-water
+   feature, while the right cascade only re-enters at the lower-right edge.
+   The live pair currently read as short cyan striped panels, including one
+   behind the Moves card. Correct placement and soften the repeated stripe cue
+   without changing any live UI or game geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    width: 72px;
+    height: 390px;
+    clip-path: polygon(
+      22% 0, 73% 1%, 88% 11%, 79% 23%, 93% 36%, 84% 49%,
+      96% 63%, 86% 77%, 95% 91%, 82% 100%, 9% 100%, 17% 88%,
+      5% 74%, 15% 60%, 4% 45%, 14% 31%, 7% 17%, 18% 7%
+    );
+    background:
+      radial-gradient(ellipse at 42% 13%, #ffffffdf 0 5%, transparent 16%),
+      radial-gradient(ellipse at 61% 35%, #effffff0 0 4%, transparent 15%),
+      radial-gradient(ellipse at 35% 58%, #f7ffffd6 0 5%, transparent 17%),
+      radial-gradient(ellipse at 58% 82%, #ffffffd8 0 5%, transparent 16%),
+      linear-gradient(90deg,
+        #2f8ab400 0 7%,
+        #439fc4ad 10% 25%,
+        #c9eef1d6 27% 38%,
+        #65b7d0c8 40% 56%,
+        #f3ffffe8 58% 66%,
+        #57aecaac 68% 88%,
+        #2d82aa00 94% 100%);
+    opacity: 0.86;
+    filter:
+      drop-shadow(0 6px 8px #245f7734)
+      saturate(0.94)
+      contrast(1.03)
+      brightness(1.04);
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    inset: 3% 10% 5%;
+    background:
+      linear-gradient(97deg, transparent 0 18%, #ffffff7d 21% 25%, transparent 29% 51%, #eaffff70 54% 59%, transparent 63%),
+      radial-gradient(ellipse at 46% 22%, #ffffffa8 0 4%, transparent 13%),
+      radial-gradient(ellipse at 58% 71%, #eaffff9a 0 4%, transparent 14%);
+    opacity: 0.78;
+  }
+
+  .reference-first-scene .reference-waterfall-left {
+    left: -0.8rem;
+    top: 17%;
+    height: 410px;
+  }
+
+  .reference-first-scene .reference-waterfall-right {
+    right: -0.65rem;
+    top: 72%;
+    width: 62px;
+    height: 250px;
+  }
+}
