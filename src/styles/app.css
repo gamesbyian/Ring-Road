@@ -7171,3 +7171,18 @@ h1 {
     background-repeat: repeat, repeat, no-repeat;
   }
 }
+
+
+/* V124 title-landmark scale pass.
+   Direct 1440×1000 comparison against the canonical reference shows the live
+   title plaque still reading about one visual step too small: its right edge
+   stops early and the road-wrap motif is vertically compressed. Enlarge only
+   the large reference-layout landmark, preserving the settled top/left
+   registration, semantic heading, controls, gameplay and compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    width: min(335px, 27dvmax);
+    padding-bottom: 3.65rem;
+  }
+}
