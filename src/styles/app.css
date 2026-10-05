@@ -7182,7 +7182,7 @@ h1 {
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
   .reference-first-scene .title-plaque {
-    width: min(335px, 27dvmax);
-    padding-bottom: 3.65rem;
+    width: min(400px, 30dvmax);
+    padding-bottom: 4.4rem;
   }
 }
