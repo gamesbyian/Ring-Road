@@ -40,7 +40,6 @@ function ScenicPicture({ role, className, fetchPriority = "auto" }: ScenicPictur
 export function DioramaScene({ title, board, controls, status, navigation, moves, goal, solution }: DioramaSceneProps) {
   return (
     <section className="diorama-scene reference-first-scene" aria-label="Ring Road play area">
-      <div className="reference-scene-matte" aria-hidden="true" />
       <div className="reference-scene-props" aria-hidden="true">
         <span className="reference-tower reference-tower-left" />
         <span className="reference-tower reference-tower-right" />
@@ -61,6 +60,7 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
       </div>
       <div className="scene-backdrop" aria-hidden="true">
         <ScenicPicture role="backdrop" className="scene-art scene-art-backdrop" fetchPriority="high" />
+        <div className="reference-scene-matte" />
         <ScenicPicture role="rearArchitecture" className="scene-art scene-art-rear" />
       </div>
 
