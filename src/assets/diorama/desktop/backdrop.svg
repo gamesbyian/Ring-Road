@@ -101,16 +101,16 @@
   <path d="M0 616 C210 564 420 568 662 628 C912 565 1190 573 1440 626 V1000 H0Z" fill="#78935f" opacity=".72"/>
 
   <!-- V170 right-side castle courtyard. -->
-  <g opacity=".96">
-    <path d="M1035 430 C1120 392 1235 378 1440 405 V735 C1320 704 1210 682 1102 690 C1065 611 1046 520 1035 430Z"
+  <g opacity=".94">
+    <path d="M1045 430 C1150 402 1275 394 1440 414 V724 C1330 702 1210 688 1114 696 C1080 618 1058 525 1045 430Z"
           fill="#d7bd91" stroke="#8d6847" stroke-width="3"/>
-    <path d="M1080 468 C1182 438 1288 430 1440 446" fill="none" stroke="#f3dfba" stroke-width="5" opacity=".62"/>
-    <path d="M1070 515 C1185 489 1301 486 1440 501" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".34"/>
-    <path d="M1086 571 C1193 548 1304 549 1440 566" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".32"/>
-    <path d="M1104 632 C1210 614 1314 620 1440 638" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".3"/>
-    <g stroke="#96704c" stroke-width="2.5" opacity=".36">
-      <path d="M1138 414 1160 692"/><path d="M1224 397 1244 685"/>
-      <path d="M1312 397 1322 699"/><path d="M1392 405 1392 721"/>
+    <path d="M1084 466 C1190 445 1312 442 1440 454" fill="none" stroke="#f3dfba" stroke-width="5" opacity=".58"/>
+    <path d="M1074 518 C1192 499 1315 499 1440 511" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".32"/>
+    <path d="M1089 575 C1204 561 1323 563 1440 578" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".3"/>
+    <path d="M1110 635 C1217 626 1328 631 1440 648" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".28"/>
+    <g stroke="#96704c" stroke-width="2.5" opacity=".32">
+      <path d="M1160 410 1118 696"/><path d="M1244 400 1228 692"/>
+      <path d="M1328 402 1344 704"/><path d="M1404 410 1440 690"/>
     </g>
   </g>
 
@@ -134,6 +134,18 @@
     <path d="M78 432 122 562 78 562Z"/><path d="M150 416 198 570 150 570Z"/>
     <path d="M336 440 373 552 336 552Z"/><path d="M1120 440 1157 548 1120 548Z"/>
     <path d="M1254 418 1301 565 1254 565Z"/><path d="M1350 432 1396 573 1350 573Z"/>
+  </g>
+
+  <!-- V170 crystal pedestal landmark in the right courtyard. -->
+  <g filter="url(#softShadow)" stroke="#7c583a" stroke-width="3">
+    <path d="M1280 520h54V374h-54Z" fill="#c69a67"/>
+    <path d="M1272 386h70v22h-70Z" fill="#e3c18d"/>
+    <path d="M1277 449h60M1277 488h60" fill="none" stroke="#9a7149" stroke-width="2" opacity=".55"/>
+    <path d="M1287 520h40l7 18h-54Z" fill="#a8794e"/>
+  </g>
+  <g fill="url(#gold)" stroke="#986329" stroke-width="2" filter="url(#softShadow)">
+    <path d="M1307 318 1328 359 1307 385 1286 359Z"/>
+    <path d="M1307 329 1316 357 1307 371 1298 357Z" fill="#fff4bd" opacity=".72"/>
   </g>
 
   <!-- V150 tiered midground conifers. Reuse one faceted three-tier tree
