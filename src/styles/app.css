@@ -7604,3 +7604,33 @@ h1 {
     width: min(67dvmax, 955px);
   }
 }
+
+
+/* V151 authored-scenery authority pass.
+   The castle/backdrop assets now carry the scene themselves, but the retained
+   frame still shows their upper-center forms washed into the old raster matte.
+   Reduce that atmospheric overlay one more step and let the authored rear
+   architecture render fully solid. Preserve all geometry and responsive layout. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-scene-matte {
+    opacity: 0.48;
+    filter: saturate(1.02) contrast(1.015) brightness(1.01);
+  }
+
+  .reference-first-scene .scene-art-backdrop {
+    opacity: 0.98;
+  }
+
+  .reference-first-scene .scene-art-rear {
+    opacity: 1;
+  }
+
+  .reference-first-scene .scene-art-rear img {
+    filter:
+      saturate(1.01)
+      contrast(1.08)
+      brightness(1.005)
+      drop-shadow(0 14px 20px #4b352430);
+  }
+}
