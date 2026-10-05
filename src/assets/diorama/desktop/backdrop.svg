@@ -143,8 +143,10 @@
     <path d="M1277 449h60M1277 488h60" fill="none" stroke="#9a7149" stroke-width="2" opacity=".55"/>
     <path d="M1287 520h40l7 18h-54Z" fill="#a8794e"/>
   </g>
-  <g fill="url(#gold)" stroke="#986329" stroke-width="2" filter="url(#softShadow)">
-    <path d="M1307 318 1328 359 1307 385 1286 359Z"/>
+  <g stroke="#986329" stroke-width="2" filter="url(#softShadow)">
+    <path d="M1307 318 1328 359 1307 385 1286 359Z" fill="#efbd43"/>
+    <path d="M1307 318 1307 385 1286 359Z" fill="#ffd96a" opacity=".78"/>
+    <path d="M1307 318 1328 359 1307 385Z" fill="#c9852c" opacity=".72"/>
     <path d="M1307 329 1316 357 1307 371 1298 357Z" fill="#fff4bd" opacity=".72"/>
   </g>
 
