@@ -7601,6 +7601,6 @@ h1 {
 @media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
        (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
   .reference-first-scene .scene-board-plinth {
-    width: min(69dvmax, 980px);
+    width: min(67dvmax, 955px);
   }
 }
