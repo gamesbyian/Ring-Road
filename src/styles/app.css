@@ -7456,3 +7456,36 @@ h1 {
     height: 250px;
   }
 }
+
+
+/* V141 title-road registration pass.
+   In the canonical wordmark the curved roadway is a major visible landmark
+   between the “Road” lettering and the orange slogan ribbon. The live road is
+   currently buried behind the ribbon, leaving only two dark side hooks.
+   Lift the decorative road within the large plaque and keep the slogan below
+   it, without changing any accessible title text or compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    bottom: 1.55rem;
+    z-index: 4;
+    height: 4.35rem;
+  }
+
+  .reference-first-scene .title-tagline {
+    z-index: 6;
+    bottom: -0.68rem;
+  }
+}
+
+
+/* V141.1 duplicate arena-banner cleanup.
+   The authored foreground now carries the small repeated pennant rhythm.
+   Retire the older oversized CSS banners on the large reference layout so the
+   arena front has one coherent flag system instead of stacked duplicates. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .arena-banner {
+    display: none;
+  }
+}
