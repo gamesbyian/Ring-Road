@@ -7207,3 +7207,17 @@ h1 {
     );
   }
 }
+
+
+/* V128 duplicate-side-tower cleanup.
+   The authored rear-architecture SVG now owns both castle flanks. The older
+   CSS tower/banner props sit on top of it and create oversized tan columns in
+   the retained frame. Retire only those duplicate props on the large reference
+   layout; compact/mobile presentation and all live UI remain unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-tower,
+  .reference-first-scene .reference-banner {
+    display: none;
+  }
+}
