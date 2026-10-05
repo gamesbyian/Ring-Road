@@ -7489,3 +7489,39 @@ h1 {
     display: none;
   }
 }
+
+
+/* V144 warm ring-seam material pass.
+   Direct reference comparison shows narrow warm shadow seams between the
+   painted ring slabs. The live board still reads as if every band were outlined
+   in charcoal because the full-circumference shadow and lowered wall planes are
+   too dark. Soften only those material layers; preserve all ring geometry,
+   transforms, colors, markers, gaps and hit targets. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-shadow {
+    stroke: #59453638;
+    stroke-width: 19px;
+    opacity: 0.28;
+    filter: blur(0.32px);
+  }
+
+  .reference-first-scene .ring-wall {
+    filter:
+      saturate(0.96)
+      brightness(1.02)
+      drop-shadow(0 0.9px 0.5px #3b2a1d20);
+  }
+
+  .reference-first-scene .notch-wall-shade {
+    fill-opacity: 0.72;
+    filter: brightness(0.72) saturate(1.01) drop-shadow(0 2px 0.8px #2b1f1938);
+  }
+
+  .reference-first-scene .ring-channel-floor {
+    stroke: #c1a77d70;
+    filter:
+      drop-shadow(0 2.2px 1px #2b1d1738)
+      drop-shadow(0 -0.6px 0 #f1d7ae38);
+  }
+}
