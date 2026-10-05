@@ -44,8 +44,16 @@
     <path d="M635 88h170l-12 27H647Z" fill="#6f4c34"/>
   </g>
 
+  <!-- open stairwell shoulders: replace the old stacked rectangular gate
+       panels with two inward-tapered masonry masses so the stair axis stays open
+       and the arena front reads as a curved monument rather than a box -->
   <g fill="#b0875b" stroke="#735039" stroke-width="3" filter="url(#shadow)">
-    <path d="M568 89h304v131H568Z"/><path d="M612 73h216v147H612Z"/>
+    <path d="M548 102Q594 80 648 78L620 220H548Z"/>
+    <path d="M892 102Q846 80 792 78L820 220H892Z"/>
+  </g>
+  <g fill="#d2a978" opacity=".5">
+    <path d="M555 105Q594 89 637 86L628 123Q589 118 556 128Z"/>
+    <path d="M885 105Q846 89 803 86L812 123Q851 118 884 128Z"/>
   </g>
   <g fill="#f0d4a5" stroke="#89613d" stroke-width="3" filter="url(#shadow)">
     <path d="M640 116h160l11 23H629Z"/>
