@@ -106,6 +106,16 @@
     <path d="m795 268 4 17 16 6-16 6-4 17-4-17-16-6 16-6Z"/>
   </g>
 
+  <!-- V130 upper-right castle banner. The canonical castle flank carries a
+       strong blue hanging standard with a gold star. Keep it on the authored
+       masonry layer so the scene gains that landmark without reviving the
+       retired duplicate CSS tower. -->
+  <g filter="url(#softShadow)">
+    <path d="M1070 150H1128V292l-29-24-29 24Z" fill="#31588e" stroke="#6b4c33" stroke-width="3"/>
+    <path d="m1099 185 7 22 22 7-22 7-7 22-7-22-22-7 22-7Z" fill="#efc348"/>
+    <path d="M1077 157H1121" stroke="#91a7c2" stroke-width="4" opacity=".45"/>
+  </g>
+
   <g fill="#fff1ce" opacity=".7">
     <rect x="31" y="159" width="15" height="28" rx="4"/><rect x="112" y="159" width="15" height="28" rx="4"/>
     <rect x="1053" y="159" width="15" height="28" rx="4"/><rect x="1134" y="159" width="15" height="28" rx="4"/>
