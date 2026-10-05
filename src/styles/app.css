@@ -7186,3 +7186,24 @@ h1 {
     padding-bottom: 4.4rem;
   }
 }
+
+
+/* V127 arena-barrel silhouette pass.
+   Direct 1440×1000 comparison shows the live arena's front support reading as
+   a broad rounded rectangle, while the canonical support is a cylindrical
+   sandstone drum. Curve only the decorative front-face silhouette. Keep the
+   settled tabletop, staircase, banners, hit geometry and responsive layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth::before {
+    top: 60%;
+    width: 93%;
+    height: 48%;
+    border-radius: 16% 16% 48% 48% / 10% 10% 58% 58%;
+    clip-path: polygon(
+      5% 0, 95% 0,
+      98% 12%, 100% 34%, 98% 66%, 93% 86%, 84% 97%,
+      72% 100%, 28% 100%, 16% 97%, 7% 86%, 2% 66%, 0 34%, 2% 12%
+    );
+  }
+}
