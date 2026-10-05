@@ -7318,3 +7318,29 @@ h1 {
     top: 47%;
   }
 }
+
+
+/* V133 scenic-layer balance pass.
+   The authored backdrop and castle are now mature enough to carry the scene,
+   but a late 0.88-opacity raster-matte boost still washes them into translucent
+   double silhouettes. Rebalance the large reference view toward the authored
+   layers while retaining the matte as atmospheric texture. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-scene-matte {
+    opacity: 0.62;
+    filter: saturate(1.05) contrast(1.025) brightness(1.01);
+  }
+
+  .reference-first-scene .scene-art-backdrop {
+    opacity: 0.96;
+  }
+
+  .reference-first-scene .scene-art-backdrop img {
+    filter: saturate(1.03) contrast(1.01) brightness(1.015);
+  }
+
+  .reference-first-scene .scene-art-rear {
+    opacity: 0.94;
+  }
+}
