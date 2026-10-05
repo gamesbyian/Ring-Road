@@ -115,6 +115,33 @@
     <path d="M1254 418 1301 565 1254 565Z"/><path d="M1350 432 1396 573 1350 573Z"/>
   </g>
 
+  <!-- V136 midground conifer density. The canonical arena is hemmed in by
+       dense toy-like evergreens; fill the otherwise-flat side band between the
+       existing rear trees and lower foreground cluster while keeping the central
+       board/HUD corridor clear. -->
+  <g opacity=".96" stroke="#294936" stroke-width="2">
+    <path d="M8 790 62 620l56 170Z" fill="#315f4d"/>
+    <path d="M82 790 132 646l52 144Z" fill="#477552"/>
+    <path d="M166 790 220 603l56 187Z" fill="#315f4d"/>
+    <path d="M250 790 294 658l46 132Z" fill="#5b815b"/>
+    <path d="M1100 790 1146 652l48 138Z" fill="#5b815b"/>
+    <path d="M1172 790 1224 604l54 186Z" fill="#315f4d"/>
+    <path d="M1258 790 1308 642l52 148Z" fill="#477552"/>
+    <path d="M1332 790 1386 618l56 172Z" fill="#315f4d"/>
+  </g>
+  <g fill="#8baa6d" opacity=".45">
+    <path d="M62 620 62 790 34 790Z"/><path d="M132 646 132 790 106 790Z"/>
+    <path d="M220 603 220 790 192 790Z"/><path d="M294 658 294 790 271 790Z"/>
+    <path d="M1146 652 1146 790 1123 790Z"/><path d="M1224 604 1224 790 1197 790Z"/>
+    <path d="M1308 642 1308 790 1282 790Z"/><path d="M1386 618 1386 790 1358 790Z"/>
+  </g>
+  <g fill="#6a4934" opacity=".9">
+    <rect x="57" y="756" width="10" height="34" rx="2"/><rect x="127" y="760" width="10" height="30" rx="2"/>
+    <rect x="215" y="752" width="10" height="38" rx="2"/><rect x="289" y="762" width="9" height="28" rx="2"/>
+    <rect x="1141" y="762" width="9" height="28" rx="2"/><rect x="1219" y="752" width="10" height="38" rx="2"/>
+    <rect x="1303" y="760" width="10" height="30" rx="2"/><rect x="1381" y="756" width="10" height="34" rx="2"/>
+  </g>
+
   <path d="M0 745 C225 682 452 696 700 748 C950 690 1205 689 1440 742 V1000 H0Z" fill="#789363"/>
   <path d="M0 833 C265 779 510 790 766 838 C1012 792 1240 794 1440 830 V1000 H0Z" fill="#607a51"/>
   <path d="M0 902 C278 861 536 865 780 906 C1030 868 1248 870 1440 899 V1000 H0Z" fill="#486348" opacity=".68"/>
