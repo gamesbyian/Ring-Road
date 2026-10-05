@@ -125,20 +125,18 @@
     <path d="M897 420 945 284l49 136Z"/><path d="M936 420 980 319l46 101Z"/>
   </g>
   <g fill="#315c47" stroke="#294936" stroke-width="2" transform="translate(0 -68)">
-    <path d="M430 275 470 175l40 100Z"/>
-    <path d="M480 275 515 195l35 80Z"/>
-    <path d="M535 275 570 185l35 90Z"/>
-    <path d="M585 275 620 205l35 70Z"/>
-    <path d="M635 275 675 188l40 87Z"/>
-    <path d="M690 275 730 170l40 105Z"/>
+    <path d="M420 275 470 185l50 90Z"/>
+    <path d="M490 275 535 205l45 70Z"/>
+    <path d="M550 275 600 175l50 100Z"/>
+    <path d="M620 275 665 200l45 75Z"/>
+    <path d="M680 275 730 180l50 95Z"/>
   </g>
-  <g fill="#6f9166" opacity=".5" transform="translate(0 -68)">
-    <path d="M470 175 470 275 449 275Z"/>
-    <path d="M515 195 515 275 497 275Z"/>
-    <path d="M570 185 570 275 552 275Z"/>
-    <path d="M620 205 620 275 602 275Z"/>
-    <path d="M675 188 675 275 654 275Z"/>
-    <path d="M730 170 730 275 709 275Z"/>
+  <g fill="#6f9166" opacity=".48" transform="translate(0 -68)">
+    <path d="M470 185 470 275 444 275Z"/>
+    <path d="M535 205 535 275 512 275Z"/>
+    <path d="M600 175 600 275 574 275Z"/>
+    <path d="M665 200 665 275 642 275Z"/>
+    <path d="M730 180 730 275 704 275Z"/>
   </g>
 
   <g fill="#f0c84f" stroke="#99692c" stroke-width="3">
