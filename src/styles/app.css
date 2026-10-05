@@ -7830,3 +7830,52 @@ h1 {
     opacity: 0.5;
   }
 }
+
+
+/* V171 dedicated front terrace-rim layer.
+   The existing plinth surface sits behind the cylindrical drum, so moving the
+   plinth cannot expose the pale tabletop collar visible across the canonical
+   front edge. Add one inert front-half ellipse above the drum and below the
+   live board. Board/plinth registration and interaction remain untouched. */
+.reference-front-terrace-rim {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-front-terrace-rim {
+    position: absolute;
+    z-index: 3;
+    left: 54.7%;
+    top: 45.5%;
+    display: block;
+    width: min(67dvmax, 955px);
+    aspect-ratio: 1.46 / 1;
+    border: 3px solid #8b6747;
+    border-radius: 50%;
+    clip-path: polygon(0 44%,100% 44%,100% 100%,0 100%);
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-conic-gradient(
+        from -4deg,
+        transparent 0deg 11.2deg,
+        #7b56365c 11.2deg 11.75deg,
+        #f5dfb62e 11.75deg 12deg
+      ),
+      radial-gradient(
+        ellipse at 50% 30%,
+        #fff7df 0 34%,
+        #efd9b0 35% 58%,
+        #d4ad79 59% 78%,
+        #a97950 79% 100%
+      );
+    background-blend-mode: soft-light, multiply, normal;
+    background-size: 64px 64px, auto, 100% 100%;
+    background-repeat: repeat, repeat, no-repeat;
+    box-shadow:
+      inset 0 5px 9px #fff4d05c,
+      0 6px 0 #7e593c42;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+}
