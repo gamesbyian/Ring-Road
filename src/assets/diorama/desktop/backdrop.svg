@@ -4,10 +4,10 @@
       <stop stop-color="#66b4eb"/><stop offset=".48" stop-color="#a9d4ef"/><stop offset="1" stop-color="#e7edf0"/>
     </linearGradient>
     <linearGradient id="mountainFar" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#aa948f"/><stop offset="1" stop-color="#756b79"/>
+      <stop stop-color="#b38d92"/><stop offset="1" stop-color="#705d72"/>
     </linearGradient>
     <linearGradient id="mountainNear" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#907d82"/><stop offset="1" stop-color="#5d6874"/>
+      <stop stop-color="#9c7a83"/><stop offset="1" stop-color="#5f566b"/>
     </linearGradient>
     <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#53add8"/><stop offset="1" stop-color="#277da8"/>
@@ -60,14 +60,14 @@
   </g>
 
   <g opacity=".56">
-    <path d="M174 170 250 386 320 386Z" fill="#6f6777"/>
-    <path d="M405 92 492 386 602 386Z" fill="#70687a"/>
-    <path d="M695 144 776 386 856 386Z" fill="#726b79"/>
-    <path d="M970 101 1068 386 1160 386Z" fill="#6e6675"/>
-    <path d="M1260 118 1350 386 1440 386Z" fill="#71697a"/>
+    <path d="M174 170 250 386 320 386Z" fill="#735b70"/>
+    <path d="M405 92 492 386 602 386Z" fill="#765d73"/>
+    <path d="M695 144 776 386 856 386Z" fill="#796173"/>
+    <path d="M970 101 1068 386 1160 386Z" fill="#70596c"/>
+    <path d="M1260 118 1350 386 1440 386Z" fill="#765e72"/>
   </g>
 
-  <g fill="#eadfd8" opacity=".62">
+  <g fill="#f0dfd7" opacity=".68">
     <path d="M405 92 455 157 420 147 388 183Z"/>
     <path d="M970 101 1018 159 978 147 946 182Z"/>
     <path d="M1260 118 1303 166 1268 156 1236 187Z"/>
