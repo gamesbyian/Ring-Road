@@ -7525,3 +7525,40 @@ h1 {
       drop-shadow(0 -0.6px 0 #f1d7ae38);
   }
 }
+
+
+/* V145 arena-drum masonry contrast pass.
+   The canonical support reads as pale block-built miniature stone. The live
+   drum already has course/joint gradients, but their alpha is low enough that
+   the front face still reads as one smooth tan cylinder. Strengthen only the
+   existing masonry rhythm and face lighting, preserving silhouette, position,
+   board geometry, stairs, pennants and responsive behavior. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth::before {
+    border-color: #8c6848;
+    border-top-color: #ead1a4;
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 27px,
+        #7252384f 27px 30px,
+        #f4dfb82b 30px 32px,
+        transparent 32px 58px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 6.55%,
+        #75513752 6.55% 7.05%,
+        #f2d9ad24 7.05% 7.3%,
+        transparent 7.3% 13.1%
+      ),
+      linear-gradient(180deg, #f0d7ab 0%, #ddb983 46%, #b68458 100%);
+    background-blend-mode: soft-light, normal, normal, normal;
+    box-shadow:
+      inset 0 9px 11px #fff2c95c,
+      inset 0 -11px 14px #68452f32,
+      0 3px 0 #68483145;
+  }
+}
