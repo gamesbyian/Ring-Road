@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 104">
+  <defs>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="2" flood-color="#2c3037" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <path d="M18 56C90 91 185 99 276 88C340 80 389 58 420 24"
+        fill="none" stroke="#465268" stroke-width="31" stroke-linecap="round"
+        filter="url(#shadow)"/>
+  <path d="M18 56C90 91 185 99 276 88C340 80 389 58 420 24"
+        fill="none" stroke="#f2ddb0" stroke-width="3.5" stroke-linecap="round"
+        stroke-dasharray="17 13"/>
+  <path d="M25 47C95 78 187 85 273 75C333 68 377 49 405 20"
+        fill="none" stroke="#8390a2" stroke-width="2.2" stroke-linecap="round"
+        opacity=".45"/>
+</svg>
