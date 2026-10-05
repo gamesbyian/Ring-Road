@@ -7076,3 +7076,28 @@ h1 {
     opacity: 0.94;
   }
 }
+
+
+/* V116 solid-terrace material pass.
+   The canonical board sits on an opaque pale sandstone terrace. The live
+   plinth still fades to transparent beyond 70%, exposing scenery through what
+   should read as a physical platform. Keep the settled ellipse geometry and
+   registration; change only its surface material. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    background:
+      radial-gradient(
+        ellipse at 50% 30%,
+        #fff6dd 0 34%,
+        #efd9b0 35% 50%,
+        #d8b17d 51% 64%,
+        #b98555 65% 82%,
+        #96683f 83% 100%
+      );
+    box-shadow:
+      inset 0 10px 16px #fff4d06b,
+      inset 0 -12px 18px #6b482b2f,
+      0 32px 28px #3e2c1c70;
+  }
+}
