@@ -7830,3 +7830,17 @@ h1 {
     opacity: 0.5;
   }
 }
+
+
+/* V169 plinth vertical-registration pass.
+   The board itself is already matched within a few pixels, but the decorative
+   terrace is vertically biased upward: too much rear collar remains visible
+   while the canonical reference shows a much broader pale stone apron across
+   the front edge. Shift only the complete decorative plinth/drum downward;
+   preserve board, ring, HUD, stairs and hit geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    top: 48.5%;
+  }
+}
