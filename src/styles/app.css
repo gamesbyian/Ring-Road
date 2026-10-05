@@ -7140,3 +7140,34 @@ h1 {
     pointer-events: none;
   }
 }
+
+
+/* V120 solid-terrace masonry pass.
+   V116 correctly made the terrace opaque, but its shorthand background also
+   displaced the earlier stone grain and radial block-joint rhythm. Restore
+   those construction cues on top of the settled solid sandstone without
+   changing geometry, registration, opacity, or camera. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-conic-gradient(
+        from -4deg,
+        transparent 0deg 10deg,
+        #8d633d42 10deg 10.65deg,
+        transparent 10.65deg 20deg
+      ),
+      radial-gradient(
+        ellipse at 50% 30%,
+        #fff6dd 0 34%,
+        #efd9b0 35% 50%,
+        #d8b17d 51% 64%,
+        #b98555 65% 82%,
+        #96683f 83% 100%
+      );
+    background-blend-mode: soft-light, multiply, normal;
+    background-size: 64px 64px, auto, 100% 100%;
+    background-repeat: repeat, repeat, no-repeat;
+  }
+}
