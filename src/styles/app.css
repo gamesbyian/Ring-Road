@@ -7221,3 +7221,33 @@ h1 {
     display: none;
   }
 }
+
+
+/* V129 title-road lane pass.
+   The live title road has the correct U-shaped sweep, but its center marking is
+   still a short horizontal stripe. The canonical sign shows pale dashed lane
+   marks following the road around the curve. Recast only the decorative inner
+   pseudo-element as an inset dashed U. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    border-color: #465268;
+  }
+
+  .reference-first-scene .title-road-mark::before {
+    top: 0.28rem;
+    right: 0.34rem;
+    bottom: 0.3rem;
+    left: 0.34rem;
+    height: auto;
+    border: 0.11rem dashed #f6dfaa;
+    border-top: 0;
+    border-radius: 0 0 52% 52% / 0 0 76% 76%;
+    background: none;
+  }
+
+  .reference-first-scene .title-road-mark::after {
+    background: #e0c491;
+    box-shadow: -0.27rem -0.04rem 0 #465268;
+  }
+}
