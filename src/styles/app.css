@@ -7590,3 +7590,17 @@ h1 {
     display: none;
   }
 }
+
+
+/* V149 measured terrace-width pass.
+   The colored ring assembly now matches the canonical footprint closely, but
+   the pale stone collar around it remains roughly five percent too narrow.
+   Widen only the decorative plinth so more cream masonry survives outside the
+   red ring; preserve the live board frame, ring radii, camera, hit geometry,
+   stairs, HUD and compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    width: min(69dvmax, 980px);
+  }
+}
