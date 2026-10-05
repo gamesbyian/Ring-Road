@@ -7,7 +7,7 @@
       <stop stop-color="#ddb77f"/><stop offset="1" stop-color="#8e6540"/>
     </linearGradient>
     <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#5e7fa6"/><stop offset=".7" stop-color="#35577b"/><stop offset="1" stop-color="#233c5c"/>
+      <stop stop-color="#f0d39a"/><stop offset=".58" stop-color="#c99558"/><stop offset="1" stop-color="#805936"/>
     </linearGradient>
     <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#6a91b5"/><stop offset=".7" stop-color="#3d5d7f"/><stop offset="1" stop-color="#263c59"/>
