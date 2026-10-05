@@ -7746,3 +7746,34 @@ h1 {
     filter: blur(0.26px);
   }
 }
+
+
+/* V165 terrace block-joint readability pass.
+   The terrace already uses radial stone segmentation, but the current joints
+   disappear into the grain at review scale. Strengthen the existing conic
+   masonry rhythm without changing the terrace footprint, board geometry,
+   perspective, stairs, HUD or responsive behavior. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-board-plinth {
+    background-image:
+      url("../assets/diorama/textures/stone-grain.png"),
+      repeating-conic-gradient(
+        from -4deg,
+        transparent 0deg 11.2deg,
+        #7b56365c 11.2deg 11.75deg,
+        #f5dfb62e 11.75deg 12deg
+      ),
+      radial-gradient(
+        ellipse at 50% 30%,
+        #fff6dd 0 34%,
+        #efd9b0 35% 50%,
+        #d8b17d 51% 64%,
+        #b98555 65% 82%,
+        #96683f 83% 100%
+      );
+    background-blend-mode: soft-light, multiply, normal;
+    background-size: 64px 64px, auto, 100% 100%;
+    background-repeat: repeat, repeat, no-repeat;
+  }
+}
