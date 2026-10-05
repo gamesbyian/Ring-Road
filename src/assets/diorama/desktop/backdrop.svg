@@ -46,20 +46,20 @@
     </g>
   </g>
 
-  <g fill="url(#mountainFar)" opacity=".97">
+  <g fill="url(#mountainFar)" opacity=".82">
     <path d="M0 386 174 170 320 386Z"/>
     <path d="M185 386 405 92 602 386Z"/>
     <path d="M495 386 695 144 856 386Z"/>
     <path d="M742 386 970 101 1160 386Z"/>
     <path d="M1000 386 1260 118 1440 386Z"/>
   </g>
-  <g fill="url(#mountainNear)" opacity=".78">
+  <g fill="url(#mountainNear)" opacity=".56">
     <path d="M0 420 245 245 430 420Z"/>
     <path d="M845 420 1100 230 1325 420Z"/>
     <path d="M1120 420 1375 262 1440 420Z"/>
   </g>
 
-  <g opacity=".56">
+  <g opacity=".42">
     <path d="M174 170 250 386 320 386Z" fill="#735b70"/>
     <path d="M405 92 492 386 602 386Z" fill="#765d73"/>
     <path d="M695 144 776 386 856 386Z" fill="#796173"/>
