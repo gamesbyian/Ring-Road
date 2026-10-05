@@ -7708,3 +7708,25 @@ h1 {
     width: min(70dvmax, 1000px);
   }
 }
+
+
+/* V162 HUD ring-miniature scale pass.
+   The Goal/Solution cards are already registered closely, but their embedded
+   ring previews remain visibly undersized versus the canonical reference.
+   Scale only the large-layout miniatures; preserve card footprints, text,
+   controls, semantics and compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-goal-miniature {
+    right: 0.65rem;
+    bottom: 0.55rem;
+    width: 146px;
+    height: 146px;
+  }
+
+  .reference-solution-preview {
+    width: 134px;
+    height: 134px;
+    margin: 0.25rem auto 0;
+  }
+}
