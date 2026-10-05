@@ -230,7 +230,7 @@ export function RingBoard({ puzzle, visualStates, boardOrientation, rotationMoti
           <polygon
             className="hub-sun"
             aria-hidden="true"
-            points="210,189 214.6,203.4 229,208 214.6,212.6 210,227 205.4,212.6 191,208 205.4,203.4"
+            points="210.0,190.0 213.8,198.8 222.7,195.3 219.2,204.2 228.0,208.0 219.2,211.8 222.7,220.7 213.8,217.2 210.0,226.0 206.2,217.2 197.3,220.7 200.8,211.8 192.0,208.0 200.8,204.2 197.3,195.3 206.2,198.8"
           />
           <ellipse
             className={`ball ${completed ? "ball-fired" : ""}`}
