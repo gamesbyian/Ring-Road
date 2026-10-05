@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1000">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#66b4eb"/><stop offset=".48" stop-color="#a9d4ef"/><stop offset="1" stop-color="#e7edf0"/>
+      <stop stop-color="#89b4dd"/><stop offset=".48" stop-color="#b7cfe6"/><stop offset="1" stop-color="#e4e8ed"/>
     </linearGradient>
     <linearGradient id="mountainFar" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#b38d92"/><stop offset="1" stop-color="#705d72"/>
