@@ -7791,3 +7791,42 @@ h1 {
     filter: saturate(1.04) contrast(1.02) brightness(1.01);
   }
 }
+
+
+/* V168 canonical control-chevron pass.
+   Direct crop comparison shows the supplied reference uses thick left/right
+   chevrons inside the circular ring-control medallions, not circular rotation
+   arrows. Restore that visible glyph geometry while preserving accessible
+   labels, button behavior, hit targets and compact/mobile layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-control .rotation-glyph {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-right: 5px solid #42474e;
+    border-bottom: 5px solid #42474e;
+    border-radius: 2px;
+    color: transparent;
+    font-size: 0;
+    line-height: 0;
+    text-shadow: none;
+    transform: rotate(-45deg);
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph::after {
+    display: none;
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph-ccw {
+    transform: rotate(135deg);
+  }
+
+  .reference-first-scene .ring-control button:disabled .rotation-glyph {
+    border-right-color: #777b80;
+    border-bottom-color: #777b80;
+    opacity: 0.5;
+  }
+}
