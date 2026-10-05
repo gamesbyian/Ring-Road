@@ -7562,3 +7562,31 @@ h1 {
       0 3px 0 #68483145;
   }
 }
+
+
+/* V148 authored title-road sweep.
+   The canonical logo uses an asymmetric roadway that runs low under “Road”
+   and climbs toward the mountain mark. Replace the accumulated CSS U-border
+   approximation with a small authored decorative SVG while keeping all title
+   text, semantics, plaque geometry and compact layouts intact. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-road-mark {
+    left: 0.35rem;
+    right: auto;
+    bottom: 1.7rem;
+    z-index: 4;
+    width: 96%;
+    height: 5.5rem;
+    border: 0;
+    border-radius: 0;
+    background: url("../assets/diorama/desktop/title-road.svg") center / 100% 100% no-repeat;
+    box-shadow: none;
+    transform: rotate(-1.2deg);
+  }
+
+  .reference-first-scene .title-road-mark::before,
+  .reference-first-scene .title-road-mark::after {
+    display: none;
+  }
+}
