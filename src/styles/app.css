@@ -7371,3 +7371,27 @@ h1 {
     bottom: 2.8rem;
   }
 }
+
+
+/* V137 measured upper-HUD registration pass.
+   The normalized 1440×1000 reference leaves the Puzzle plaque top edge nearly
+   where the live one already sits, but gives it a deeper paper silhouette and
+   places both upper-right cards closer to the frame edge. Match those measured
+   footprints without changing navigation semantics or compact layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-navigation-slot {
+    right: 2.2rem;
+    width: min(220px, 17dvmax);
+  }
+
+  .reference-first-scene .puzzle-plaque {
+    min-height: 84px;
+  }
+
+  .reference-moves-slot {
+    top: 8.1rem;
+    right: 1.6rem;
+    width: min(170px, 13dvmax);
+  }
+}
