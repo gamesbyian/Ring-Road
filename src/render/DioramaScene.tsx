@@ -75,6 +75,7 @@ export function DioramaScene({ title, board, controls, status, navigation, moves
             <span className="arena-banner arena-banner-4" />
             <span className="arena-banner arena-banner-5" />
           </div>
+          <div className="reference-front-terrace-rim" aria-hidden="true" />
           {board}
           <div className="reference-front-road" aria-hidden="true" />
           <div className="scene-status-slot">{status}</div>
