@@ -55,20 +55,22 @@
     <path d="M555 105Q594 89 637 86L628 123Q589 118 556 128Z"/>
     <path d="M885 105Q846 89 803 86L812 123Q851 118 884 128Z"/>
   </g>
-  <g fill="#f0d4a5" stroke="#89613d" stroke-width="3" filter="url(#shadow)">
-    <path d="M640 116h160l11 23H629Z"/>
-    <path d="M628 145h184l11 25H617Z"/>
-    <path d="M614 176h212l11 28H603Z"/>
-  </g>
-  <g fill="#9d7048" opacity=".66">
-    <path d="M629 137h182l-4 9H633Z"/>
-    <path d="M617 168h206l-4 10H621Z"/>
-    <path d="M603 201h234l-5 11H608Z"/>
-  </g>
-  <g fill="#fff0c8" opacity=".42">
-    <path d="M641 118h158l3 6H638Z"/>
-    <path d="M629 147h182l3 6H626Z"/>
-    <path d="M615 178h210l3 7H612Z"/>
+  <g transform="translate(115.2 0) scale(.84 1)">
+    <g fill="#f0d4a5" stroke="#89613d" stroke-width="3" filter="url(#shadow)">
+      <path d="M640 116h160l11 23H629Z"/>
+      <path d="M628 145h184l11 25H617Z"/>
+      <path d="M614 176h212l11 28H603Z"/>
+    </g>
+    <g fill="#9d7048" opacity=".66">
+      <path d="M629 137h182l-4 9H633Z"/>
+      <path d="M617 168h206l-4 10H621Z"/>
+      <path d="M603 201h234l-5 11H608Z"/>
+    </g>
+    <g fill="#fff0c8" opacity=".42">
+      <path d="M641 118h158l3 6H638Z"/>
+      <path d="M629 147h182l3 6H626Z"/>
+      <path d="M615 178h210l3 7H612Z"/>
+    </g>
   </g>
 
   <!-- stair-flanking monument piers -->
