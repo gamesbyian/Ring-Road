@@ -60,7 +60,7 @@
     <path d="M742 386 970 101 1160 386Z"/>
     <path d="M1000 386 1260 118 1440 386Z"/>
   </g>
-  <g fill="url(#mountainNear)" opacity=".56">
+  <g fill="url(#mountainNear)" opacity=".34">
     <path d="M0 420 245 245 430 420Z"/>
     <path d="M845 420 1100 230 1325 420Z"/>
     <path d="M1120 420 1375 262 1440 420Z"/>
