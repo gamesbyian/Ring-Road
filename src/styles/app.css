@@ -7031,3 +7031,35 @@ h1 {
     display: none;
   }
 }
+
+
+/* V112 ring-control chevron pass.
+   The canonical control rail uses bold left/right chevrons rather than
+   circular undo-style arrows. Accessible button labels still carry the true
+   clockwise/counterclockwise meaning, so change only the inert glyph shape. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-control .rotation-glyph {
+    width: 13px;
+    height: 13px;
+    border: 0;
+    border-right: 4px solid #3f454d;
+    border-bottom: 4px solid #3f454d;
+    border-radius: 1px;
+    transform: rotate(-45deg);
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph::after {
+    display: none;
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph-ccw {
+    transform: rotate(135deg);
+  }
+
+  .reference-first-scene .ring-control button:disabled .rotation-glyph {
+    border-right-color: #6d6f72;
+    border-bottom-color: #6d6f72;
+    opacity: 0.5;
+  }
+}
