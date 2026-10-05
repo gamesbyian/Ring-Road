@@ -100,6 +100,20 @@
   <path d="M0 500 C145 420 290 425 432 506 C565 408 720 414 862 514 C1020 404 1200 418 1440 506 V1000 H0Z" fill="url(#grass)"/>
   <path d="M0 616 C210 564 420 568 662 628 C912 565 1190 573 1440 626 V1000 H0Z" fill="#78935f" opacity=".72"/>
 
+  <!-- V170 right-side castle courtyard. -->
+  <g opacity=".96">
+    <path d="M1035 430 C1120 392 1235 378 1440 405 V735 C1320 704 1210 682 1102 690 C1065 611 1046 520 1035 430Z"
+          fill="#d7bd91" stroke="#8d6847" stroke-width="3"/>
+    <path d="M1080 468 C1182 438 1288 430 1440 446" fill="none" stroke="#f3dfba" stroke-width="5" opacity=".62"/>
+    <path d="M1070 515 C1185 489 1301 486 1440 501" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".34"/>
+    <path d="M1086 571 C1193 548 1304 549 1440 566" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".32"/>
+    <path d="M1104 632 C1210 614 1314 620 1440 638" fill="none" stroke="#8f6b49" stroke-width="3" opacity=".3"/>
+    <g stroke="#96704c" stroke-width="2.5" opacity=".36">
+      <path d="M1138 414 1160 692"/><path d="M1224 397 1244 685"/>
+      <path d="M1312 397 1322 699"/><path d="M1392 405 1392 721"/>
+    </g>
+  </g>
+
   <g fill="#315f4d" opacity=".95">
     <path d="M35 562 78 432l44 130Z"/><path d="M104 570 150 416l48 154Z"/>
     <path d="M218 548 251 448l34 100Z"/><path d="M300 552 336 440l37 112Z"/>
