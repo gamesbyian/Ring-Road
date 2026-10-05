@@ -75,20 +75,20 @@
 
   <!-- stair-flanking monument piers -->
   <g filter="url(#shadow)" stroke="#765035" stroke-width="3">
-    <path d="M506 119h54v101h-54Z" fill="url(#stoneSide)"/>
-    <path d="M880 119h54v101h-54Z" fill="url(#stoneSide)"/>
-    <path d="M499 109h68v22h-68Z" fill="#e6c28f"/>
-    <path d="M873 109h68v22h-68Z" fill="#e6c28f"/>
-    <path d="M512 88h42l-7 22h-28Z" fill="#d4a66d"/>
-    <path d="M886 88h42l-7 22h-28Z" fill="#d4a66d"/>
+    <path d="M565 119h54v101h-54Z" fill="url(#stoneSide)"/>
+    <path d="M821 119h54v101h-54Z" fill="url(#stoneSide)"/>
+    <path d="M558 109h68v22h-68Z" fill="#e6c28f"/>
+    <path d="M814 109h68v22h-68Z" fill="#e6c28f"/>
+    <path d="M571 88h42l-7 22h-28Z" fill="#d4a66d"/>
+    <path d="M827 88h42l-7 22h-28Z" fill="#d4a66d"/>
   </g>
 
   <!-- gold lamp/crystal caps -->
   <g fill="url(#gold)" stroke="#986329" stroke-width="2" filter="url(#shadow)">
-    <path d="M533 48 552 83 533 105 514 83Z"/>
-    <path d="M907 48 926 83 907 105 888 83Z"/>
-    <path d="M533 57 541 82 533 93 525 82Z" fill="#fff4bd" opacity=".72"/>
-    <path d="M907 57 915 82 907 93 899 82Z" fill="#fff4bd" opacity=".72"/>
+    <path d="M592 48 611 83 592 105 573 83Z"/>
+    <path d="M848 48 867 83 848 105 829 83Z"/>
+    <path d="M592 57 600 82 592 93 584 82Z" fill="#fff4bd" opacity=".72"/>
+    <path d="M848 57 856 82 848 93 840 82Z" fill="#fff4bd" opacity=".72"/>
   </g>
 
   <!-- repeated pennant rhythm on the arena front -->
@@ -182,14 +182,14 @@
 
   <!-- small stone footings around the central stairs -->
   <g fill="#d7b27e" stroke="#765035" stroke-width="3">
-    <path d="M472 188h58v32h-58Z"/><path d="M910 188h58v32h-58Z"/>
+    <path d="M563 188h58v32h-58Z"/><path d="M819 188h58v32h-58Z"/>
   </g>
   <g fill="#f0c84c" stroke="#99692c" stroke-width="2" filter="url(#shadow)">
-    <path d="M501 189 505 201 518 205 505 209 501 221 497 209 484 205 497 201Z"/>
-    <path d="M939 189 943 201 956 205 943 209 939 221 935 209 922 205 935 201Z"/>
+    <path d="M592 189 596 201 609 205 596 209 592 221 588 209 575 205 588 201Z"/>
+    <path d="M848 189 852 201 865 205 852 209 848 221 844 209 831 205 844 201Z"/>
   </g>
   <g fill="#fff1a4" opacity=".62">
-    <path d="M501 194 503 203 510 205 503 207 501 216 499 207 492 205 499 203Z"/>
-    <path d="M939 194 941 203 948 205 941 207 939 216 937 207 930 205 937 203Z"/>
+    <path d="M592 194 594 203 601 205 594 207 592 216 590 207 583 205 590 203Z"/>
+    <path d="M848 194 850 203 857 205 850 207 848 216 846 207 839 205 846 203Z"/>
   </g>
 </svg>
