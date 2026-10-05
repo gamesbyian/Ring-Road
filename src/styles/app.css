@@ -7477,3 +7477,15 @@ h1 {
     bottom: -0.68rem;
   }
 }
+
+
+/* V141.1 duplicate arena-banner cleanup.
+   The authored foreground now carries the small repeated pennant rhythm.
+   Retire the older oversized CSS banners on the large reference layout so the
+   arena front has one coherent flag system instead of stacked duplicates. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .arena-banner {
+    display: none;
+  }
+}
