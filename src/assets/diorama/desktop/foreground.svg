@@ -17,8 +17,8 @@
     </filter>
   </defs>
 
-  <path d="M62 71 Q720 -7 1378 71 L1418 220H22Z" fill="#d2ad78" stroke="#795438" stroke-width="4"/>
-  <path d="M0 125 Q720 46 1440 125V220H0Z" fill="url(#stone)" stroke="#795438" stroke-width="4"/>
+  <path d="M165 103 Q720 -7 1275 103 L1320 220H120Z" fill="#d2ad78" stroke="#795438" stroke-width="4"/>
+  <path d="M118 150 Q720 46 1322 150 L1360 220H80Z" fill="url(#stone)" stroke="#795438" stroke-width="4"/>
 
   <g opacity=".52" stroke="#765438" stroke-width="3">
     <path d="M70 139Q720 73 1370 139"/><path d="M42 179Q720 111 1398 179"/>
