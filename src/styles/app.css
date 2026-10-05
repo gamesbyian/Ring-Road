@@ -7063,3 +7063,16 @@ h1 {
     opacity: 0.5;
   }
 }
+
+
+/* V115 foreground-solidity pass.
+   Direct screenshot review identified a lingering global 0.64 opacity on the
+   authored foreground asset. The reference lower monument is solid miniature
+   stone/water/foliage, so restore that asset to near-opaque only on the large
+   reference layout without changing any geometry or stacking. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-foreground {
+    opacity: 0.94;
+  }
+}
