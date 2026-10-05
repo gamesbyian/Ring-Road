@@ -91,14 +91,14 @@
 
   <!-- repeated pennant rhythm on the arena front -->
   <g stroke="#5e4936" stroke-width="2" filter="url(#shadow)">
-    <path d="M270 150h42v70h-42Z" fill="#d6b07a"/>
-    <path d="M326 132h58v88h-58Z" fill="#345b8f"/>
-    <path d="M398 145h46v75h-46Z" fill="#d0842c"/>
-    <path d="M452 156h40v64h-40Z" fill="#345b8f"/>
-    <path d="M948 156h40v64h-40Z" fill="#345b8f"/>
-    <path d="M996 145h46v75h-46Z" fill="#d0842c"/>
-    <path d="M1056 132h58v88h-58Z" fill="#345b8f"/>
-    <path d="M1128 150h42v70h-42Z" fill="#d6b07a"/>
+    <path d="M270 150h42v54l-21 16-21-16Z" fill="#d6b07a"/>
+    <path d="M326 132h58v67l-29 21-29-21Z" fill="#345b8f"/>
+    <path d="M398 145h46v57l-23 18-23-18Z" fill="#d0842c"/>
+    <path d="M452 156h40v48l-20 16-20-16Z" fill="#345b8f"/>
+    <path d="M948 156h40v48l-20 16-20-16Z" fill="#345b8f"/>
+    <path d="M996 145h46v57l-23 18-23-18Z" fill="#d0842c"/>
+    <path d="M1056 132h58v67l-29 21-29-21Z" fill="#345b8f"/>
+    <path d="M1128 150h42v54l-21 16-21-16Z" fill="#d6b07a"/>
   </g>
   <g fill="#f0c84c">
     <path d="M291 162 295 177 309 181 295 185 291 200 287 185 273 181 287 177Z"/>
