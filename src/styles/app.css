@@ -7344,3 +7344,30 @@ h1 {
     opacity: 0.94;
   }
 }
+
+
+/* V135 measured HUD/landmark registration pass.
+   Normalize the supplied canonical reference to the retained 1440×1000 smoke
+   size and correct the remaining large-layout offsets directly. These values
+   change only decorative/HUD registration; game geometry and compact layouts
+   remain untouched. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .title-plaque {
+    width: min(440px, 32dvmax);
+  }
+
+  .reference-first-scene .scene-controls-slot {
+    top: 49%;
+  }
+
+  .reference-goal-slot {
+    bottom: 3rem;
+    width: min(435px, 32dvmax);
+  }
+
+  .reference-solution-slot {
+    right: 1.35rem;
+    bottom: 2.8rem;
+  }
+}
