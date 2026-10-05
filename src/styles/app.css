@@ -7730,3 +7730,19 @@ h1 {
     margin: 0.25rem auto 0;
   }
 }
+
+
+/* V164 narrow ring-seam pass.
+   The ring footprint and painted slab widths are settled, but direct reference
+   comparison still shows the live full-circumference shadow joints reading
+   broader than the canonical narrow warm seams. Tighten only that decorative
+   shadow layer; preserve ring walls, gaps, colors, transforms and hit geometry. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-shadow {
+    stroke: #59453634;
+    stroke-width: 15.5px;
+    opacity: 0.23;
+    filter: blur(0.26px);
+  }
+}
