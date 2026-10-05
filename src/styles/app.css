@@ -7634,3 +7634,21 @@ h1 {
       drop-shadow(0 14px 20px #4b352430);
   }
 }
+
+
+/* V154 scenic stacking correction.
+   The isolated raster matte belongs between the authored backdrop and castle,
+   not above the castle. DioramaScene now places it inside scene-backdrop; make
+   the ordering explicit so the matte textures distant scenery while the rear
+   architecture remains crisp. This changes no geometry or interaction. */
+.reference-first-scene .scene-art-backdrop {
+  z-index: 0;
+}
+
+.reference-first-scene .scene-backdrop .reference-scene-matte {
+  z-index: 1;
+}
+
+.reference-first-scene .scene-art-rear {
+  z-index: 2;
+}
