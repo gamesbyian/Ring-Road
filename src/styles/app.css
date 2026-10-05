@@ -7634,3 +7634,28 @@ h1 {
       drop-shadow(0 14px 20px #4b352430);
   }
 }
+
+
+/* V155 warm gap-mechanics pass.
+   The canonical openings expose tan miniature hardware, while the live gaps
+   still collapse toward charcoal. Lift only the recessed floor/notch material;
+   preserve painted ring colors, gap geometry, rotations, markers and hit areas. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-channel-floor {
+    stroke: #d1b0838c;
+    filter:
+      drop-shadow(0 1.6px 0.8px #39271e2e)
+      drop-shadow(0 -0.55px 0 #f7dfb758);
+  }
+
+  .reference-first-scene .notch-wall-lit {
+    fill-opacity: 0.9;
+    filter: brightness(1.02) saturate(0.94) drop-shadow(0 1.5px 0.7px #3b291f2b);
+  }
+
+  .reference-first-scene .notch-wall-shade {
+    fill-opacity: 0.8;
+    filter: brightness(0.82) saturate(0.96) drop-shadow(0 1.7px 0.7px #30211932);
+  }
+}
