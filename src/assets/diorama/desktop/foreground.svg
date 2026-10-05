@@ -29,12 +29,12 @@
        anchor the central stair as a real miniature gateway rather than a flat
        stack of rectangles -->
   <g filter="url(#shadow)">
-    <path d="M456 126 548 111 548 220H430Z" fill="#6c8ca2" stroke="#5a4937" stroke-width="3"/>
-    <path d="M984 126 892 111 892 220h118Z" fill="#6c8ca2" stroke="#5a4937" stroke-width="3"/>
-    <path d="M466 132 536 121 536 220h-92Z" fill="#8fc2d4" opacity=".78"/>
-    <path d="M974 132 904 121 904 220h92Z" fill="#8fc2d4" opacity=".78"/>
+    <path d="M456 126 548 111 548 220H430Z" fill="url(#stoneSide)" stroke="#6e4d35" stroke-width="3"/>
+    <path d="M984 126 892 111 892 220h118Z" fill="url(#stoneSide)" stroke="#6e4d35" stroke-width="3"/>
+    <path d="M466 132 536 121 536 220h-92Z" fill="#d7b17a" opacity=".72"/>
+    <path d="M974 132 904 121 904 220h92Z" fill="#d7b17a" opacity=".72"/>
     <path d="M442 160 548 144M434 193 548 178M998 160 892 144M1006 193 892 178"
-          fill="none" stroke="#d8edf0" stroke-width="4" opacity=".55"/>
+          fill="none" stroke="#f1d9ae" stroke-width="3" opacity=".42"/>
   </g>
 
   <!-- deeper stairwell and flanking retaining walls -->
