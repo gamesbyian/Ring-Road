@@ -7879,3 +7879,57 @@ h1 {
     transform: translate(-50%, -50%);
   }
 }
+
+
+/* V172 waterfall material pass.
+   The established cascade silhouettes/positions are close, but direct crop
+   comparison still shows the live water much too white/cyan and vertically
+   striped. Darken the body and break the foam into local irregular highlights
+   while preserving geometry, stacking and compact/mobile behavior. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .reference-waterfall {
+    background:
+      radial-gradient(ellipse at 31% 17%, #d9f6f5a6 0 4%, transparent 13%),
+      radial-gradient(ellipse at 64% 42%, #c7eef1a0 0 4%, transparent 12%),
+      radial-gradient(ellipse at 39% 73%, #e8fbf5a8 0 4%, transparent 13%),
+      linear-gradient(
+        90deg,
+        #246a9300 0 5%,
+        #2476a7cc 8% 23%,
+        #63b7c8bd 25% 35%,
+        #2d87b6dc 37% 55%,
+        #8ccfd3b6 57% 64%,
+        #2778a6dc 66% 91%,
+        #205d8700 95% 100%
+      );
+    opacity: 0.82;
+    filter:
+      drop-shadow(0 6px 8px #194b6940)
+      saturate(1.02)
+      contrast(1.08)
+      brightness(0.92);
+  }
+
+  .reference-first-scene .reference-waterfall::before {
+    inset: 3% 10% 5%;
+    background:
+      radial-gradient(ellipse at 35% 16%, #f1ffff96 0 3%, transparent 10%),
+      radial-gradient(ellipse at 62% 34%, #d7f7f49c 0 3%, transparent 11%),
+      radial-gradient(ellipse at 42% 57%, #f5ffff90 0 3.5%, transparent 12%),
+      radial-gradient(ellipse at 64% 79%, #dff8f59a 0 3%, transparent 11%),
+      linear-gradient(101deg,
+        transparent 0 16%,
+        #bfe8e968 20% 23%,
+        transparent 27% 48%,
+        #d9f6f36b 52% 55%,
+        transparent 59% 100%);
+    opacity: 0.62;
+  }
+
+  .reference-first-scene .reference-waterfall::after {
+    background:
+      radial-gradient(ellipse, #d9f8f09c 0 16%, #6ab9c47a 31%, #2e7ca34b 51%, transparent 73%);
+    opacity: 0.82;
+  }
+}
