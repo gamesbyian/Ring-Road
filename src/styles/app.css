@@ -7304,3 +7304,17 @@ h1 {
     border-left-color: #6d6f72;
   }
 }
+
+
+/* V132 control-rail registration pass.
+   At normalized 1440×1000 scale the canonical ring-control rail begins about
+   forty pixels higher than the retained live rail, while individual card
+   heights already match closely. Move the entire large-layout rail upward as
+   one unit without changing card geometry, hit targets, semantics or compact
+   layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-controls-slot {
+    top: 47%;
+  }
+}
