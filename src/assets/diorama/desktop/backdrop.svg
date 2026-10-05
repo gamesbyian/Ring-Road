@@ -118,4 +118,31 @@
   <path d="M0 745 C225 682 452 696 700 748 C950 690 1205 689 1440 742 V1000 H0Z" fill="#789363"/>
   <path d="M0 833 C265 779 510 790 766 838 C1012 792 1240 794 1440 830 V1000 H0Z" fill="#607a51"/>
   <path d="M0 902 C278 861 536 865 780 906 C1030 868 1248 870 1440 899 V1000 H0Z" fill="#486348" opacity=".68"/>
+
+  <!-- V125 lower-edge scenic density. The canonical frame keeps both lower
+       corners busy with clustered miniature conifers and pale rock while the
+       live scene still resolves into broad green bands. Add only low corner
+       silhouettes, leaving the central arena/stair footprint unobstructed. -->
+  <g opacity=".98">
+    <g fill="#315f4d">
+      <path d="M18 1000 62 858 108 1000Z"/><path d="M88 1000 132 884 174 1000Z"/>
+      <path d="M164 1000 211 842 260 1000Z"/><path d="M1182 1000 1228 862 1274 1000Z"/>
+      <path d="M1252 1000 1305 834 1358 1000Z"/><path d="M1330 1000 1380 876 1428 1000Z"/>
+    </g>
+    <g fill="#6f9568">
+      <path d="M62 858 62 1000 39 1000Z"/><path d="M132 884 132 1000 110 1000Z"/>
+      <path d="M211 842 211 1000 184 1000Z"/><path d="M1228 862 1228 1000 1204 1000Z"/>
+      <path d="M1305 834 1305 1000 1277 1000Z"/><path d="M1380 876 1380 1000 1356 1000Z"/>
+    </g>
+    <g fill="#c6a36f" stroke="#7e5b3e" stroke-width="3">
+      <path d="M8 1000 31 948 72 929 108 951 124 1000Z"/>
+      <path d="M226 1000 245 955 279 936 309 958 326 1000Z"/>
+      <path d="M1114 1000 1134 956 1168 938 1201 962 1214 1000Z"/>
+      <path d="M1378 1000 1397 948 1421 934 1440 944V1000Z"/>
+    </g>
+    <g fill="#ead4a8" opacity=".9">
+      <path d="M31 948 72 929 63 961Z"/><path d="M245 955 279 936 270 966Z"/>
+      <path d="M1134 956 1168 938 1158 968Z"/><path d="M1397 948 1421 934 1414 962Z"/>
+    </g>
+  </g>
 </svg>
