@@ -90,7 +90,7 @@
   </g>
 
   <!-- repeated pennant rhythm on the arena front -->
-  <g stroke="#5e4936" stroke-width="2" filter="url(#shadow)">
+  <g stroke="#5e4936" stroke-width="2" filter="url(#shadow)" transform="translate(150 -56) scale(.79)">
     <path d="M270 150h42v54l-21 16-21-16Z" fill="#d6b07a"/>
     <path d="M326 132h58v67l-29 21-29-21Z" fill="#345b8f"/>
     <path d="M398 145h46v57l-23 18-23-18Z" fill="#d0842c"/>
@@ -100,7 +100,7 @@
     <path d="M1056 132h58v67l-29 21-29-21Z" fill="#345b8f"/>
     <path d="M1128 150h42v54l-21 16-21-16Z" fill="#d6b07a"/>
   </g>
-  <g fill="#f0c84c">
+  <g fill="#f0c84c" transform="translate(150 -56) scale(.79)">
     <path d="M291 162 295 177 309 181 295 185 291 200 287 185 273 181 287 177Z"/>
     <path d="M355 151 359 170 376 177 359 184 355 203 351 184 334 177 351 170Z"/>
     <path d="M421 157 425 173 439 178 425 183 421 199 417 183 403 178 417 173Z"/>
