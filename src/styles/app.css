@@ -7251,3 +7251,56 @@ h1 {
     box-shadow: -0.27rem -0.04rem 0 #465268;
   }
 }
+
+
+/* V131 direct-reference rotation-arrow correction.
+   The canonical control rail uses circular rotation arrows inside the round
+   buttons. A later chevron override flattened those into navigation arrows.
+   Restore the earlier CSS-drawn rotational glyphs while keeping accessible
+   clockwise/counterclockwise labels and all button geometry unchanged. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .ring-control .rotation-glyph {
+    position: relative;
+    display: block;
+    width: 17px;
+    height: 17px;
+    border: 3px solid #3f454d;
+    border-right-color: transparent;
+    border-radius: 50%;
+    color: transparent;
+    font-size: 0;
+    line-height: 0;
+    text-shadow: none;
+    transform: none;
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph::after {
+    position: absolute;
+    right: -3px;
+    top: -2px;
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid #3f454d;
+    content: "";
+    transform: rotate(-18deg);
+    transform-origin: 50% 50%;
+  }
+
+  .reference-first-scene .ring-control .rotation-glyph-ccw {
+    transform: scaleX(-1);
+  }
+
+  .reference-first-scene .ring-control button:disabled .rotation-glyph {
+    border-color: #6d6f72;
+    border-right-color: transparent;
+    opacity: 0.5;
+  }
+
+  .reference-first-scene .ring-control button:disabled .rotation-glyph::after {
+    border-left-color: #6d6f72;
+  }
+}
