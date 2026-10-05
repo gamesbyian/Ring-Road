@@ -7677,3 +7677,20 @@ h1 {
     filter: brightness(0.82) saturate(0.96) drop-shadow(0 1.7px 0.7px #30211932);
   }
 }
+
+
+/* V159 rear-castle material-depth pass.
+   With the scenic matte now correctly behind the authored castle, the masonry
+   can carry a little more tonal depth. Strengthen only the rear-art filter so
+   battlements/arches read as solid miniature stone rather than pale cutouts;
+   preserve all geometry, layer order, HUD and gameplay. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-art-rear img {
+    filter:
+      saturate(1.04)
+      contrast(1.14)
+      brightness(0.99)
+      drop-shadow(0 14px 20px #4b35243b);
+  }
+}
