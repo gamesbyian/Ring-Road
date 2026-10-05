@@ -83,14 +83,6 @@
     <path d="M827 88h42l-7 22h-28Z" fill="#d4a66d"/>
   </g>
 
-  <!-- gold lamp/crystal caps -->
-  <g fill="url(#gold)" stroke="#986329" stroke-width="2" filter="url(#shadow)">
-    <path d="M592 48 611 83 592 105 573 83Z"/>
-    <path d="M848 48 867 83 848 105 829 83Z"/>
-    <path d="M592 57 600 82 592 93 584 82Z" fill="#fff4bd" opacity=".72"/>
-    <path d="M848 57 856 82 848 93 840 82Z" fill="#fff4bd" opacity=".72"/>
-  </g>
-
   <!-- repeated pennant rhythm on the arena front -->
   <g stroke="#5e4936" stroke-width="2" filter="url(#shadow)" transform="translate(150 -56) scale(.79)">
     <path d="M270 150h42v54l-21 16-21-16Z" fill="#d6b07a"/>
@@ -180,16 +172,13 @@
     <path d="M1068 203 1090 205 1079 210Z"/><path d="M1111 197 1138 194 1127 203Z"/>
   </g>
 
-  <!-- small stone footings around the central stairs -->
-  <g fill="#d7b27e" stroke="#765035" stroke-width="3">
-    <path d="M563 188h58v32h-58Z"/><path d="M819 188h58v32h-58Z"/>
-  </g>
-  <g fill="#f0c84c" stroke="#99692c" stroke-width="2" filter="url(#shadow)">
-    <path d="M592 189 596 201 609 205 596 209 592 221 588 209 575 205 588 201Z"/>
-    <path d="M848 189 852 201 865 205 852 209 848 221 844 209 831 205 844 201Z"/>
+  <!-- gold star emblems centered on the stair-post faces -->
+  <g fill="url(#gold)" stroke="#99692c" stroke-width="2" filter="url(#shadow)">
+    <path d="M592 143 597 157 612 163 597 169 592 183 587 169 572 163 587 157Z"/>
+    <path d="M848 143 853 157 868 163 853 169 848 183 843 169 828 163 843 157Z"/>
   </g>
   <g fill="#fff1a4" opacity=".62">
-    <path d="M592 194 594 203 601 205 594 207 592 216 590 207 583 205 590 203Z"/>
-    <path d="M848 194 850 203 857 205 850 207 848 216 846 207 839 205 846 203Z"/>
+    <path d="M592 149 595 159 604 163 595 167 592 177 589 167 580 163 589 159Z"/>
+    <path d="M848 149 851 159 860 163 851 167 848 177 845 167 836 163 845 159Z"/>
   </g>
 </svg>
