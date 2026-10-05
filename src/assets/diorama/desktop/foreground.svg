@@ -75,12 +75,12 @@
 
   <!-- stair-flanking monument piers -->
   <g filter="url(#shadow)" stroke="#765035" stroke-width="3">
-    <path d="M500 119h66v101h-66Z" fill="url(#stoneSide)"/>
-    <path d="M874 119h66v101h-66Z" fill="url(#stoneSide)"/>
-    <path d="M491 109h84v22h-84Z" fill="#e6c28f"/>
-    <path d="M865 109h84v22h-84Z" fill="#e6c28f"/>
-    <path d="M507 88h52l-9 22h-34Z" fill="#d4a66d"/>
-    <path d="M881 88h52l-9 22h-34Z" fill="#d4a66d"/>
+    <path d="M506 119h54v101h-54Z" fill="url(#stoneSide)"/>
+    <path d="M880 119h54v101h-54Z" fill="url(#stoneSide)"/>
+    <path d="M499 109h68v22h-68Z" fill="#e6c28f"/>
+    <path d="M873 109h68v22h-68Z" fill="#e6c28f"/>
+    <path d="M512 88h42l-7 22h-28Z" fill="#d4a66d"/>
+    <path d="M886 88h42l-7 22h-28Z" fill="#d4a66d"/>
   </g>
 
   <!-- gold lamp/crystal caps -->
@@ -182,7 +182,7 @@
 
   <!-- small stone footings around the central stairs -->
   <g fill="#d7b27e" stroke="#765035" stroke-width="3">
-    <path d="M465 188h72v32h-72Z"/><path d="M903 188h72v32h-72Z"/>
+    <path d="M472 188h58v32h-58Z"/><path d="M910 188h58v32h-58Z"/>
   </g>
   <g fill="#f0c84c" stroke="#99692c" stroke-width="2" filter="url(#shadow)">
     <path d="M501 189 505 201 518 205 505 209 501 221 497 209 484 205 497 201Z"/>
