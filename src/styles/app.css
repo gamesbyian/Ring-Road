@@ -7933,3 +7933,17 @@ h1 {
     opacity: 0.82;
   }
 }
+
+
+/* V173 foreground-monument registration pass.
+   The authored foreground architecture is proportioned correctly now, but the
+   entire layer still sits roughly one stair-height below the canonical frame.
+   Lift the complete decorative foreground as one unit so the stair flight and
+   star posts finish above the viewport edge, preserving all internal geometry,
+   HUD positions, gameplay and compact/mobile layouts. */
+@media (orientation: landscape) and (min-width: 820px) and (min-height: 600px),
+       (orientation: portrait) and (min-height: 820px) and (min-width: 600px) {
+  .reference-first-scene .scene-foreground {
+    bottom: 3.75rem;
+  }
+}
