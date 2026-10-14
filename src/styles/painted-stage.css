@@ -167,7 +167,7 @@
 }
 .painted-title-slot { top: 18px; left: calc(50% - 523px); width: 410px; }
 .painted-control-slot { top: var(--painted-rail-top); left: 8px; width: 345px; }
-.painted-goal-slot { bottom: 16px; left: 330px; width: 346px; }
+.painted-goal-slot { bottom: 16px; left: 370px; width: 346px; }
 .painted-navigation-slot { right: 12px; top: 12px; width: 360px; }
 .painted-moves-slot { right: 18px; top: 155px; width: 245px; }
 .painted-solution-slot { right: 17px; bottom: 13px; width: 210px; height: 196px; }
