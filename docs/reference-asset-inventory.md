@@ -56,3 +56,11 @@ This inventory is an addendum to [reference-fidelity-finish-plan.md](./reference
 5. Replace the old scenery in the production path only after visual captures pass, maintain no-scroll/portrait rotation, and report measured performance/decoded bytes.
 
 **Separate handoff artifact:** the conversation workspace has a verified `ring-road-reference-assets-2026-10-13.zip` containing all 18 unchanged source PNGs, SHA256 manifest, trial WebP exports and a diagnostic compositing preview. It is a prepared import bundle, **not yet GitHub-hosted**.
+
+## Tested acquisition and image-space ring experiment
+
+- `tools/import-reference-art.py`: SHA256-verifies **all 18 PNGs** against the signed-off bundle manifest (20,178,588 original bytes) without modifying production assets. Checked on the conversation's actual 2026-10-13 ZIP with a dry run and a populated stage including **14** optional trial WebPs.
+- `tools/normalize-reference-rings.py`: offline NumPy/OpenCV radial remapping of all **seven** transparent source C-rings from the verified originals to uniform nested band increments. The code was run against the supplied images; exports total **194,064 bytes** as WebP quality-90. An initial static composition uses the newly normalized rings over `reference-empty-arena.png` and gives visually credible depth, with known remaining issues: outer/middle ring registration, dynamic gap walls, alpha fringes, center pearl, and source shading during rotations.
+- There is also a standalone **calibration-page experiment** in the conversation workspace with live sprite rotations and fixed-stage UI, intended as an integration study, not a replacement for production puzzle logic; Chromium here is blocked by the environment's managed `URLBlocklist: ["*"]` policy, so it has **not passed browser interaction or no-scroll screenshots**.
+
+The import and normalization tools are developer-only and do not add frontend JS dependencies. Their outputs are staging artifacts; integration to `src/render/RingBoard.tsx`, `src/render/DioramaScene.tsx`, and `src/styles/app.css` must preserve the existing application's domain semantics and build gates.
