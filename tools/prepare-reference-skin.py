@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Stage the user's approved painted Ring Road scenery and experimental ring textures.
 
-No extra Python deps. The two exact user-provided ZIPs are inputs, never fetched
+Requires tools/requirements-visual.txt for ring normalization. Original ZIPs are inputs, never fetched
 from a network or substituted by a generated stand-in.
 
   python tools/prepare-reference-skin.py reference-assets.zip calibration.zip
@@ -12,6 +12,9 @@ The files are NOT already in the repository; this is an explicit handoff/import.
 import argparse
 import hashlib
 import json
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -49,10 +52,30 @@ def main():
         for name in SCENERY:
             data = source.read("art-source/ring-road-2026-10-13/optimized/" + name)
             staged[name] = data
-        for i, color in enumerate(COLORS, start=1):
-            name = "ring-" + str(i) + "-" + color + "-normalized.webp"
-            data = calibration.read("ring-road-skin-calibration-2026-10-14/assets/" + name)
-            staged[name] = data
+        # Never promote the original proof-of-concept normalized sprites: their
+        # green and violet apertures were accidentally filled by radial resampling.
+        # Regenerate from checksum-verified ORIGINAL PNGs with notch masks fixed.
+        with TemporaryDirectory(prefix="ring-road-normalize-") as temp:
+            base = Path(temp)
+            originals = base / "originals"
+            rendered = base / "rendered"
+            originals.mkdir()
+            for i, color in enumerate(COLORS, start=1):
+                name = "ring-" + str(i) + "-" + color + ".png"
+                source_path = "art-source/ring-road-2026-10-13/originals/" + name
+                (originals / name).write_bytes(source.read(source_path))
+            try:
+                subprocess.run([
+                    sys.executable,
+                    str(Path(__file__).resolve().with_name("normalize-reference-rings.py")),
+                    "--originals", str(originals),
+                    "--output", str(rendered)
+                ], check=True)
+            except subprocess.CalledProcessError as exc:
+                raise RuntimeError("Ring normalization failed; install requirements-visual.txt") from exc
+            for i, color in enumerate(COLORS, start=1):
+                name = "ring-" + str(i) + "-" + color + "-normalized.webp"
+                staged[name] = (rendered / name).read_bytes()
         # Existing optional user-supplied illustration extracts (never generated on CI).
         for name in ["logo.webp"] + ["row-" + str(i) + ".webp" for i in range(1, 8)]:
             staged[name] = calibration.read("ring-road-skin-calibration-2026-10-14/assets/" + name)
@@ -64,6 +87,7 @@ def main():
         "calibration_archive": opt.calibration_zip.name,
         "source_art_verified": 18,
         "experimental_renderer": True,
+        "ring_notch_corrected": True,
         "files": [],
     }
     for filename, data in staged.items():
