@@ -23,11 +23,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Inspect uploaded reference art on dedicated asset branch
-        if: github.head_ref == 'assets/identify-and-build-painted-art'
-        run: |
-          python3 -m pip install --quiet Pillow
-          python3 tools/audit-uploaded-art.py
       - run: npm run check
       - run: npm run browser:smoke
       - name: Capture painted reference at phone sizes
