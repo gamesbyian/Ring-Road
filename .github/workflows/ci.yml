@@ -26,8 +26,7 @@ jobs:
       - run: npm run check
       - run: npm run browser:smoke
       - name: Capture painted reference at phone sizes
-        run: npm run visual:audit -- --skin painted --out artifacts/painted-viewport
-        continue-on-error: true # diagnostic until full-scene mobile acceptance
+        run: npm run visual:audit -- --skin painted --strict --out artifacts/painted-viewport
       - name: Compare native-ratio painted image to supplied landscape reference
         run: |
           python3 -m pip install --quiet Pillow
