@@ -1,0 +1,109 @@
+{
+  "source_archive": "ring-road-reference-assets-2026-10-13.zip",
+  "calibration_archive": "ring-road-skin-calibration-2026-10-14.zip",
+  "source_art_verified": 18,
+  "experimental_renderer": true,
+  "ring_notch_corrected": true,
+  "files": [
+    {
+      "file": "ocean-sky-mountains.webp",
+      "bytes": 228272,
+      "sha256": "d9310c4b45ea3d239dec17feefc66a710d3a36f522e64478d44523aea70c4e62"
+    },
+    {
+      "file": "castle-waterfalls-terrain.webp",
+      "bytes": 383770,
+      "sha256": "5a768d282cfd5c082472dad6233b8fb04869e8c9ae10d02ab1ad938638f64656"
+    },
+    {
+      "file": "arena-plinth-empty.webp",
+      "bytes": 201656,
+      "sha256": "45bec511a3c92517485f1ad5413e4bcc5413fdee3c84c535543527ab14687348"
+    },
+    {
+      "file": "foreground-stairs-flowers.webp",
+      "bytes": 209536,
+      "sha256": "0486e3216adfc2c9aa6807097df57caea28325310f2676f3256e57c336c58664"
+    },
+    {
+      "file": "reference-empty-arena.webp",
+      "bytes": 250806,
+      "sha256": "47489870d013e6702761531a7b112acb1ad080abf76f850da7f05976bf222474"
+    },
+    {
+      "file": "logo.webp",
+      "bytes": 26114,
+      "sha256": "b4042a17bdf9aa2bfec449f6462450ba3a89787c4862ef4142e68acf0efe0e4b"
+    },
+    {
+      "file": "row-1.webp",
+      "bytes": 3930,
+      "sha256": "4a7143a23d2ce77f6d882be68354608a8be75e204f8aa1e4d33806e9aa028a19"
+    },
+    {
+      "file": "row-2.webp",
+      "bytes": 3938,
+      "sha256": "20299a7c82717e1407e5e21b55f451b8b406bdab789ab7efa148a6802fcd187b"
+    },
+    {
+      "file": "row-3.webp",
+      "bytes": 3744,
+      "sha256": "16abdd2b51b070bd1f913d9019419a12a722623d880dc8ffad30d291af30514c"
+    },
+    {
+      "file": "row-4.webp",
+      "bytes": 3622,
+      "sha256": "42b7b942b5d5c79b0ed7e12969e3ac6dba4cf5dc9c57f1045ec0defac097f8d0"
+    },
+    {
+      "file": "row-5.webp",
+      "bytes": 3780,
+      "sha256": "99be72a729c327ed1f537a28a93174668700809b39c799705582efb0443ab8df"
+    },
+    {
+      "file": "row-6.webp",
+      "bytes": 3932,
+      "sha256": "55b907157756cd9cbae9a5b84b28c954e58a86f16b56c0e9a02e9f567426ccc4"
+    },
+    {
+      "file": "row-7.webp",
+      "bytes": 3890,
+      "sha256": "999f658ae7ac3d183b9968157762efa8118d3fdf3f272a29b83d38b16bb58c0f"
+    },
+    {
+      "file": "ring-1-red-normalized.webp",
+      "bytes": 42142,
+      "sha256": "11c79bcde9b61aba1b99248d3d2970ad443a90168b84d8c9c86e1a8a3240a9f2"
+    },
+    {
+      "file": "ring-2-orange-normalized.webp",
+      "bytes": 37982,
+      "sha256": "4434d4f2c0bea0f46a6d53c6d64166d8b5974ed4987ad1cf7b1580b5ef53be5a"
+    },
+    {
+      "file": "ring-3-yellow-normalized.webp",
+      "bytes": 29834,
+      "sha256": "fbab6ad3487fd77b404e418e74e87a447c71b506188205c1fcca28f13aef3c46"
+    },
+    {
+      "file": "ring-4-green-normalized.webp",
+      "bytes": 28266,
+      "sha256": "b82aabf9e40335213b6825885258d8931fb12efc8a05b509a092e795ebf95c4e"
+    },
+    {
+      "file": "ring-5-blue-normalized.webp",
+      "bytes": 22824,
+      "sha256": "65dbf550978c48bb91df8232edf22ff1dda1754e60b7e19c4ce2aebfc1a6ed54"
+    },
+    {
+      "file": "ring-6-indigo-normalized.webp",
+      "bytes": 15982,
+      "sha256": "9d5629f99ffe11655cc2345550e0c89eb9d95f1928c94db92e77706631a2514c"
+    },
+    {
+      "file": "ring-7-violet-normalized.webp",
+      "bytes": 10106,
+      "sha256": "7cb75fa895523c3193b86df7d084406583db77d76cef5ad6bd94bce3a1676347"
+    }
+  ]
+}
