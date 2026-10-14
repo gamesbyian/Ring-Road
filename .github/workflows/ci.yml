@@ -28,6 +28,16 @@ jobs:
       - name: Capture painted reference at phone sizes
         run: npm run visual:audit -- --skin painted --out artifacts/painted-viewport
         continue-on-error: true # diagnostic until full-scene mobile acceptance
+      - name: Compare native-ratio painted image to supplied landscape reference
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 scripts/visual-reference-compare.py \
+            --reference docs/assets/reference-play-1536x864.jpg \
+            --actual artifacts/painted-viewport/game-painted-1536x864.png \
+            --regions docs/reference-landscape-regions.json \
+            --out artifacts/painted-viewport/reference-diff \
+            --mode native
+        continue-on-error: true # diagnostic until optical registration is signed off
       - name: Upload painted scene captures and geometry
         if: always()
         uses: actions/upload-artifact@v4
