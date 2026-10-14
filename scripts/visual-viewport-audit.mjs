@@ -282,7 +282,14 @@ try {
     }
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
     await cdp.evaluate("document.fonts.ready");
-    await delay(150);
+    if (skin === "painted") {
+      // img.complete/naturalWidth reflect transfer, not completed image decode.
+      // A capture may otherwise show a fully loaded React UI over an empty
+      // matte. Await every image's decode and two compositor frames.
+      await cdp.evaluate("Promise.all([...document.querySelectorAll('.painted-stage img')].map(img => img.decode()))");
+      await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    }
+    await delay(220);
     const result = await cdp.evaluate("(" + inspectDOM.toString() + ")(" + JSON.stringify(skin) + ")");
     result.requested = {width, height};
     const filename = "game-" + skin + "-" + width + "x" + height;
