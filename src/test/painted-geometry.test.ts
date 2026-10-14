@@ -25,7 +25,7 @@ describe("painted sprite to real domain mapping", () => {
     const next = Array.from({ length: 7 }, (_, art) =>
       paintedRingDegrees(puzzle, visual, 0, art));
     for (let art = 0; art < 6; art++) expect(next[art]).toBe(original[art]);
-    expect(next[6] - original[6]).toBeCloseTo(360 / puzzle.ringCycles[0], 10);
+    expect((next[6] ?? 0) - (original[6] ?? 0)).toBeCloseTo(360 / puzzle.ringCycles[0], 10);
   });
 
   it("keeps the animation continuous when the normalized domain state wraps", () => {
@@ -55,7 +55,7 @@ describe("painted sprite to real domain mapping", () => {
     const next = Array.from({ length: 7 }, (_, art) =>
       paintedRingDegrees(puzzle, puzzle.initial, 1, art));
     for (let art = 0; art < 7; art++) {
-      expect(next[art] - original[art]).toBeCloseTo(360 / puzzle.ringCycles[0], 10);
+      expect((next[art] ?? 0) - (original[art] ?? 0)).toBeCloseTo(360 / puzzle.ringCycles[0], 10);
     }
   });
 });
