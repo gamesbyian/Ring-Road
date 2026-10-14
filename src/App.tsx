@@ -1,15 +1,28 @@
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { completionStatus, initialGameState, isExactSolved, nextMoveHint, reduceGame } from "./app/game-state";
 import { CAMPAIGN, CAMPAIGN_ANALYSES } from "./content/campaign";
 import { DioramaScene } from "./render/DioramaScene";
 import { RingBoard } from "./render/RingBoard";
+import { PaintedRingBoard, PaintedScene, paintedAsset } from "./render/PaintedScene";
 import "./styles/app.css";
+import "./styles/painted-stage.css";
 import { Modal } from "./ui/Modal";
 
 const LABELS = ["Violet", "Indigo", "Blue", "Green", "Yellow", "Orange", "Red"];
 const RING_ORDER = [6, 5, 4, 3, 2, 1, 0] as const;
 
 export default function App() {
+  // Explicit opt-in until shipped assets and real mobile browser acceptance pass.
+  const [paintedSkin, setPaintedSkin] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("skin") !== "painted") return;
+    let active = true;
+    const test = new Image();
+    test.onload = () => { if (active) setPaintedSkin(true); };
+    test.onerror = () => { if (active) setPaintedSkin(false); };
+    test.src = paintedAsset("ring-1-red-normalized.webp");
+    return () => { active = false; };
+  }, []);
   const [state, dispatch] = useReducer(
     (current: ReturnType<typeof initialGameState>, action: Parameters<typeof reduceGame>[1]) =>
       reduceGame(current, action, CAMPAIGN),
@@ -53,7 +66,7 @@ export default function App() {
 
   const title = (
     <header className="world-header">
-      <div className="title-plaque world-plaque">
+      <div className="title-plaque world-plaque" style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("logo.webp") + ")" } : undefined}>
         <span className="eyebrow">Precision alignment puzzle</span>
         <h1><span>Ring</span><span>Road</span></h1>
         <span className="title-mountain-mark" aria-hidden="true" />
@@ -63,8 +76,11 @@ export default function App() {
     </header>
   );
 
+  const Board = paintedSkin ? PaintedRingBoard : RingBoard;
+  const Scene = paintedSkin ? PaintedScene : DioramaScene;
+
   const board = (
-    <RingBoard
+    <Board
       puzzle={puzzle}
       visualStates={state.visualStates}
       boardOrientation={state.boardOrientation}
@@ -84,6 +100,7 @@ export default function App() {
             <div
               className={`ring-control ring-control-${ring}`}
               key={ring}
+              style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("row-" + (7 - ring) + ".webp") + ")" } : undefined}
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
@@ -181,8 +198,8 @@ export default function App() {
   );
 
   return (
-    <main className="app-shell">
-      <DioramaScene
+    <main className={"app-shell" + (paintedSkin ? " painted-app" : "")}>
+      <Scene
         title={title}
         board={board}
         controls={controls}
