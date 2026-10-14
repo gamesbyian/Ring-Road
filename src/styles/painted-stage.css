@@ -567,3 +567,17 @@
 .painted-stage .painted-hub-button {
   top: 50%;
 }
+
+/* Zero-visibility registration probes for real browser hit tests.
+   Their percent positions are derived from the 234px row artwork itself. */
+.painted-stage .painted-arrow-art-anchor {
+  position: absolute;
+  top: 50%;
+  left: 63%;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.painted-stage .painted-arrow-art-anchor-right { left: 85%; }
