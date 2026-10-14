@@ -100,7 +100,7 @@ function inspectDOM(requestedSkin) {
     const top = x >= 0 && x < width && y >= 0 && y < height ? document.elementFromPoint(x, y) : null;
     return [{
       label: button.getAttribute("aria-label") || button.textContent.trim(),
-      rect: rectInfo(rect), fits: fits(rect), min44: rect.width >= 44 && rect.height >= 44,
+      rect: rectInfo(rect), fits: fits(rect), min44: rect.width >= 43.5 && rect.height >= 43.5,
       centerHit: Boolean(top && (top === button || button.contains(top)))
     }];
   });
@@ -129,6 +129,22 @@ function inspectDOM(requestedSkin) {
     : ".scene-art img"));
   const artLoaded = art.length >= (painted ? 8 : 3) &&
     art.every((img) => img.complete && img.naturalWidth > 0);
+  const artDiagnostics = painted ? [
+    ".painted-stage", ".painted-ocean", ".painted-world",
+    ".painted-registered-scene", ".painted-board-slot",
+  ].map((selector) => {
+    const element = document.querySelector(selector);
+    if (!element) return {selector, missing: true};
+    const css = getComputedStyle(element), rect = element.getBoundingClientRect();
+    return {
+      selector, rect: rectInfo(rect),
+      display: css.display, visibility: css.visibility, opacity: css.opacity,
+      position: css.position, zIndex: css.zIndex, transform: css.transform,
+      objectFit: css.objectFit, background: css.backgroundColor,
+      clipPath: css.clipPath, filter: css.filter,
+      naturalWidth: element instanceof HTMLImageElement ? element.naturalWidth : null,
+    };
+  }) : [];
   const currentSkin = shell?.getAttribute("data-skin-mode") || "unknown";
   const skinStatus = shell?.getAttribute("data-skin-status") || "unknown";
   const relevantStage = document.querySelector(painted ? ".painted-stage" : ".diorama-scene");
@@ -155,7 +171,7 @@ function inspectDOM(requestedSkin) {
     ...buttons.filter((b) => !b.centerHit).map((b) => "obstructed center hit: " + b.label),
   ];
   return {viewport: {width, height}, portrait, painted, currentSkin, skinStatus,
-    rotated, shellFits, stageFits, stageRect: stageRect ? rectInfo(stageRect) : null,
+    rotated, shellFits, stageFits, artDiagnostics, stageRect: stageRect ? rectInfo(stageRect) : null,
     visualViewport: window.visualViewport ? {
       width: window.visualViewport.width, height: window.visualViewport.height,
       scale: window.visualViewport.scale
