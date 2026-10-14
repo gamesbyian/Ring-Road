@@ -302,7 +302,19 @@ try {
   if (strict && failures) process.exitCode = 1;
 } finally {
   cdp?.close();
-  if (chrome && chrome.exitCode === null) chrome.kill("SIGTERM");
-  if (preview && preview.exitCode === null) preview.kill("SIGTERM");
-  await rm(temp, {recursive: true, force: true});
+  // Chrome may still be asynchronously writing its profile when killed.
+  // Wait for process exit before deleting the profile, then retry ENOTEMPTY
+  // instead of turning a fully passed visual audit into a spurious red job.
+  const stop = async (process) => {
+    if (!process || process.exitCode !== null) return;
+    const exited = new Promise((resolve) => process.once("exit", resolve));
+    process.kill("SIGTERM");
+    await Promise.race([exited, delay(2000)]);
+    if (process.exitCode === null) {
+      process.kill("SIGKILL");
+      await Promise.race([exited, delay(1000)]);
+    }
+  };
+  await Promise.all([stop(chrome), stop(preview)]);
+  await rm(temp, {recursive: true, force: true, maxRetries: 12, retryDelay: 200});
 }
