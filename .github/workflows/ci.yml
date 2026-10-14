@@ -25,6 +25,17 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run browser:smoke
+      - name: Capture painted reference at phone sizes
+        run: npm run visual:audit -- --skin painted --out artifacts/painted-viewport
+        continue-on-error: true # diagnostic until full-scene mobile acceptance
+      - name: Upload painted scene captures and geometry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-road-painted-visual-matrix
+          path: artifacts/painted-viewport
+          if-no-files-found: warn
+          retention-days: 7
       - name: Upload visual smoke captures
         if: always()
         uses: actions/upload-artifact@v4
