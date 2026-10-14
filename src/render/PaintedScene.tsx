@@ -35,7 +35,7 @@ export function PaintedRingBoard({
   const label = completed ? "Puzzle complete"
     : canFire ? "Fire center ball" : "Center ball locked until exact alignment";
   return (
-    <div className="painted-ring-board board-frame" aria-label="Seven concentric puzzle rings">
+    <div className="painted-ring-board" aria-label="Seven concentric puzzle rings">
       <div className="painted-ring-projection">
         {PAINTED_RING_COLORS.map((color, artIndex) => {
           const degrees = paintedRingDegrees(puzzle, visualStates, boardOrientation, artIndex);
@@ -91,16 +91,27 @@ export function PaintedScene({
   const scale = Math.max(0.01, screen.short / DESIGN_HEIGHT);
   const stageWidth = screen.long / scale;
   const touch = 44 / scale;
+  // The 16:9 illustration is the exact 1536×864 registration authority;
+  // shorter phone layouts must keep the full-height seven-button rail.
+  const photoLayout = screen.short >= 600 && screen.long / screen.short >= 1.65;
   const customProperties = {
     "--painted-stage-width": stageWidth + "px",
     "--painted-scale": String(scale),
     "--painted-touch": touch + "px",
-    "--painted-logo-left": (screen.short < 370 ? 365 : 20) + "px",
-    "--painted-rail-top": Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7)) + "px",
+    "--painted-logo-left": (photoLayout ? 175 : screen.short < 370 ? 365 : 20) + "px",
+    "--painted-logo-top": (photoLayout ? 19 : 6) + "px",
+    "--painted-logo-width": (photoLayout ? 356 : 335) + "px",
+    "--painted-logo-height": (photoLayout ? 214 : 180) + "px",
+    "--painted-rail-left": (photoLayout ? 190 : 8) + "px",
+    "--painted-rail-width": (photoLayout ? 220 : 345) + "px",
+    "--painted-rail-top": (photoLayout ? 245 : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
+    "--painted-goal-left": (photoLayout ? 128 : 370) + "px",
+    "--painted-goal-bottom": (photoLayout ? 55 : 16) + "px",
+    "--painted-goal-height": (photoLayout ? 172 : 190) + "px",
   } as CSSProperties;
   return (
     <section className="painted-stage-host" aria-label="Ring Road play area">
-      <div className="painted-stage reference-first-scene" style={customProperties}>
+      <div className="painted-stage reference-first-scene" data-photo-layout={photoLayout ? "true" : "false"} style={customProperties}>
         <ArtImage filename="ocean-sky-mountains.webp" className="painted-ocean" />
         <div className="painted-world" aria-hidden="true">
           <ArtImage filename="reference-empty-arena.webp" className="painted-registered-scene" />
