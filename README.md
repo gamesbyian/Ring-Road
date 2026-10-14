@@ -19,8 +19,22 @@ The original single-file proof of concept is preserved at [`prototype/v1/`](./pr
 
 ## Reference-fidelity tooling
 
-After `npm run build`, run `npm run visual:audit` to capture the single-screen landscape/rotated-portrait viewport matrix, identify escaping controls and scrolling, and record screenshot/geometry evidence. `npm run visual:audit -- --strict` enforces the new fit tests (not yet part of the green quality gate; first close the existing deviations). For source-image comparisons, optionally install Pillow and run `python scripts/visual-reference-compare.py --reference docs/3d-ring-renderer-concept.jpg --actual artifacts/screenshots/reference-layout-1440x1000.png --mode contain`. Cross-aspect differences are exploratory only. See [`docs/reference-fidelity-finish-plan.md`](./docs/reference-fidelity-finish-plan.md).
+After `npm run build`, run `npm run visual:audit` to capture the single-screen landscape/rotated-portrait viewport matrix, identify escaping controls and scrolling, and record screenshot/geometry evidence. `npm run visual:audit -- --skin painted --strict` enforces the no-scroll, physical viewport, semantic hit-box and painted input-path checks at 13 resolutions, including rotated portrait. The CI painted capture matrix is the browser evidence used for every visual PR. For source-image comparisons, optionally install Pillow and run `python scripts/visual-reference-compare.py --reference docs/3d-ring-renderer-concept.jpg --actual artifacts/screenshots/reference-layout-1440x1000.png --mode contain`. Cross-aspect differences are exploratory only. See [`docs/reference-fidelity-finish-plan.md`](./docs/reference-fidelity-finish-plan.md).
 
-## User-supplied 2026-10-13 artwork bundle
+## Painted reference artwork (available in repo)
 
-The complete 18-image source set was supplied as `ring-road-reference-assets-2026-10-13.zip` in the project conversation, but **the image binaries are not yet in GitHub**. After placing the ZIP in your checkout, run `python tools/import-reference-art.py path/to/zip --include-trial-webp`. All 18 masters are SHA256 verified and staged outside the production runtime. For a radial normalization experiment, install `python -m pip install -r tools/requirements-visual.txt`, then run `python tools/normalize-reference-rings.py --originals artifacts/reference-art-import/art-source/ring-road-2026-10-13/originals`. Do not ship those experimental ring images until visual geometry, motion, markers and mobile fit are accepted. See `docs/reference-asset-inventory.md`.
+The verified high-resolution user artwork is now checked in at `art-source/ring-road-2026-10-13/`. The original 13 modular PNG masters live under `originals/`, and five additional 1672×941 compositions and sheets under `highres-uploads/`. The user-uploaded anonymous root files were renamed by preserving their original Git blobs; see [classification evidence](./docs/highres-upload-classification.md).
+
+The complete optimized **20-WebP runtime package** and its SHA256/byte-size manifest are already checked in under `public/reference-skin/`. No additional upload, ZIP or conversion is required to preview the painted renderer. To run it locally:
+
+```bash
+npm ci
+npm run dev
+# open the local Ring Road app and append ?skin=painted
+```
+
+The painted mode is an **opt-in visual acceptance candidate** until user-approved as the default. The existing game remains the fallback if the full art package fails to decode or validate. Source art remains separate from browser-delivered assets.
+
+After building, run `npm run visual:audit -- --skin painted --strict` and inspect `artifacts/visual-viewport-audit/` (PNG captures plus JSON bounds). The test includes actual coordinate-driven browser interactions on selected landscape/portrait screens; it does not replace final physical-device inspection or visual review against the 1536×864 reference.
+
+For optional art regeneration experiments, see `tools/import-reference-art.py`, `tools/normalize-reference-rings.py` and [the active finish plan](./docs/reference-fidelity-finish-plan.md). The source PNGs are never modified by the runtime.
