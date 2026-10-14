@@ -2,7 +2,7 @@ import type { Puzzle } from "../domain/puzzle";
 
 /** The user's art calls the outer red circle Ring 1, opposite domain index 0. */
 export const ART_ORDER_TO_DOMAIN = [6, 5, 4, 3, 2, 1, 0] as const;
-export const NATIVE_GAP_DEGREES = [-90, -60, -4, 0, 0, 4, 0] as const;
+export const NATIVE_GAP_DEGREES = [-90, -60, -4, 5, 0, 4, 6] as const;
 export const PAINTED_RING_COLORS = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"] as const;
 
 /**
