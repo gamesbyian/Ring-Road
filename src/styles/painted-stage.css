@@ -463,3 +463,64 @@
   .painted-stage .painted-title-slot { top: 6px; }
   .painted-stage .painted-goal-slot { bottom: 6px; }
 }
+
+/* Use the user's individually illustrated row plaques and logo.
+   Semantic labels and real button elements remain underneath, focus outlines
+   reappear above the painting. These art sources are opt-in until reviewed. */
+.painted-stage.reference-first-scene .painted-title-slot {
+  left: var(--painted-logo-left);
+  top: 6px;
+  width: 335px;
+  height: 180px;
+}
+.painted-stage.reference-first-scene .title-plaque {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: none;
+  transform: none;
+}
+.painted-stage.reference-first-scene .title-plaque::before,
+.painted-stage.reference-first-scene .title-plaque::after { display: none; }
+.painted-stage.reference-first-scene .title-plaque h1,
+.painted-stage.reference-first-scene .title-tagline,
+.painted-stage.reference-first-scene .title-mountain-mark,
+.painted-stage.reference-first-scene .title-road-mark {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.painted-stage.reference-first-scene .ring-control {
+  border: 0;
+  padding: 0 3px;
+  border-radius: 0;
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: none;
+}
+.painted-stage.reference-first-scene .ring-control .swatch,
+.painted-stage.reference-first-scene .ring-control .ring-name {
+  opacity: 0;
+}
+.painted-stage.reference-first-scene .ring-control button {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
+}
+.painted-stage.reference-first-scene .ring-control button:hover { background: #fff2; }
+.painted-stage.reference-first-scene .ring-control button:active { background: #fff4; }
+.painted-stage.reference-first-scene .ring-control .rotation-glyph { opacity: 0; }
+.painted-stage.reference-first-scene .ring-control button:focus-visible {
+  outline: 7px solid #0d67e6;
+  outline-offset: -4px;
+  background: #fff4;
+}
