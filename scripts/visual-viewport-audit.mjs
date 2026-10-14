@@ -13,7 +13,11 @@ function option(flag, defaultValue) {
 }
 const out = option("--out", "artifacts/visual-viewport-audit");
 const externalUrl = option("--url", null);
-const url = externalUrl || "http://127.0.0.1:4173/Ring-Road/";
+const skin = option("--skin", "classic");
+if (!["classic", "painted"].includes(skin)) throw new Error("--skin must be classic or painted");
+const targetUrl = new URL(externalUrl || "http://127.0.0.1:4173/Ring-Road/");
+if (skin === "painted") targetUrl.searchParams.set("skin", "painted");
+const url = targetUrl.href;
 const spec = JSON.parse(await readFile(new URL("../docs/reference-regions.json", import.meta.url), "utf8"));
 const sizes = [...spec.phoneViewports, ...spec.otherViewports];
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -68,8 +72,13 @@ async function connect(port) {
   return {send, evaluate, close: () => socket.close()};
 }
 
-function inspectDOM() {
-  const selectors = [
+function inspectDOM(requestedSkin) {
+  const painted = Boolean(document.querySelector(".painted-stage-host"));
+  const selectors = painted ? [
+    ".painted-stage-host", ".painted-stage", ".painted-title-slot", ".painted-ring-board",
+    ".painted-control-slot", ".ring-controls", ".painted-navigation-slot",
+    ".painted-goal-slot", ".painted-moves-slot", ".painted-solution-slot", ".painted-status-slot"
+  ] : [
     ".scene-title-slot", ".board-frame", ".ring-controls", ".scene-navigation-slot",
     ".reference-goal-card", ".reference-solution-card", ".reference-moves-card", ".puzzle-plaque"
   ];
@@ -95,7 +104,10 @@ function inspectDOM() {
       centerHit: Boolean(top && (top === button || button.contains(top)))
     }];
   });
-  const scroll = Object.fromEntries(["html", "body", "#root", ".app-shell", ".diorama-scene"].map((selector) => {
+  const scrollTargets = painted
+    ? ["html", "body", "#root", ".app-shell"]
+    : ["html", "body", "#root", ".app-shell", ".diorama-scene"];
+  const scroll = Object.fromEntries(scrollTargets.map((selector) => {
     const element = selector === "html" ? document.documentElement : document.querySelector(selector);
     if (!element) return [selector, {missing: true}];
     const style = getComputedStyle(element);
@@ -112,22 +124,38 @@ function inspectDOM() {
   const shellFits = !!shellRect && fits(shellRect)
     && Math.abs(shellRect.width - width) <= 3 && Math.abs(shellRect.height - height) <= 3;
   const rotated = shell ? getComputedStyle(shell).transform !== "none" : false;
-  const artLoaded = Array.from(document.querySelectorAll(".scene-art img")).every(
-    (img) => img.complete && img.naturalWidth > 0);
+  const art = Array.from(document.querySelectorAll(painted
+    ? ".painted-stage img"
+    : ".scene-art img"));
+  const artLoaded = art.length >= (painted ? 8 : 3) &&
+    art.every((img) => img.complete && img.naturalWidth > 0);
+  const currentSkin = shell?.getAttribute("data-skin-mode") || "unknown";
+  const skinStatus = shell?.getAttribute("data-skin-status") || "unknown";
+  const relevantStage = document.querySelector(painted ? ".painted-stage" : ".diorama-scene");
+  const stageRect = relevantStage?.getBoundingClientRect();
+  const stageFits = !!stageRect && fits(stageRect) &&
+    Math.abs(stageRect.width - width) <= 4 &&
+    Math.abs(stageRect.height - height) <= 4;
+  const readyRows = Array.from(document.querySelectorAll(".ring-control")).every(
+    (row) => getComputedStyle(row).visibility !== "hidden");
   const failures = [
+    ...(requestedSkin !== currentSkin ? ["requested skin not activated (" + skinStatus + ")"] : []),
     ...(rotated !== portrait ? ["rotation"] : []),
+    ...(!stageFits ? ["game stage does not fit physical viewport"] : []),
+    ...(!readyRows ? ["missing/hidden ring row"] : []),
     ...(!shellFits ? ["shell does not fit viewport"] : []),
     ...(document.querySelectorAll(".ring-control").length !== 7 ? ["not seven controls"] : []),
     ...(!artLoaded ? ["art not loaded"] : []),
     ...(document.querySelector(".modal") ? ["guide still open"] : []),
-    ...(["html","body","#root",".app-shell",".diorama-scene"].filter(
+    ...(scrollTargets.filter(
       (k) => scroll[k]?.excessY || scroll[k]?.excessX).map((k) => "content exceeds " + k)),
     ...regions.filter((r) => !r.fits).map((r) => "region outside: " + r.selector),
     ...buttons.filter((b) => !b.fits).map((b) => "clipped button: " + b.label),
     ...buttons.filter((b) => !b.min44).map((b) => "undersized button: " + b.label),
     ...buttons.filter((b) => !b.centerHit).map((b) => "obstructed center hit: " + b.label),
   ];
-  return {viewport: {width, height}, portrait, rotated, shellFits,
+  return {viewport: {width, height}, portrait, painted, currentSkin, skinStatus,
+    rotated, shellFits, stageFits, stageRect: stageRect ? rectInfo(stageRect) : null,
     visualViewport: window.visualViewport ? {
       width: window.visualViewport.width, height: window.visualViewport.height,
       scale: window.visualViewport.scale
@@ -166,17 +194,29 @@ try {
       if (attempt === 99) throw new Error("Timed out waiting for app at " + width + "x" + height);
       await delay(60);
     }
+    if (skin === "painted") {
+      // The app deliberately refuses to activate if any of the 20 art files
+      // fail to load; never mistake its fallback scene for a passing paint run.
+      for (let attempt = 0; attempt < 150; attempt++) {
+        const status = await cdp.evaluate(
+          "document.querySelector('.app-shell')?.getAttribute('data-skin-status')");
+        if (status === "ready" || status === "unavailable") break;
+        if (attempt === 149) throw new Error("Painted artwork activation timed out");
+        await delay(100);
+      }
+    }
     await cdp.evaluate("document.querySelector('.modal-footer button')?.click()");
+    await cdp.evaluate("document.fonts.ready");
     await delay(150);
-    const result = await cdp.evaluate("(" + inspectDOM.toString() + ")()");
+    const result = await cdp.evaluate("(" + inspectDOM.toString() + ")(" + JSON.stringify(skin) + ")");
     result.requested = {width, height};
-    const filename = "game-" + width + "x" + height;
+    const filename = "game-" + skin + "-" + width + "x" + height;
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
     captures.push(result);
     console.log(filename + ": " + result.failures.length + " issue(s): " + result.failures.slice(0, 5).join("; "));
   }
-  const report = {url, date: new Date().toISOString(), strict, results: captures};
+  const report = {url, skin, date: new Date().toISOString(), strict, results: captures};
   await writeFile(join(out, "report.json"), JSON.stringify(report, null, 2) + "\n");
   const failures = captures.filter((r) => r.failures.length).length;
   console.log("Audit complete: " + sizes.length + " sizes, " + failures + " with issues. See " + out);
