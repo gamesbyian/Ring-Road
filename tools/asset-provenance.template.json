@@ -1,0 +1,26 @@
+{
+  "asset_id": "example-foreground-stair",
+  "source_reference": "docs/3d-ring-renderer-concept.jpg",
+  "source_reference_sha256": "FILL_WITH_SHA256",
+  "region_or_mask": "art-source/masks/example-foreground-stair.png",
+  "intended_slot": "foreground",
+  "logical_stage": "landscape-phone",
+  "tool": "ComfyUI / Blender / manual / other",
+  "model_or_workflow": "FILL_WITH_ID_AND_VERSION",
+  "model_checkpoint_sha256": "FILL_IF_GENERATIVE_MODEL",
+  "seed": null,
+  "prompt": "FILL_WITH_EXACT_PROMPT_OR_MANUAL_STEPS",
+  "negative_prompt": "",
+  "modifications": [
+    "mask cleanup",
+    "perspective registration",
+    "hand retouch"
+  ],
+  "lighting": "warm key upper-left, soft sky fill",
+  "author_review": "PENDING",
+  "approved_source_master": "art-source/approved/example-foreground-stair.png",
+  "runtime_export": "src/assets/diorama/desktop/example-foreground-stair.webp",
+  "source_rights": "USER_ORIGINAL_OR_LICENSE_INFO",
+  "dependencies": [],
+  "notes": "Keep production text and gameplay gaps out of baked art; this is a template, not an approved asset"
+}

@@ -1,0 +1,160 @@
+{
+  "reference": {
+    "width": 1536,
+    "height": 1152,
+    "source": "User-supplied 2026-10-13 1536x1152 PNG; compare with docs/3d-ring-renderer-concept.jpg before assuming pixel identity",
+    "note": "boxes are manual estimates, review against image before automated landmark scoring"
+  },
+  "regions": [
+    {
+      "id": "logo",
+      "box": [
+        35,
+        25,
+        495,
+        280
+      ],
+      "selector": ".scene-title-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "controls",
+      "box": [
+        50,
+        296,
+        310,
+        790
+      ],
+      "selector": ".ring-controls",
+      "priority": "critical"
+    },
+    {
+      "id": "board",
+      "box": [
+        330,
+        157,
+        1320,
+        843
+      ],
+      "selector": ".board-frame",
+      "priority": "critical"
+    },
+    {
+      "id": "arena",
+      "box": [
+        270,
+        112,
+        1390,
+        1110
+      ],
+      "selector": ".scene-board-plinth",
+      "priority": "high"
+    },
+    {
+      "id": "puzzle",
+      "box": [
+        1260,
+        22,
+        1520,
+        146
+      ],
+      "selector": ".puzzle-plaque",
+      "priority": "critical"
+    },
+    {
+      "id": "moves",
+      "box": [
+        1305,
+        152,
+        1515,
+        324
+      ],
+      "selector": ".reference-moves-card",
+      "priority": "critical"
+    },
+    {
+      "id": "goal",
+      "box": [
+        27,
+        873,
+        496,
+        1109
+      ],
+      "selector": ".reference-goal-card",
+      "priority": "critical"
+    },
+    {
+      "id": "solution",
+      "box": [
+        1275,
+        868,
+        1520,
+        1115
+      ],
+      "selector": ".reference-solution-card",
+      "priority": "critical"
+    }
+  ],
+  "requiredInViewport": [
+    ".scene-title-slot",
+    ".board-frame",
+    ".ring-controls",
+    ".scene-navigation-slot",
+    ".reference-goal-card",
+    ".reference-solution-card",
+    ".reference-moves-card",
+    ".puzzle-plaque"
+  ],
+  "phoneViewports": [
+    [
+      568,
+      320
+    ],
+    [
+      667,
+      375
+    ],
+    [
+      740,
+      360
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      852,
+      393
+    ],
+    [
+      915,
+      412
+    ],
+    [
+      932,
+      430
+    ]
+  ],
+  "otherViewports": [
+    [
+      1024,
+      768
+    ],
+    [
+      1440,
+      1000
+    ],
+    [
+      1920,
+      1080
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      430,
+      932
+    ]
+  ]
+}
