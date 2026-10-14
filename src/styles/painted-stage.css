@@ -78,8 +78,8 @@
 .painted-board-slot {
   position: absolute;
   z-index: 4;
-  left: calc(50% + 35px);
-  top: 401px;
+  left: calc(50% + 40px);
+  top: 423px;
   width: 900px;
   height: 648px;
   transform: translate(-50%, -50%);
@@ -99,7 +99,7 @@
   top: -126px;
   width: 900px;
   height: 900px;
-  transform: scale(1, .74);
+  transform: scale(1.02, .706);
   transform-origin: center center;
   pointer-events: none;
 }
@@ -299,7 +299,7 @@
 .painted-stage.reference-first-scene .ring-control .rotation-glyph::after { display: none; }
 .painted-stage.reference-first-scene .control-monument .actions {
   position: absolute;
-  left: calc(var(--painted-stage-width) - 269px);
+  left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 269px);
   top: calc(331px - var(--painted-rail-top));
   width: 248px;
   display: grid;
@@ -559,4 +559,47 @@
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
+}
+
+/* Action control positioning is relative to the left rail. The reference
+   canvas places the rail 190px in from the edge, unlike narrow phones.
+   Subtract that inset so Undo/Reset/Hint cannot escape the right viewport. */
+.painted-stage.reference-first-scene .puzzle-plaque button {
+  font-size: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff2da, #e6c8a3);
+  border: 2px solid #c19d73;
+  box-shadow: 0 2px 0 #ae865f;
+}
+.painted-stage.reference-first-scene .puzzle-plaque button::after {
+  display: block;
+  position: absolute;
+  inset: 0;
+  line-height: calc(var(--painted-touch) - 4px);
+  color: #333745;
+  font-size: 38px;
+  font-weight: 900;
+  text-align: center;
+}
+.painted-stage.reference-first-scene .puzzle-plaque button:first-child::after { content: "‹"; }
+.painted-stage.reference-first-scene .puzzle-plaque button:last-child::after { content: "›"; }
+.painted-stage.reference-first-scene .puzzle-plaque button:focus-visible {
+  outline: 6px solid #0d67e6;
+  outline-offset: 0;
+}
+/* The guide and puzzle counter already communicate the complete rules.
+   Keep the accessible live status region but remove its screenshot-only
+   footer chrome so the sandstone steps remain visible like the reference. */
+.painted-stage .painted-status-slot .status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
