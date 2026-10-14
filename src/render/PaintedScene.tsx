@@ -43,10 +43,10 @@ export function PaintedRingBoard({
     <div className="painted-ring-board board-frame" aria-label="Seven concentric puzzle rings">
       <div className="painted-ring-projection">
         {ART_COLORS.map((color, artIndex) => {
-          const domainIndex = ART_ORDER_TO_DOMAIN[artIndex];
+          const domainIndex = ART_ORDER_TO_DOMAIN[artIndex] ?? 0;
           const cycle = puzzle.ringCycles[domainIndex];
           const steps = visualStates[domainIndex] ?? 0;
-          const degrees = boardRotation + steps * 360 / cycle - NATIVE_GAP_DEGREES[artIndex];
+          const degrees = boardRotation + steps * 360 / cycle - (NATIVE_GAP_DEGREES[artIndex] ?? 0);
           return (
             <img key={color}
               className={"painted-ring-sprite " + (rotationMotion === "instant" ? "painted-ring-instant" : "")}
