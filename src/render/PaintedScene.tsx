@@ -95,7 +95,8 @@ export function PaintedScene({
     "--painted-stage-width": stageWidth + "px",
     "--painted-scale": String(scale),
     "--painted-touch": touch + "px",
-    "--painted-rail-top": Math.max(0, (DESIGN_HEIGHT - touch * 7) / 2) + "px",
+    "--painted-logo-left": (screen.short < 370 ? 365 : 20) + "px",
+    "--painted-rail-top": Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7)) + "px",
   } as CSSProperties;
   return (
     <section className="painted-stage-host" aria-label="Ring Road play area">
