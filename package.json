@@ -14,9 +14,10 @@
     "check:repo": "node scripts/check-repo.mjs",
     "check:art": "node scripts/check-diorama-assets.mjs",
     "check:context": "node scripts/check-context-budget.mjs",
-    "check": "npm run typecheck && npm test && npm run build && npm run check:repo && npm run check:art && npm run check:skin-art && npm run check:context",
+    "check": "npm run typecheck && npm test && npm run build && npm run check:repo && npm run check:art && npm run check:skin-art && npm run check:visual-audit && npm run check:context",
     "visual:audit": "node scripts/visual-viewport-audit.mjs",
-    "check:skin-art": "node scripts/check-reference-skin.mjs"
+    "check:skin-art": "node scripts/check-reference-skin.mjs",
+    "check:visual-audit": "node --check scripts/visual-viewport-audit.mjs"
   },
   "dependencies": {
     "react": "19.1.1",
