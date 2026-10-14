@@ -76,6 +76,7 @@ def main():
             for i, color in enumerate(COLORS, start=1):
                 name = "ring-" + str(i) + "-" + color + "-normalized.webp"
                 staged[name] = (rendered / name).read_bytes()
+        staged["reference-empty-arena.webp"] = calibration.read("ring-road-skin-calibration-2026-10-14/assets/reference-empty-arena.webp")
         # Existing optional user-supplied illustration extracts (never generated on CI).
         for name in ["logo.webp"] + ["row-" + str(i) + ".webp" for i in range(1, 8)]:
             staged[name] = calibration.read("ring-road-skin-calibration-2026-10-14/assets/" + name)
