@@ -21,6 +21,8 @@ import numpy as np
 from PIL import Image
 
 RING_COLORS = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+# Source C-notch bearings, clockwise from 3 oclock; match painted-geometry.ts.
+NATIVE_GAP_DEGREES = [-90, -60, -4, 5, 0, 4, 6]
 CANVAS = 900
 SOURCE_CENTER = (627.0, 627.0)
 SEGMENTS = 1440
@@ -64,6 +66,14 @@ def normalize(source: Path, index: int, output: Path) -> dict:
     margin = np.minimum(radius - inner_radius, outer_radius - radius)
     fade = np.clip(margin / 1.5 + .5, 0, 1)
     mapped[:, :, 3] = np.asarray(mapped[:, :, 3].astype(np.float32) * fade, dtype=np.uint8)
+    # Native C-ring source images sometimes retain opaque paint over their
+    # notch after polar retopology (especially green/violet). Enforce a
+    # calibrated 30px tangential opening on every ring.
+    native_angle = np.deg2rad(NATIVE_GAP_DEGREES[index])
+    delta = np.abs((angle - native_angle + np.pi) % (2 * np.pi) - np.pi)
+    half_gap = 15.0 / ((inner_radius + outer_radius) / 2)
+    feather = np.clip((delta - half_gap) * ((inner_radius + outer_radius) / 2) + 0.5, 0, 1)
+    mapped[:, :, 3] = np.asarray(mapped[:, :, 3].astype(np.float32) * feather, dtype=np.uint8)
     output.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(mapped, mode="RGBA").save(output, format="WEBP", quality=90, method=6)
     data = output.read_bytes()
