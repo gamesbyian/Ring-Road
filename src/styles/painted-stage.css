@@ -79,7 +79,7 @@
   position: absolute;
   z-index: 4;
   left: calc(50% + 35px);
-  top: 403px;
+  top: 410px;
   width: 900px;
   height: 648px;
   transform: translate(-50%, -50%);
@@ -99,7 +99,7 @@
   top: -126px;
   width: 900px;
   height: 900px;
-  transform: scaleY(.72);
+  transform: scale(1.10, .72);
   transform-origin: center center;
   pointer-events: none;
 }
@@ -523,4 +523,12 @@
   outline: 7px solid #0d67e6;
   outline-offset: -4px;
   background: #fff4;
+}
+
+/* The user's completed empty-scene plate is already camera-registered:
+   use it directly for phase 1 instead of accidentally stacking two arenas. */
+.painted-world .painted-registered-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
