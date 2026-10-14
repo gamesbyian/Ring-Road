@@ -532,3 +532,38 @@
   width: 100%;
   height: 100%;
 }
+
+/*
+ * Painted phone target registration, 2026-10-14.
+ * Each source row is 234 x 57, with circular arrow art centered at
+ * approximately 63% and 85% of its width. The older grid located the first
+ * hitbox as much as 18 real pixels away from the arrow on a 568x320 phone.
+ * Anchor DOM buttons to the painted art and keep at least 44 physical pixels
+ * per hitbox; intentional hitbox overlap is resolved by the button centers.
+ */
+.painted-stage.reference-first-scene .ring-control {
+  position: relative;
+}
+.painted-stage.reference-first-scene .ring-control button {
+  position: absolute;
+  top: 50%;
+  left: 63%;
+  transform: translate(-50%, -50%);
+  width: var(--painted-touch);
+  height: var(--painted-touch);
+  min-width: var(--painted-touch);
+  min-height: var(--painted-touch);
+  padding: 0;
+}
+.painted-stage.reference-first-scene .ring-control button:nth-of-type(2) {
+  left: 85%;
+}
+/* Goal may share the last row's Y interval, but must never obstruct a ring. */
+.painted-stage.reference-first-scene .painted-goal-slot {
+  left: 365px;
+}
+/* The pearl and hitbox must share the actual center of the projected rings. */
+.painted-stage .painted-pearl,
+.painted-stage .painted-hub-button {
+  top: 50%;
+}
