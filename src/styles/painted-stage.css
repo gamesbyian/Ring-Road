@@ -78,8 +78,8 @@
 .painted-board-slot {
   position: absolute;
   z-index: 4;
-  left: calc(50% + 40px);
-  top: 423px;
+  left: calc(50% + 43px);
+  top: 413px;
   width: 900px;
   height: 648px;
   transform: translate(-50%, -50%);
@@ -99,7 +99,7 @@
   top: -126px;
   width: 900px;
   height: 900px;
-  transform: scale(1.02, .706);
+  transform: scale(1.027, .733);
   transform-origin: center center;
   pointer-events: none;
 }
@@ -298,6 +298,10 @@
 .painted-stage.reference-first-scene .ring-control .rotation-glyph::before,
 .painted-stage.reference-first-scene .ring-control .rotation-glyph::after { display: none; }
 .painted-stage.reference-first-scene .control-monument .actions {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
   position: absolute;
   left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 269px);
   top: calc(331px - var(--painted-rail-top));
