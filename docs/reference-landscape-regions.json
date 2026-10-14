@@ -1,0 +1,109 @@
+{
+  "reference": {
+    "width": 1536,
+    "height": 864,
+    "source": "docs/assets/reference-play-1536x864.jpg",
+    "note": "Exact user-supplied landscape composition. Bounding boxes are manually registered and should be refined against the source pixels."
+  },
+  "regions": [
+    {
+      "id": "logo",
+      "box": [
+        175,
+        19,
+        531,
+        233
+      ],
+      "selector": ".painted-title-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "controls",
+      "box": [
+        188,
+        245,
+        394,
+        610
+      ],
+      "selector": ".painted-control-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "board",
+      "box": [
+        443,
+        153,
+        1193,
+        678
+      ],
+      "selector": ".painted-ring-board",
+      "priority": "critical"
+    },
+    {
+      "id": "arena",
+      "box": [
+        393,
+        136,
+        1273,
+        862
+      ],
+      "selector": ".painted-world",
+      "priority": "high"
+    },
+    {
+      "id": "puzzle",
+      "box": [
+        1152,
+        36,
+        1375,
+        140
+      ],
+      "selector": ".painted-navigation-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "moves",
+      "box": [
+        1203,
+        147,
+        1375,
+        285
+      ],
+      "selector": ".painted-moves-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "goal",
+      "box": [
+        128,
+        637,
+        488,
+        809
+      ],
+      "selector": ".painted-goal-slot",
+      "priority": "critical"
+    },
+    {
+      "id": "solution",
+      "box": [
+        1235,
+        632,
+        1427,
+        825
+      ],
+      "selector": ".painted-solution-slot",
+      "priority": "critical"
+    }
+  ],
+  "acceptance": {
+    "nativeViewport": [
+      1536,
+      864
+    ],
+    "phoneViewport": [
+      844,
+      390
+    ],
+    "notes": "Compare like-aspect reference-native captures first; phone composition is separately recomposed. Pixel MAE is exploratory due dynamic texts/gaps."
+  }
+}
