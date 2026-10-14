@@ -103,13 +103,9 @@ export function PaintedScene({
       <div className="painted-stage reference-first-scene" style={customProperties}>
         <ArtImage filename="ocean-sky-mountains.webp" className="painted-ocean" />
         <div className="painted-world" aria-hidden="true">
-          <ArtImage filename="castle-waterfalls-terrain.webp" className="painted-landscape" />
-          <ArtImage filename="arena-plinth-empty.webp" className="painted-arena" />
+          <ArtImage filename="reference-empty-arena.webp" className="painted-registered-scene" />
         </div>
         <div className="painted-board-slot">{board}</div>
-        <div className="painted-world painted-foreground" aria-hidden="true">
-          <ArtImage filename="foreground-stairs-flowers.webp" className="painted-front-art" />
-        </div>
         <div className="painted-title-slot">{title}</div>
         <div className="painted-control-slot">{controls}</div>
         <div className="painted-goal-slot">{goal}</div>
