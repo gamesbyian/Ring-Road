@@ -168,7 +168,7 @@
 .painted-title-slot { top: 18px; left: calc(50% - 523px); width: 410px; }
 .painted-control-slot { top: var(--painted-rail-top); left: 8px; width: 345px; }
 .painted-goal-slot { bottom: 16px; left: 330px; width: 346px; }
-.painted-navigation-slot { right: 14px; top: 12px; width: 278px; }
+.painted-navigation-slot { right: 12px; top: 12px; width: 360px; }
 .painted-moves-slot { right: 18px; top: 155px; width: 245px; }
 .painted-solution-slot { right: 17px; bottom: 13px; width: 210px; height: 196px; }
 .painted-status-slot { left: 50%; bottom: 4px; transform: translateX(-50%); width: 440px; }
@@ -371,7 +371,8 @@
   height: var(--painted-touch);
   min-height: var(--painted-touch);
   min-width: 0;
-  width: 19%;
+  width: var(--painted-touch);
+  flex: 0 0 var(--painted-touch);
   font-size: 17px;
   padding: 1px;
 }
@@ -379,7 +380,8 @@
   display: grid;
   justify-items: center;
   gap: 0;
-  width: 62%;
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 26px;
 }
 .painted-stage.reference-first-scene .puzzle-index small { display: none; }
