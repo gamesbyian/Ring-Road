@@ -64,3 +64,7 @@ This inventory is an addendum to [reference-fidelity-finish-plan.md](./reference
 - There is also a standalone **calibration-page experiment** in the conversation workspace with live sprite rotations and fixed-stage UI, intended as an integration study, not a replacement for production puzzle logic; Chromium here is blocked by the environment's managed `URLBlocklist: ["*"]` policy, so it has **not passed browser interaction or no-scroll screenshots**.
 
 The import and normalization tools are developer-only and do not add frontend JS dependencies. Their outputs are staging artifacts; integration to `src/render/RingBoard.tsx`, `src/render/DioramaScene.tsx`, and `src/styles/app.css` must preserve the existing application's domain semantics and build gates.
+
+## Critical artwork-to-domain index mapping
+
+The source art labels the **outermost red circle as Ring 1**, with orange=2, yellow=3, green=4, blue=5, indigo=6 and the **innermost violet as Ring 7**. The production app's `LABELS` / `RingBoard` use the reverse internal order: violet domain index `0`, indigo `1`, blue `2`, green `3`, yellow `4`, orange `5`, red `6`. The source-art file `ring-N-<color>.png` must bind to **internal ring index `7 - N`**, never `N-1`. Keep the existing cycle vector, ring geometry, aria labels and reducer dispatch owner intact. Assert this mapping in a focused integration test before rendering exported assets in the main game.
