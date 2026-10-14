@@ -1,0 +1,463 @@
+/*
+ * Reference-art full-screen stage, strictly opt-in until the source image
+ * package is committed and the mobile no-scroll visual audit passes.
+ * Logical world: 864 units tall; viewport short edge determines scale.
+ * Paint and true controls share coordinates but never share ownership.
+ */
+.app-shell.painted-app {
+  position: fixed;
+  inset: 0;
+  width: 100dvw;
+  height: 100dvh;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+@media (orientation: portrait) {
+  .app-shell.painted-app {
+    top: 50%;
+    left: 50%;
+    width: 100dvh;
+    height: 100dvw;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: 50% 50%;
+    overflow: hidden;
+  }
+}
+.painted-stage-host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #3a9ed9;
+  isolation: isolate;
+  touch-action: manipulation;
+}
+.painted-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--painted-stage-width);
+  height: 864px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  transform: translate(-50%, -50%) scale(var(--painted-scale));
+  transform-origin: center;
+  isolation: isolate;
+}
+.painted-stage img[aria-hidden] { pointer-events: none; user-select: none; }
+.painted-ocean {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.painted-world {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 0;
+  width: 1536px;
+  height: 864px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.painted-world > img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.painted-foreground { z-index: 5; }
+.painted-board-slot {
+  position: absolute;
+  z-index: 4;
+  left: calc(50% + 35px);
+  top: 403px;
+  width: 900px;
+  height: 648px;
+  transform: translate(-50%, -50%);
+}
+.painted-stage .painted-ring-board {
+  position: relative;
+  width: 900px;
+  height: 648px;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  perspective: none;
+}
+.painted-ring-projection {
+  position: absolute;
+  left: 0;
+  top: -126px;
+  width: 900px;
+  height: 900px;
+  transform: scaleY(.72);
+  transform-origin: center center;
+  pointer-events: none;
+}
+.painted-ring-sprite {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 900px;
+  height: 900px;
+  transform-origin: 50% 50%;
+  transition: transform 150ms cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+  pointer-events: none;
+}
+.painted-ring-sprite.painted-ring-instant { transition: none; }
+.painted-pearl {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 47%;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 31% 23%, #fff 0 22%, #ebddeb 45%, #ab9ab8 81%, #72678d 100%);
+  box-shadow: 0 6px 11px #3929338c, 0 -2px 2px #ffffff8c;
+  transform: translate(-50%, -50%);
+  transition: opacity 300ms, transform 300ms;
+  pointer-events: none;
+}
+.painted-pearl-fired { opacity: 0; transform: translate(-50%, -140%); }
+.painted-stage .painted-hub-button {
+  position: absolute;
+  z-index: 11;
+  left: 50%;
+  top: 47%;
+  width: var(--painted-touch);
+  height: var(--painted-touch);
+  min-height: var(--painted-touch);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  touch-action: manipulation;
+}
+.painted-stage .painted-hub-button:focus-visible {
+  outline: 7px solid #faf5c9;
+  outline-offset: 2px;
+}
+.painted-stage .painted-hub-button:disabled { cursor: default; }
+/* Title, control rail, and HUD are positioned in one logical stage.
+   Stage horizontal extent expands as phone aspect widens. */
+.painted-title-slot,
+.painted-control-slot,
+.painted-goal-slot,
+.painted-navigation-slot,
+.painted-moves-slot,
+.painted-solution-slot,
+.painted-status-slot {
+  position: absolute;
+  z-index: 8;
+  box-sizing: border-box;
+}
+.painted-title-slot { top: 18px; left: calc(50% - 523px); width: 410px; }
+.painted-control-slot { top: var(--painted-rail-top); left: 8px; width: 345px; }
+.painted-goal-slot { bottom: 16px; left: 330px; width: 346px; }
+.painted-navigation-slot { right: 14px; top: 12px; width: 278px; }
+.painted-moves-slot { right: 18px; top: 155px; width: 245px; }
+.painted-solution-slot { right: 17px; bottom: 13px; width: 210px; height: 196px; }
+.painted-status-slot { left: 50%; bottom: 4px; transform: translateX(-50%); width: 440px; }
+.painted-stage.reference-first-scene .world-header {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+  transform: none;
+}
+.painted-stage.reference-first-scene .title-plaque {
+  position: relative;
+  display: block;
+  width: 400px;
+  min-width: 0;
+  max-width: 100%;
+  height: 192px;
+  padding: 15px 24px;
+  border: 3px solid #9f7844;
+  border-radius: 14px 22px 15px 19px;
+  background: linear-gradient(160deg, #fff6dc 10%, #e6c78e 75%, #d09f6d);
+  box-shadow: 0 8px 0 #815836, 0 15px 22px #513b3168;
+  transform: rotate(-4deg);
+}
+.painted-stage.reference-first-scene .title-plaque .eyebrow { display: none; }
+.painted-stage.reference-first-scene .title-plaque h1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  width: max-content;
+  font-size: 78px;
+  letter-spacing: -5px;
+  line-height: .83;
+  font-weight: 1000;
+  text-shadow: 3px 5px 0 #8b73545e;
+}
+.painted-stage.reference-first-scene .title-plaque h1 span:last-child { color: #ce4e4f; padding-left: 64px; }
+.painted-stage.reference-first-scene .title-tagline {
+  position: absolute;
+  left: 47px;
+  bottom: -11px;
+  display: block;
+  white-space: nowrap;
+  color: #292936;
+  padding: 7px 14px;
+  font-weight: 900;
+  font-size: 18px;
+  background: #edb65a;
+  transform: rotate(-2deg);
+}
+.painted-stage.reference-first-scene .control-monument {
+  position: static;
+  overflow: visible;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.painted-stage.reference-first-scene .control-monument::before,
+.painted-stage.reference-first-scene .control-monument::after { display: none; }
+.painted-stage.reference-first-scene .ring-controls {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.painted-stage.reference-first-scene .ring-control {
+  display: grid;
+  grid-template-columns: 42px 1fr var(--painted-touch) var(--painted-touch);
+  column-gap: 0;
+  align-items: center;
+  width: 345px;
+  height: var(--painted-touch);
+  min-height: var(--painted-touch);
+  margin: 0;
+  padding: 0 3px;
+  border: 2px solid #c1a47c;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #fff7e9eb, #e6ceabee);
+  box-shadow: 0 3px 0 #977a59ba;
+  overflow: visible;
+}
+.painted-stage.reference-first-scene .ring-control .swatch {
+  width: 28px;
+  height: 28px;
+  margin: auto;
+  flex: none;
+}
+.painted-stage.reference-first-scene .ring-control .ring-name {
+  display: block;
+  font-size: 23px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.painted-stage.reference-first-scene .ring-control .ring-name small { display: none; }
+.painted-stage.reference-first-scene .ring-control button {
+  display: grid;
+  place-items: center;
+  width: var(--painted-touch);
+  height: var(--painted-touch);
+  min-width: var(--painted-touch);
+  min-height: var(--painted-touch);
+  padding: 0;
+  margin: 0;
+  border: 2px solid #b7956d;
+  border-radius: 50%;
+  background: linear-gradient(#fff9ec, #d7bd98);
+  box-shadow: 0 2px 0 #9a7650;
+  font-size: 35px;
+}
+.painted-stage.reference-first-scene .ring-control button:focus-visible {
+  outline: 6px solid #156de5;
+  outline-offset: -3px;
+}
+.painted-stage.reference-first-scene .ring-control .rotation-glyph {
+  transform: none;
+  font-size: 36px;
+  color: #273247;
+  border: 0;
+}
+.painted-stage.reference-first-scene .ring-control .rotation-glyph::before,
+.painted-stage.reference-first-scene .ring-control .rotation-glyph::after { display: none; }
+.painted-stage.reference-first-scene .control-monument .actions {
+  position: absolute;
+  left: calc(var(--painted-stage-width) - 269px);
+  top: calc(331px - var(--painted-rail-top));
+  width: 248px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 2px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+}
+.painted-stage.reference-first-scene .actions button {
+  min-width: 0;
+  min-height: var(--painted-touch);
+  height: var(--painted-touch);
+  font-size: 22px;
+  padding: 3px;
+  border-radius: 10px;
+}
+.painted-stage.reference-first-scene .reference-goal-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 160px;
+  padding: 14px 18px;
+  border: 3px solid #c5a174;
+  border-radius: 17px;
+  background: linear-gradient(170deg, #fff5db, #eac89c);
+  box-shadow: 0 7px 0 #a88252, 0 13px 16px #57452e80;
+}
+.painted-stage.reference-first-scene .reference-goal-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 26px;
+}
+.painted-stage.reference-first-scene .reference-goal-heading button {
+  display: grid;
+  place-items: center;
+  min-height: var(--painted-touch);
+  width: var(--painted-touch);
+  height: var(--painted-touch);
+  padding: 0;
+  border-radius: 50%;
+  font-size: 28px;
+}
+.painted-stage.reference-first-scene .reference-goal-card p {
+  display: block;
+  margin: 8px 0 0;
+  max-width: 100%;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.painted-stage.reference-first-scene .reference-goal-miniature { display: none; }
+.painted-stage.reference-first-scene .puzzle-plaque {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  height: 132px;
+  gap: 0;
+  padding: 8px;
+  border: 3px solid #b9976b;
+  border-radius: 17px;
+  background: linear-gradient(150deg, #fff1db, #e5c29e);
+  box-shadow: 0 6px 12px #5e3c266f;
+}
+.painted-stage.reference-first-scene .puzzle-plaque button {
+  display: block;
+  height: var(--painted-touch);
+  min-height: var(--painted-touch);
+  min-width: 0;
+  width: 19%;
+  font-size: 17px;
+  padding: 1px;
+}
+.painted-stage.reference-first-scene .puzzle-index {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  width: 62%;
+  font-size: 26px;
+}
+.painted-stage.reference-first-scene .puzzle-index small { display: none; }
+.painted-stage.reference-first-scene .reference-moves-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 158px;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 23px;
+  color: #293243;
+  background: linear-gradient(160deg, #fff4da, #e6c49b);
+  box-shadow: 0 8px 14px #583f2870;
+}
+.painted-stage.reference-first-scene .reference-moves-card strong {
+  font-size: 69px;
+  line-height: 1;
+}
+.painted-stage.reference-first-scene .reference-moves-target { font-size: 20px; }
+.painted-stage.reference-first-scene .reference-solution-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 10px 13px;
+  color: #fff5db;
+  background: linear-gradient(145deg, #222a34, #11171c);
+  border: 3px solid #5c5450;
+  border-radius: 17px;
+  font-size: 22px;
+}
+.painted-stage.reference-first-scene .reference-solution-card:focus-visible {
+  outline: 6px solid #f6cf65;
+}
+.painted-stage.reference-first-scene .reference-solution-preview { max-height: 135px; }
+.painted-stage.reference-first-scene .status {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  border-radius: 10px;
+  background: #fff4dfd9;
+}
+.painted-app .modal {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  height: 100%;
+  max-height: 100%;
+  padding: 12px;
+  place-items: center;
+}
+.painted-app .modal article {
+  max-width: 95%;
+  max-height: calc(100% - 28px);
+}
+.painted-app .modal-scroll { min-height: 0; overflow-y: auto; }
+.painted-app .modal-footer { flex-shrink: 0; }
+/* The stage scales all coordinates, but source buttons must still have the
+   44px *physical* hit box. This calculation is done in PaintedScene.tsx. */
+@media (prefers-reduced-motion: reduce) {
+  .painted-ring-sprite, .painted-pearl { transition: none !important; }
+}
+/* Ultra compact viewport: preserve the rail by making title, Goal and status
+   shorter; do not shrink interaction targets below 44px. */
+@media (orientation: landscape) and (max-height: 340px),
+       (orientation: portrait) and (max-width: 340px) {
+  .painted-stage .painted-title-slot { top: 6px; }
+  .painted-stage .painted-goal-slot { bottom: 6px; }
+}
