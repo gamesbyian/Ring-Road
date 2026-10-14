@@ -66,7 +66,7 @@ export default function App() {
 
   const title = (
     <header className="world-header">
-      <div className="title-plaque world-plaque">
+      <div className="title-plaque world-plaque" style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("logo.webp") + ")" } : undefined}>
         <span className="eyebrow">Precision alignment puzzle</span>
         <h1><span>Ring</span><span>Road</span></h1>
         <span className="title-mountain-mark" aria-hidden="true" />
@@ -100,6 +100,7 @@ export default function App() {
             <div
               className={`ring-control ring-control-${ring}`}
               key={ring}
+              style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("row-" + (7 - ring) + ".webp") + ")" } : undefined}
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
