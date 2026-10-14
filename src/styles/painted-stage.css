@@ -355,6 +355,7 @@
 .painted-stage.reference-first-scene .reference-goal-card p {
   display: block;
   margin: 8px 0 0;
+  width: 100%;
   max-width: 100%;
   font-size: 18px;
   line-height: 1.2;
