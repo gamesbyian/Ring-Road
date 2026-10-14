@@ -109,6 +109,12 @@ export default function App() {
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
+              {paintedSkin && (
+                <>
+                  <span className="painted-arrow-art-anchor painted-arrow-art-anchor-left" aria-hidden="true" />
+                  <span className="painted-arrow-art-anchor painted-arrow-art-anchor-right" aria-hidden="true" />
+                </>
+              )}
               <span className={`swatch ring-${ring}`} aria-hidden="true"><i /></span>
               <span className="ring-name">Ring {7 - ring} <small>{cycle} stops</small></span>
               <button
