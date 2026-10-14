@@ -35,8 +35,8 @@ jobs:
             --actual artifacts/painted-viewport/game-painted-1536x864.png \
             --regions docs/reference-landscape-regions.json \
             --out artifacts/painted-viewport/reference-diff \
-            --mode native
-        continue-on-error: true # diagnostic until optical registration is signed off
+            --mode native \
+            --max-rgb-mae 45
       - name: Upload painted scene captures and geometry
         if: always()
         uses: actions/upload-artifact@v4
