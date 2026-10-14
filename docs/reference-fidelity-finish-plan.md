@@ -1,5 +1,7 @@
 # Reference-exact landscape finish: execution contract
 
+> **2026-10-13 asset update:** Fifteen modular illustration components plus three earlier complete-scene references were supplied and inspected. The **1536×864 composed image** is the strongest current landscape composition reference, and the empty arena, seven RGBA rings, castle/waterfalls, foreground, ocean and UI atlases have been isolated. Read the exact mapping in [reference-asset-inventory.md](./reference-asset-inventory.md). The earlier 1536×1152 image remains the original visual concept. See both; never blindly scale one to phones.
+
 **Status: NEW ACTIVE VISUAL ACCEPTANCE AUTHORITY (2026-10-13).** Supersedes declarations of visual completion in `diorama-visual-overhaul-plan.md` and `production-completion.md`, and the obsolete separate-portrait instructions in their histories. The existing game is functional; **visual fidelity and single-screen phone fit are NOT accepted yet**. The older document remains useful for implementation context, not as a finish certificate.
 
 ## The brief, literally
@@ -15,7 +17,7 @@ Reproduce the user's supplied Ring Road miniature-diorama image as closely as a 
 
 ## The crucial aspect-ratio mismatch
 
-The **supplied 1536 × 1152 image is 4:3**; the existing checked-in reference is `docs/3d-ring-renderer-concept.jpg` (validate equivalence with the user's latest upload before treating pixels as identical). A landscape phone is commonly around **2.0–2.22:1**. Blindly scaling the 4:3 painting into one phone screen produces massive pillarboxing or distortion; `object-fit: cover` crops necessary UI.
+The **original supplied 1536 × 1152 image is 4:3**; a newer full-composition **1536 × 864 (16:9) reference** and modular scenery/sprites are now available. The old image remains an aesthetic authority; the existing checked-in reference is `docs/3d-ring-renderer-concept.jpg` (validate equivalence with the user's latest upload before treating pixels as identical). A landscape phone is commonly around **2.0–2.22:1**. Blindly scaling the 4:3 painting into one phone screen produces massive pillarboxing or distortion; `object-fit: cover` crops necessary UI.
 
 **Decision:** treat the supplied image as an exact *style/object/perspective authority*, not a literally immutable pixel arrangement at every aspect ratio. Author a **landscape-specific extension/recomposition**: preserve the ring board and its surrounding monument, extend or regenerate scenic sides, reposition live plaques around the board, and keep their recognizable look and hierarchy. The 4:3 image remains the native source for pixel-reference comparisons. The phone output gets its OWN ground-truth approved reference capture after layout acceptance. Do not use “responsive CSS” to fudge a bad 4:3 composition.
 
@@ -61,7 +63,7 @@ Hard browser assertions after dismissing intro guide:
 ## Architecture and visual delivery
 
 ### 0. Establish observable truth (before changing assets)
-- Save the supplied latest reference as a durable, checksummed original in docs/assets if it differs from the current checked-in `3d-ring-renderer-concept.jpg`. This uploaded binary cannot be assumed identical based on a filename.
+- Import the 18 user-supplied images with checksums and compare the 1536×864 composite to the older checked-in `3d-ring-renderer-concept.jpg`. Ensure each art source is preserved unchanged. This uploaded binary cannot be assumed identical based on a filename.
 - Run the new **`scripts/visual-viewport-audit.mjs`** and archive captures + JSON geometry for baseline of `main` at all target sizes; inspect *scrollHeight, interactive bounds, scene bounds* and landscape vs portrait differences.
 - Run **`scripts/visual-reference-compare.py`** at reference-native aspect ratio to produce an overlay, diff, side-by-side and region scores. Do not turn raw pixel MAE into an unconditional ship gate: generated artwork has high-frequency natural variation.
 - Make a visible table of top 10 discrepancies with location, magnitude, and suggested fix. Compare fresh screenshots and concept **side by side every PR**. No comparing from memory.
