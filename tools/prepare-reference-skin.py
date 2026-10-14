@@ -53,6 +53,9 @@ def main():
             name = "ring-" + str(i) + "-" + color + "-normalized.webp"
             data = calibration.read("ring-road-skin-calibration-2026-10-14/assets/" + name)
             staged[name] = data
+        # Existing optional user-supplied illustration extracts (never generated on CI).
+        for name in ["logo.webp"] + ["row-" + str(i) + ".webp" for i in range(1, 8)]:
+            staged[name] = calibration.read("ring-road-skin-calibration-2026-10-14/assets/" + name)
     output = opt.output
     if not opt.dry_run:
         output.mkdir(parents=True, exist_ok=True)
