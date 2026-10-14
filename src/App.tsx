@@ -4,6 +4,7 @@ import { CAMPAIGN, CAMPAIGN_ANALYSES } from "./content/campaign";
 import { DioramaScene } from "./render/DioramaScene";
 import { RingBoard } from "./render/RingBoard";
 import { PaintedRingBoard, PaintedScene, paintedAsset } from "./render/PaintedScene";
+import { paintedAssetsReady } from "./render/painted-assets";
 import "./styles/app.css";
 import "./styles/painted-stage.css";
 import { Modal } from "./ui/Modal";
@@ -12,17 +13,21 @@ const LABELS = ["Violet", "Indigo", "Blue", "Green", "Yellow", "Orange", "Red"];
 const RING_ORDER = [6, 5, 4, 3, 2, 1, 0] as const;
 
 export default function App() {
-  // Explicit opt-in until shipped assets and real mobile browser acceptance pass.
-  const [paintedSkin, setPaintedSkin] = useState(false);
+  // Experimental art stays opt-in. A full, checksum-described and decoded
+  // scene is required: one present red-ring image is insufficient.
+  const wantsPaintedSkin = new URLSearchParams(window.location.search).get("skin") === "painted";
+  const [paintedStatus, setPaintedStatus] = useState<"inactive" | "loading" | "ready" | "unavailable">(
+    wantsPaintedSkin ? "loading" : "inactive",
+  );
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("skin") !== "painted") return;
+    if (!wantsPaintedSkin) return;
     let active = true;
-    const test = new Image();
-    test.onload = () => { if (active) setPaintedSkin(true); };
-    test.onerror = () => { if (active) setPaintedSkin(false); };
-    test.src = paintedAsset("ring-1-red-normalized.webp");
+    void paintedAssetsReady().then((ready) => {
+      if (active) setPaintedStatus(ready ? "ready" : "unavailable");
+    });
     return () => { active = false; };
-  }, []);
+  }, [wantsPaintedSkin]);
+  const paintedSkin = paintedStatus === "ready";
   const [state, dispatch] = useReducer(
     (current: ReturnType<typeof initialGameState>, action: Parameters<typeof reduceGame>[1]) =>
       reduceGame(current, action, CAMPAIGN),
@@ -198,7 +203,7 @@ export default function App() {
   );
 
   return (
-    <main className={"app-shell" + (paintedSkin ? " painted-app" : "")}>
+    <main className={"app-shell" + (paintedSkin ? " painted-app" : "")} data-skin-mode={paintedSkin ? "painted" : "classic"} data-skin-status={paintedStatus}>
       <Scene
         title={title}
         board={board}
