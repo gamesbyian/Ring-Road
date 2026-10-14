@@ -1,0 +1,2 @@
+# Optional offline reference-comparison environment, not part of browser build or CI.
+Pillow>=11.3,<13
