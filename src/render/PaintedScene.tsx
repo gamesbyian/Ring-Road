@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import type { Puzzle } from "../domain/puzzle";
+import { PAINTED_RING_COLORS, paintedRingDegrees } from "./painted-geometry";
 
 /**
  * Reference-image scene. The game itself stays owned by App and its reducer.
@@ -18,11 +19,6 @@ export interface PaintedSceneProps {
 export const paintedAsset = (filename: string): string =>
   import.meta.env.BASE_URL + "reference-skin/" + filename;
 
-export const NATIVE_GAP_DEGREES = [-90, -60, -4, 0, 0, 4, 0] as const;
-/** Source art starts with outer red; domain index 0 is inner violet. */
-export const ART_ORDER_TO_DOMAIN = [6, 5, 4, 3, 2, 1, 0] as const;
-const ART_COLORS = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"] as const;
-
 export interface PaintedRingBoardProps {
   puzzle: Puzzle;
   visualStates: readonly number[];
@@ -36,17 +32,13 @@ export interface PaintedRingBoardProps {
 export function PaintedRingBoard({
   puzzle, visualStates, boardOrientation, rotationMotion, canFire, completed, onFire,
 }: PaintedRingBoardProps) {
-  const boardRotation = boardOrientation * 360 / puzzle.ringCycles[0];
   const label = completed ? "Puzzle complete"
     : canFire ? "Fire center ball" : "Center ball locked until exact alignment";
   return (
     <div className="painted-ring-board board-frame" aria-label="Seven concentric puzzle rings">
       <div className="painted-ring-projection">
-        {ART_COLORS.map((color, artIndex) => {
-          const domainIndex = ART_ORDER_TO_DOMAIN[artIndex] ?? 0;
-          const cycle = puzzle.ringCycles[domainIndex];
-          const steps = visualStates[domainIndex] ?? 0;
-          const degrees = boardRotation + steps * 360 / cycle - (NATIVE_GAP_DEGREES[artIndex] ?? 0);
+        {PAINTED_RING_COLORS.map((color, artIndex) => {
+          const degrees = paintedRingDegrees(puzzle, visualStates, boardOrientation, artIndex);
           return (
             <img key={color}
               className={"painted-ring-sprite " + (rotationMotion === "instant" ? "painted-ring-instant" : "")}
