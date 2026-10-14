@@ -1,5 +1,7 @@
 # Production completion record
 
+> **Historical status:** this records the pre-2026-10-13 implementation acceptance. Visual completion and portrait-layout acceptance here are **reopened** by the user's stricter no-scroll, reference-exact landscape brief. The current acceptance authority is [reference-fidelity-finish-plan.md](./reference-fidelity-finish-plan.md). Gameplay acceptance is unaffected.
+
 This document is the durable evidence map for the Ring Road production rebuild. It separates implementation completion from validation that requires external physical hardware.
 
 ## Completion status
