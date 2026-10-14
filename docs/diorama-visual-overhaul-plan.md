@@ -1,5 +1,7 @@
 # Ring Road Diorama Visual Overhaul Plan
 
+> **Superseded visual acceptance:** the 2026-10-13 [reference-exact landscape finish plan](./reference-fidelity-finish-plan.md) replaces this document's visual-completion status and any separate portrait/mobile layout language. Read this as implementation history only.
+
 ## Status and authority
 
 **Current orientation note (October 2026):** the later landscape-only presentation contract supersedes the older separate portrait/mobile art-direction passages in this document. Ring Road now has one canonical landscape scene. Portrait viewports rotate that same scene as a complete unit, so the former dedicated mobile scenic asset package has been retired rather than maintained as a second visual composition. Historical phase notes below remain useful as implementation history, but they no longer define current orientation behavior.
