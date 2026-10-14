@@ -35,7 +35,7 @@ export function PaintedRingBoard({
   const label = completed ? "Puzzle complete"
     : canFire ? "Fire center ball" : "Center ball locked until exact alignment";
   return (
-    <div className="painted-ring-board board-frame" aria-label="Seven concentric puzzle rings">
+    <div className="painted-ring-board" aria-label="Seven concentric puzzle rings">
       <div className="painted-ring-projection">
         {PAINTED_RING_COLORS.map((color, artIndex) => {
           const degrees = paintedRingDegrees(puzzle, visualStates, boardOrientation, artIndex);
@@ -91,16 +91,40 @@ export function PaintedScene({
   const scale = Math.max(0.01, screen.short / DESIGN_HEIGHT);
   const stageWidth = screen.long / scale;
   const touch = 44 / scale;
+  // The 16:9 illustration is the exact 1536×864 registration authority;
+  // shorter phone layouts must keep the full-height seven-button rail.
+  const photoLayout = screen.short >= 600 && screen.long / screen.short >= 1.65;
   const customProperties = {
     "--painted-stage-width": stageWidth + "px",
     "--painted-scale": String(scale),
     "--painted-touch": touch + "px",
-    "--painted-logo-left": (screen.short < 370 ? 365 : 20) + "px",
-    "--painted-rail-top": Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7)) + "px",
+    "--painted-logo-left": (photoLayout ? 175 : screen.short < 370 ? 365 : 20) + "px",
+    "--painted-logo-top": (photoLayout ? 19 : 6) + "px",
+    "--painted-logo-width": (photoLayout ? 356 : 335) + "px",
+    "--painted-logo-height": (photoLayout ? 214 : 180) + "px",
+    "--painted-rail-left": (photoLayout ? 190 : 8) + "px",
+    "--painted-rail-width": (photoLayout ? 205 : 345) + "px",
+    "--painted-row-height": (photoLayout ? 50 : touch) + "px",
+    "--painted-nav-right": (photoLayout ? 161 : 12) + "px",
+    "--painted-nav-top": (photoLayout ? 36 : 12) + "px",
+    "--painted-nav-width": (photoLayout ? 223 : 400) + "px",
+    "--painted-nav-height": (photoLayout ? 104 : 132) + "px",
+    "--painted-moves-right": (photoLayout ? 161 : 18) + "px",
+    "--painted-moves-top": (photoLayout ? 147 : 155) + "px",
+    "--painted-moves-width": (photoLayout ? 172 : 245) + "px",
+    "--painted-moves-height": (photoLayout ? 138 : 158) + "px",
+    "--painted-solution-right": (photoLayout ? 109 : 17) + "px",
+    "--painted-solution-bottom": (photoLayout ? 39 : 13) + "px",
+    "--painted-solution-width": (photoLayout ? 192 : 210) + "px",
+    "--painted-solution-height": (photoLayout ? 193 : 196) + "px",
+    "--painted-rail-top": (photoLayout ? 245 : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
+    "--painted-goal-left": (photoLayout ? 128 : 370) + "px",
+    "--painted-goal-bottom": (photoLayout ? 55 : 16) + "px",
+    "--painted-goal-height": (photoLayout ? 172 : 190) + "px",
   } as CSSProperties;
   return (
     <section className="painted-stage-host" aria-label="Ring Road play area">
-      <div className="painted-stage reference-first-scene" style={customProperties}>
+      <div className="painted-stage reference-first-scene" data-photo-layout={photoLayout ? "true" : "false"} style={customProperties}>
         <ArtImage filename="ocean-sky-mountains.webp" className="painted-ocean" />
         <div className="painted-world" aria-hidden="true">
           <ArtImage filename="reference-empty-arena.webp" className="painted-registered-scene" />

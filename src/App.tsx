@@ -153,7 +153,10 @@ export default function App() {
         >?</button>
         <strong>Goal</strong>
       </div>
-      <p>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</p>
+      <p>{paintedSkin
+        ? "Rotate the rings to align all 7 gaps into one straight path."
+        : <>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</>
+      }</p>
       <div className="reference-goal-miniature" aria-hidden="true">
         <span />
         <span />
@@ -190,7 +193,7 @@ export default function App() {
 
   const navigation = (
     <nav className="puzzle-plaque" aria-label="Puzzle navigation">
-      <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
+      <button aria-label="Previous puzzle" onClick={() => dispatch({ type: "select", index: state.puzzleIndex - 1 })}>Previous</button>
       <span className="puzzle-index">
         <span className="puzzle-numberline">Puzzle {String(puzzle.id).padStart(2, "0")}</span>
         <span className="puzzle-progress-dots" aria-hidden="true">
@@ -198,7 +201,7 @@ export default function App() {
         </span>
         <small className="puzzle-total">of {CAMPAIGN.length}</small>
       </span>
-      <button onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
+      <button aria-label="Next puzzle" onClick={() => dispatch({ type: "select", index: state.puzzleIndex + 1 })}>Next</button>
     </nav>
   );
 

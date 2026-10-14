@@ -178,6 +178,65 @@ function inspectDOM(requestedSkin) {
     } : null, regions, buttons, scroll, artLoaded, failures};
 }
 
+
+/**
+ * Real physical-coordinate CDP clicks (not DOM .click()) confirm that the
+ * painted layer, the CSS-rotated portrait shell, and React reducer agree.
+ * Screenshots are captured BEFORE these actions to preserve stable comparisons.
+ */
+async function smokePaintedInteraction(cdp) {
+  const errors = [];
+  const read = (expression) => cdp.evaluate(expression);
+  const moveCount = () => read("Number(document.querySelector('.reference-moves-card strong')?.textContent?.trim() || -1)");
+  const click = async (selector) => {
+    const center = await read("(() => { const el = document.querySelector(" +
+      JSON.stringify(selector) + "); if (!el || el.disabled) return null; " +
+      "const r = el.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; })()");
+    if (!center) {
+      errors.push("unclickable: " + selector);
+      return false;
+    }
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mousePressed", x: center.x, y: center.y, button: "left", clickCount: 1
+    });
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseReleased", x: center.x, y: center.y, button: "left", clickCount: 1
+    });
+    await delay(90);
+    return true;
+  };
+  const expectMoves = async (count, stage) => {
+    const actual = await moveCount();
+    if (actual !== count) errors.push(stage + ": expected " + count + " moves, got " + actual);
+  };
+  try {
+    const opacity = await read("getComputedStyle(document.querySelector('.actions')).opacity");
+    if (opacity !== "1") errors.push("painted actions invisible (opacity " + opacity + ")");
+    await expectMoves(0, "start");
+    await click(".ring-control-6 button:last-child"); // outer red clockwise
+    await expectMoves(1, "rotate");
+    await click(".actions button:nth-child(1)"); // Undo
+    await expectMoves(0, "undo");
+    await click(".ring-control-6 button:last-child");
+    await expectMoves(1, "rotate again");
+    await click(".actions button:nth-child(2)"); // Reset
+    await expectMoves(0, "reset");
+    const first = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
+    await click(".puzzle-plaque button:last-child"); // Next
+    const second = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
+    if (second === first) errors.push("Next puzzle did not change current puzzle");
+    await click(".puzzle-plaque button:first-child"); // Previous
+    const restored = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
+    if (restored !== first) errors.push("Previous puzzle did not restore first puzzle");
+    await click(".actions button:nth-child(3)"); // Hint
+    const hintShown = await read("!!document.querySelector('.modal')");
+    if (!hintShown) errors.push("Hint did not open a modal");
+  } catch (error) {
+    errors.push("interaction exception: " + String(error));
+  }
+  return errors;
+}
+
 let preview, chrome, cdp;
 const temp = await mkdtemp(join(tmpdir(), "ring-road-visual-"));
 const port = 22000 + (process.pid % 30000);
@@ -229,6 +288,10 @@ try {
     const filename = "game-" + skin + "-" + width + "x" + height;
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
+    if (skin === "painted" && ["568x320", "844x390", "390x844"].includes(width + "x" + height)) {
+      result.interactionFailures = await smokePaintedInteraction(cdp);
+      result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
+    }
     captures.push(result);
     console.log(filename + ": " + result.failures.length + " issue(s): " + result.failures.slice(0, 5).join("; "));
   }
@@ -239,7 +302,19 @@ try {
   if (strict && failures) process.exitCode = 1;
 } finally {
   cdp?.close();
-  if (chrome && chrome.exitCode === null) chrome.kill("SIGTERM");
-  if (preview && preview.exitCode === null) preview.kill("SIGTERM");
-  await rm(temp, {recursive: true, force: true});
+  // Chrome may still be asynchronously writing its profile when killed.
+  // Wait for process exit before deleting the profile, then retry ENOTEMPTY
+  // instead of turning a fully passed visual audit into a spurious red job.
+  const stop = async (process) => {
+    if (!process || process.exitCode !== null) return;
+    const exited = new Promise((resolve) => process.once("exit", resolve));
+    process.kill("SIGTERM");
+    await Promise.race([exited, delay(2000)]);
+    if (process.exitCode === null) {
+      process.kill("SIGKILL");
+      await Promise.race([exited, delay(1000)]);
+    }
+  };
+  await Promise.all([stop(chrome), stop(preview)]);
+  await rm(temp, {recursive: true, force: true, maxRetries: 12, retryDelay: 200});
 }
