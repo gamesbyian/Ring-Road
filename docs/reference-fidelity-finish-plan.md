@@ -115,10 +115,13 @@ Parallelizable: AI asset development in a dedicated art branch and responsive st
 - `scripts/visual-reference-compare.py`: Pillow-powered offline composites + numerical error/region report. Optional developer-only Python environment, no runtime cost.
 - `docs/reference-regions.json`: machine-readable normalized reference landmarks and cross-viewport required selectors.
 
+**Install only on demand for art production (not npm runtime):** Optional Pillow environment is recorded in `tools/requirements-visual.txt` (`python -m pip install -r tools/requirements-visual.txt`); generated assets should carry `tools/asset-provenance.template.json`-shaped records of source rights, masks, workflow, seed, checkpoints and reviewed exports.
+
 **Install only on demand for art production (not npm runtime):**
 - [Meta SAM 2](https://github.com/facebookresearch/sam2): point/box segmentation, optional GPU/PyTorch environment; powerful but heavy, masks still need cleanup.
 - [rembg](https://github.com/danielgatis/rembg): straightforward batch/single background removal; weaker on connected architectural silhouettes and translucent edges.
 - [ComfyUI](https://docs.comfy.org/development/api-development/workflow-api-format): image-edit/outpainting/inpainting workflows as versioned JSON, with prompts/seeds/model hashes as reproducible provenance. Models/weights and licenses vary; no claim of deterministic pixel recreation.
+- [Hugging Face Diffusers inpainting](https://huggingface.co/docs/diffusers/en/using-diffusers/inpaint) and [ControlNet](https://huggingface.co/docs/diffusers/using-diffusers/controlnet): explicit mask-defined edits, optionally conditioned on edge/depth maps to preserve architectural outlines and camera geometry. Prefer structure-conditioned edits over prompt-only scene re-generation.
 - [Sharp](https://sharp.pixelplumbing.com/) or [Squoosh](https://squoosh.app/): optimized alpha WebP/AVIF export and visual inspection; use Sharp only if repeatable scripted processing outgrows the Python/Pillow tools.
 - [Playwright visual comparisons](https://playwright.dev/docs/test-snapshots): consider adding after deterministic screenshot fixtures and standard baselines mature. Existing CDP harness avoids an extra framework for the initial audit.
 - [Blender](https://docs.blender.org/manual/en/latest/render/film.html): optional matched-perspective painted 3D/raster sheets for highly geometric ring/plinth shadows; offline rendering only. Phaser/Pixi/Three.js are alternatives, NOT preemptively required.
@@ -139,5 +142,7 @@ Primary source reading:
 - Meta Segment Anything 2 repository: https://github.com/facebookresearch/sam2
 - rembg CLI and batch tools: https://github.com/danielgatis/rembg
 - ComfyUI API workflow schema: https://docs.comfy.org/development/api-development/workflow-api-format
+- Hugging Face Diffusers inpainting: https://huggingface.co/docs/diffusers/en/using-diffusers/inpaint
+- Hugging Face ControlNet shape/depth conditioning: https://huggingface.co/docs/diffusers/using-diffusers/controlnet
 - Sharp image processing: https://github.com/lovell/sharp
 - Phaser display/rendering, only if needed: https://docs.phaser.io/phaser/concepts/display
