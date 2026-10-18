@@ -18,7 +18,7 @@ Do not preserve prototype architecture merely for compatibility.
 | Completion / release-validation audit | `docs/production-completion.md`, then `docs/testing.md` or the relevant authority |
 | Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
-| Renderer/UI/accessibility | `docs/reference-fidelity-finish-plan.md` for active acceptance, then `docs/diorama-visual-overhaul-plan.md` for historical art direction, then `src/render/`, `src/assets/diorama/manifest.ts`, `src/App.tsx`, and `src/styles/`; use the completed dimensional-renderer plan for historical architecture/invariants |
+| Renderer/UI/accessibility | `docs/reference-fidelity-finish-plan.md` for active acceptance, then `docs/diorama-visual-overhaul-plan.md` for historical art direction, then `src/render/PaintedScene.tsx`, `src/render/painted-geometry.ts`, `src/styles/painted-stage.css`, `public/reference-skin/` and `src/App.tsx` for the painted visual candidate; `DioramaScene.tsx` and `src/assets/diorama/manifest.ts` own the classic fallback; use the completed dimensional-renderer plan for historical architecture/invariants |
 | Solver/alignment/exact-move behavior | `docs/architecture.md`, then `src/domain/solver.ts` and domain tests |
 | Validation / red CI | `docs/testing.md`, then the failing script/test |
 | Repository hygiene | execute `docs/periodic-repository-hygiene.md` from current `main` |
