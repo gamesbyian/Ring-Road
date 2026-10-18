@@ -5,6 +5,7 @@ import { DioramaScene } from "./render/DioramaScene";
 import { RingBoard } from "./render/RingBoard";
 import { PaintedRingBoard, PaintedScene, paintedAsset } from "./render/PaintedScene";
 import { paintedAssetsReady } from "./render/painted-assets";
+import { completedBestFor, loadCompletionBests, saveCompletionBests, withExactCompletion } from "./app/completion-bests";
 import "./styles/app.css";
 import "./styles/painted-stage.css";
 import { Modal } from "./ui/Modal";
@@ -28,6 +29,7 @@ export default function App() {
     return () => { active = false; };
   }, [wantsPaintedSkin]);
   const paintedSkin = paintedStatus === "ready";
+  const [completionBests, setCompletionBests] = useState(loadCompletionBests);
   const [state, dispatch] = useReducer(
     (current: ReturnType<typeof initialGameState>, action: Parameters<typeof reduceGame>[1]) =>
       reduceGame(current, action, CAMPAIGN),
@@ -41,6 +43,16 @@ export default function App() {
   const closeSolution = useCallback(() => dispatch({ type: "toggle-solution" }), []);
   const closeCompletion = useCallback(() => dispatch({ type: "dismiss-completion" }), []);
   const hint = analysis?.exactPlan ? nextMoveHint(state, analysis.exactPlan) : "off-plan";
+  const previousBest = completedBestFor(completionBests, puzzle.id, puzzle.targetMoves);
+  useEffect(() => {
+    if (!state.completed) return;
+    setCompletionBests((current) => {
+      const next = withExactCompletion(current, puzzle.id, puzzle.targetMoves, state.history.length);
+      if (next !== current) saveCompletionBests(next);
+      return next;
+    });
+  }, [state.completed, state.history.length, puzzle.id, puzzle.targetMoves]);
+
   const moveState = state.history.length > puzzle.targetMoves
     ? "over"
     : state.history.length === puzzle.targetMoves
@@ -139,7 +151,10 @@ export default function App() {
       <span className="reference-card-label">Moves</span>
       <strong>{state.history.length}</strong>
       <span className="reference-moves-rule" aria-hidden="true" />
-      <span className="reference-moves-target">Target <b>{puzzle.targetMoves}</b></span>
+      <span className="reference-moves-target">
+        <span className="painted-best-readout">Best: <b>{previousBest ?? "—"}</b></span>
+        <span className="painted-target-readout">Target <b>{puzzle.targetMoves}</b></span>
+      </span>
     </section>
   );
 
