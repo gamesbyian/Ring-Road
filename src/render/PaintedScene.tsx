@@ -99,6 +99,7 @@ export function PaintedScene({
     "--painted-stage-width": stageWidth + "px",
     "--painted-scale": String(scale),
     "--painted-touch": touch + "px",
+    "--painted-action-font": Math.max(22, Math.min(38, 13 / scale)) + "px",
     "--painted-logo-left": (photoLayout ? 175 : screen.short < 370 ? 365 : 20) + "px",
     "--painted-logo-top": (photoLayout ? 19 : 6) + "px",
     "--painted-logo-width": (photoLayout ? 356 : 335) + "px",
