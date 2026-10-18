@@ -153,8 +153,11 @@ export default function App() {
         >?</button>
         <strong>Goal</strong>
       </div>
-      <p>{paintedSkin
-        ? "Rotate the rings to align all 7 gaps into one straight path."
+      <p aria-label={paintedSkin ? "Rotate the rings to align all seven gaps into one straight path." : undefined}>{paintedSkin
+        ? <>
+            <span className="painted-goal-full-copy" aria-hidden="true">Rotate the rings to align all 7 gaps into one straight path.</span>
+            <span className="painted-goal-compact-copy" aria-hidden="true">Align all 7 gaps into one path.</span>
+          </>
         : <>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</>
       }</p>
       <div className="reference-goal-miniature" aria-hidden="true">
