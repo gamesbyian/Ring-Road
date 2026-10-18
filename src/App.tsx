@@ -6,6 +6,7 @@ import { RingBoard } from "./render/RingBoard";
 import { PaintedRingBoard, PaintedScene, paintedAsset } from "./render/PaintedScene";
 import { paintedAssetsReady } from "./render/painted-assets";
 import { completedBestFor, loadCompletionBests, saveCompletionBests, withExactCompletion } from "./app/completion-bests";
+import { PROGRESS_BEADS, progressBeadIndex } from "./app/campaign-progress";
 import "./styles/app.css";
 import "./styles/painted-stage.css";
 import { Modal } from "./ui/Modal";
@@ -217,7 +218,9 @@ export default function App() {
       <span className="puzzle-index">
         <span className="puzzle-numberline">Puzzle {String(puzzle.id).padStart(2, "0")}</span>
         <span className="puzzle-progress-dots" aria-hidden="true">
-          <i className="active" /><i /><i /><i /><i /><i />
+          {Array.from({ length: PROGRESS_BEADS }, (_, index) => (
+            <i key={index} className={index === progressBeadIndex(state.puzzleIndex, CAMPAIGN.length) ? "active" : undefined} />
+          ))}
         </span>
         <small className="puzzle-total">of {CAMPAIGN.length}</small>
       </span>
