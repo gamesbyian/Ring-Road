@@ -935,3 +935,22 @@
   font-size: 17px;
   line-height: 1.05;
 }
+
+/*
+ * Native-reference 1536x864 pixel registration:
+ * Source Solution ring red paint spans x1273..1390, y689..798.
+ * Previous live paint spans x1285..1407, y672..795, so the miniature
+ * is approximately 15px right, 10px up and 5–10% too large.
+ * This corrects only the large photo layout; the compact button keeps
+ * its existing accessible physical hit area and smaller embedded preview.
+ */
+.painted-stage[data-photo-layout="true"] .reference-solution-preview {
+  width: 122px;
+  height: 122px;
+  max-height: 122px;
+  left: calc(50% - 15px);
+  bottom: -6px;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-card {
+  background: linear-gradient(145deg, #38353a 0%, #27272e 100%);
+}
