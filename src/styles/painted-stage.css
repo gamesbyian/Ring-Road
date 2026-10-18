@@ -891,7 +891,8 @@
   font-size: 13px;
   color: #58545a;
 }
-.painted-stage[data-photo-layout="false"] .painted-best-readout {
+.painted-stage.reference-first-scene[data-photo-layout="false"]
+  .reference-moves-target .painted-best-readout {
   display: none;
 }
 .painted-stage[data-photo-layout="false"] .painted-target-readout {
@@ -908,4 +909,29 @@
   line-height: 1.05;
   padding: 1px;
   white-space: nowrap;
+}
+
+/* Compact Moves counter should never inherit the photo card's tall contents.
+   Make the small target legible inside the cream plaque without a second Best
+   line competing with the next action row. */
+.painted-stage.reference-first-scene[data-photo-layout="false"] .reference-moves-card {
+  justify-content: space-evenly;
+  gap: 0;
+  padding: 4px 8px;
+}
+.painted-stage.reference-first-scene[data-photo-layout="false"] .reference-moves-card .reference-card-label {
+  font-size: 17px;
+  line-height: 1;
+}
+.painted-stage.reference-first-scene[data-photo-layout="false"] .reference-moves-card strong {
+  font-size: 59px;
+  line-height: .97;
+}
+.painted-stage.reference-first-scene[data-photo-layout="false"] .reference-moves-rule {
+  height: 1px;
+  margin: 1px 0;
+}
+.painted-stage.reference-first-scene[data-photo-layout="false"] .reference-moves-target {
+  font-size: 17px;
+  line-height: 1.05;
 }
