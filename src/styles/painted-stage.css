@@ -608,3 +608,116 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/*
+ * Reference-registered paper and ink pass. Keep panel HIT BOXES unchanged:
+ * decorative badge radius and typography can match the painting without
+ * reducing the 44 CSS-pixel interactive footprint of the actual Guide button.
+ */
+.painted-stage.reference-first-scene .reference-goal-card,
+.painted-stage.reference-first-scene .reference-moves-card,
+.painted-stage.reference-first-scene .puzzle-plaque {
+  background-image:
+    url("../assets/diorama/textures/parchment-grain.png"),
+    linear-gradient(150deg, #fff1d8 0%, #f4dfbd 44%, #e9c599 100%);
+  background-size: 64px 64px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-blend-mode: soft-light, normal;
+}
+
+.painted-stage[data-photo-layout="true"] .painted-goal-slot {
+  width: 360px;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-card {
+  padding: 11px 16px;
+  clip-path: polygon(
+    1.8% 3%, 13% 1%, 32% 2%, 49% 0.8%, 72% 2.3%, 94% 1.2%,
+    98.5% 5%, 99.3% 22%, 98.6% 41%, 100% 57%, 98.4% 77%,
+    99% 94%, 95% 98.3%, 72% 97.4%, 52% 100%, 31% 98%,
+    6% 99%, 1% 95%, 1.5% 78%, 0.2% 56%, 1.5% 33%
+  );
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-heading {
+  padding-left: 0;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-heading strong {
+  font-size: 24px;
+  line-height: 1.15;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide {
+  position: relative;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide::after {
+  content: "?";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #f8ead4;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  background: #303743;
+  box-shadow: inset 0 1px 1px #ffffff45, 0 2px 0 #96734b;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide:focus-visible {
+  outline: 4px solid #145acc;
+  outline-offset: -2px;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-card p {
+  width: 55%;
+  max-width: 55%;
+  margin-top: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.32;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-miniature {
+  right: 8px;
+  bottom: 9px;
+  width: 135px;
+  height: 135px;
+}
+
+/* The reference's dark Solution inset is bigger and its heading is
+   title-case, restrained typography rather than a utility-label shout. */
+.painted-stage[data-photo-layout="true"] .reference-solution-card {
+  padding: 9px 12px;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-heading {
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-heading strong {
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-preview {
+  width: 132px;
+  height: 132px;
+  max-height: 132px;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+}

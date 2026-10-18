@@ -205,12 +205,22 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
       await cdp.evaluate("document.documentElement.scrollWidth <= window.innerWidth"),
       `${width}px viewport has horizontal overflow`,
     );
+    // The main element can mount before React finishes inserting its three
+    // desktop scenic pictures. Wait for the actual expected nodes, then
+    // report missing metadata as a test assertion rather than throwing in
+    // new URL(undefined) and obscuring the viewport evidence.
+    await waitFor(
+      async () => await cdp.evaluate(
+        "document.querySelectorAll('.scene-art img[data-desktop-src]').length === 3"),
+      `${width}px viewport did not mount the three desktop scenic assets`,
+    );
     const scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
       currentSrc: img.currentSrc,
       pointerEvents: getComputedStyle(img).pointerEvents,
       alt: img.getAttribute('alt'),
       desktopSrc: img.dataset.desktopSrc,
-      usesDesktopSrc: new URL(img.currentSrc).pathname === new URL(img.dataset.desktopSrc, location.href).pathname,
+      usesDesktopSrc: Boolean(img.currentSrc && img.dataset.desktopSrc) &&
+        new URL(img.currentSrc, location.href).pathname === new URL(img.dataset.desktopSrc, location.href).pathname,
     }))`);
     assert(Array.isArray(scenicLayers) && scenicLayers.length === 3, `${width}px viewport did not mount exactly three scenic layers`);
     assert(scenicLayers.every((layer) => layer.pointerEvents === "none"), `${width}px scenic art is not fully pointer-inert`);

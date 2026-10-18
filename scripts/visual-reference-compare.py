@@ -50,6 +50,9 @@ def main():
     parser.add_argument("--out", type=Path, default=Path("artifacts/visual-compare"))
     parser.add_argument("--mode", choices=["native", "contain", "cover"], default="native")
     parser.add_argument("--regions", type=Path, default=Path("docs/reference-regions.json"))
+    parser.add_argument("--max-rgb-mae", type=float,
+                        help="Optional native-ratio visual regression ceiling (0..255). "
+                             "Never apply to contain/cover exploratory compositions.")
     args = parser.parse_args()
 
     reference = Image.open(args.reference).convert("RGB")
@@ -122,6 +125,17 @@ def main():
     (args.out / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf8")
     print(json.dumps(report, indent=2))
     print(f"Visual artifacts: {args.out}")
+    if args.max_rgb_mae is not None:
+        if registration != "aspect-matched":
+            raise SystemExit("--max-rgb-mae requires an aspect-matched source capture")
+        observed = report["full_image"]["mean_rgb_abs_error_0_255"]
+        if observed > args.max_rgb_mae:
+            raise SystemExit(
+                f"REFERENCE VISUAL REGRESSION: mean RGB error {observed:.3f} "
+                f"exceeds approved ceiling {args.max_rgb_mae:.3f}. "
+                "Inspect screenshots for missing backdrop, wrong pose or layout."
+            )
+        print(f"Reference visual gate passed: RGB MAE {observed:.3f} <= {args.max_rgb_mae:.3f}")
 
 
 if __name__ == "__main__":
