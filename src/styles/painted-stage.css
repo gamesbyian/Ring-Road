@@ -805,3 +805,51 @@
 }
 .painted-stage[data-photo-layout="false"] .painted-goal-full-copy { display: none; }
 .painted-stage[data-photo-layout="false"] .painted-goal-compact-copy { display: inline; }
+
+/*
+ * The reference's center is a filled violet stamped medallion under the pearl.
+ * The imported violet C-ring's source alpha excludes the middle, exposing a
+ * distracting 100px sandstone crater. Keep this fill BEHIND all seven moving
+ * rings so their actual gaps, rotations, ray casting and hit semantics remain
+ * unchanged. This is decorative scenery, never a rotating gameplay piece.
+ */
+.painted-ring-projection .painted-violet-medallion {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: calc(50% - 27px);
+  width: 116px;
+  height: 116px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 42% 28%, #b779cc 0%, #aa68c3 40%, #9356b7 73%, #703e9c 100%);
+  box-shadow:
+    0 0 0 3px #673b8d,
+    inset 0 4px 7px #dfafe050,
+    inset -5px -6px 11px #45245d58;
+}
+.painted-violet-medallion::before,
+.painted-violet-medallion::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 14%;
+  pointer-events: none;
+}
+.painted-violet-medallion::before {
+  background: #c994d2;
+  opacity: .45;
+  clip-path: polygon(
+    50% 0%, 59% 37%, 79% 20%, 65% 43%, 100% 50%, 65% 57%,
+    79% 80%, 57% 64%, 50% 100%, 43% 64%, 21% 80%, 35% 57%,
+    0% 50%, 35% 43%, 21% 20%, 42% 36%
+  );
+}
+.painted-violet-medallion::after {
+  inset: 29%;
+  border: 2px solid #e1abd9a0;
+  border-radius: 50%;
+  opacity: .7;
+}

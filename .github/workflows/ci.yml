@@ -37,6 +37,8 @@ jobs:
             --out artifacts/painted-viewport/reference-diff \
             --mode native \
             --max-rgb-mae 45
+      - name: Verify painted violet center is not sandstone
+        run: python3 scripts/check-painted-medallion.py artifacts/painted-viewport/game-painted-1536x864.png
       - name: Upload painted scene captures and geometry
         if: always()
         uses: actions/upload-artifact@v4
