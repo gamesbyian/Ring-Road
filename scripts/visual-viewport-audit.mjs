@@ -237,12 +237,20 @@ async function smokePaintedInteraction(cdp) {
     await click(".actions button:nth-child(2)"); // Reset
     await expectMoves(0, "reset");
     const first = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
-    await click(".puzzle-plaque button:last-child"); // Next
+    const bead = () => read("Array.from(document.querySelectorAll('.puzzle-progress-dots i')).findIndex(i => i.classList.contains('active'))");
+    const firstBead = await bead();
+    await click(".puzzle-plaque button:last-child"); // Next, puzzle 2
     const second = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (second === first) errors.push("Next puzzle did not change current puzzle");
-    await click(".puzzle-plaque button:first-child"); // Previous
+    await click(".puzzle-plaque button:last-child"); // Next, puzzle 3
+    const thirdBead = await bead();
+    if (thirdBead !== Math.min(5, firstBead + 1))
+      errors.push("Campaign progress beads did not advance across puzzle pair");
+    await click(".puzzle-plaque button:first-child"); // Previous to puzzle 2
+    await click(".puzzle-plaque button:first-child"); // Previous to puzzle 1
     const restored = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (restored !== first) errors.push("Previous puzzle did not restore first puzzle");
+    if (await bead() !== firstBead) errors.push("Campaign progress bead did not reset with navigation");
     await click(".actions button:nth-child(3)"); // Hint
     const hintShown = await read("!!document.querySelector('.modal')");
     if (!hintShown) errors.push("Hint did not open a modal");
