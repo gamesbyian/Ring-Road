@@ -37,6 +37,7 @@ export function PaintedRingBoard({
   return (
     <div className="painted-ring-board" aria-label="Seven concentric puzzle rings">
       <div className="painted-ring-projection">
+        <span className="painted-violet-medallion" aria-hidden="true" />
         {PAINTED_RING_COLORS.map((color, artIndex) => {
           const degrees = paintedRingDegrees(puzzle, visualStates, boardOrientation, artIndex);
           return (
