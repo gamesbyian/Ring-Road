@@ -246,6 +246,13 @@ async function smokePaintedInteraction(cdp) {
     await click(".actions button:nth-child(3)"); // Hint
     const hintShown = await read("!!document.querySelector('.modal')");
     if (!hintShown) errors.push("Hint did not open a modal");
+    if (hintShown) {
+      await click(".modal-footer button"); // Close Hint
+      await click(".reference-solution-card"); // Solution remains reachable
+      const solutionShown = await read(
+        "document.querySelector('.modal')?.textContent?.includes('Exact solution') || false");
+      if (!solutionShown) errors.push("Solution preview button failed after hiding duplicate action");
+    }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
   }
