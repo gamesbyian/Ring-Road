@@ -987,3 +987,60 @@
   outline: 6px solid #f6cf65;
   outline-offset: 3px;
 }
+
+/*
+ * Reference-static decorative plates. The original 1536×864 source image
+ * already supplies the exact physical plaque materials, lettering and cast
+ * shadows. Only the STATIC logo and Goal regions are composited from that
+ * reference. The true puzzle board, status, counters, actions and gameplay
+ * remain live; the Goal help button remains a real focusable DOM button.
+ *
+ * These overrides are photo-layout-only: compact phones use their independent
+ * space-efficient semantic text layout.
+ */
+.painted-stage[data-photo-layout="true"] .painted-title-slot {
+  top: 0;
+  width: 356px;
+  height: 233px;
+}
+.painted-stage[data-photo-layout="true"] .title-plaque {
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg") !important;
+  background-size: 1536px 864px;
+  background-repeat: no-repeat;
+  background-position: -175px 0;
+  background-origin: border-box;
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-card {
+  border: 0;
+  border-radius: 0;
+  padding: 11px 16px;
+  clip-path: none;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg");
+  background-size: 1536px 864px;
+  background-position: -128px -637px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-heading strong,
+.painted-stage[data-photo-layout="true"] .reference-goal-card p,
+.painted-stage[data-photo-layout="true"] .reference-goal-miniature,
+.painted-stage[data-photo-layout="true"] .reference-goal-guide::after {
+  opacity: 0;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide {
+  background: transparent;
+  box-shadow: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide:focus-visible {
+  opacity: 1;
+  outline: 6px solid #156de5;
+  outline-offset: -2px;
+}
