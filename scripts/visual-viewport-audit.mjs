@@ -252,6 +252,16 @@ async function smokePaintedInteraction(cdp) {
       const solutionShown = await read(
         "document.querySelector('.modal')?.textContent?.includes('Exact solution') || false");
       if (!solutionShown) errors.push("Solution preview button failed after hiding duplicate action");
+      // Escape should close the modal and restore keyboard focus to the
+      // actual Solution plaque even when the entire shell is CSS-rotated.
+      await cdp.send("Input.dispatchKeyEvent", {type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27});
+      await cdp.send("Input.dispatchKeyEvent", {type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27});
+      await delay(80);
+      const returnedFocus = await read(
+        "document.activeElement?.classList.contains('reference-solution-card') === true");
+      if (!returnedFocus) errors.push("Escape from Solution failed to restore keyboard focus");
+      const dialogStillOpen = await read("!!document.querySelector('.modal')");
+      if (dialogStillOpen) errors.push("Escape failed to dismiss Solution dialog");
     }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
