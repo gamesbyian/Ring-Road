@@ -46,12 +46,14 @@ export default function App() {
   const previousBest = completedBestFor(completionBests, puzzle.id, puzzle.targetMoves);
   useEffect(() => {
     if (!state.completed) return;
-    setCompletionBests((current) => {
-      const next = withExactCompletion(current, puzzle.id, puzzle.targetMoves, state.history.length);
-      if (next !== current) saveCompletionBests(next);
-      return next;
-    });
+    setCompletionBests((current) =>
+      withExactCompletion(current, puzzle.id, puzzle.targetMoves, state.history.length));
   }, [state.completed, state.history.length, puzzle.id, puzzle.targetMoves]);
+  useEffect(() => {
+    // Persistence stays outside React's state updater, including StrictMode
+    // render replays. Storage failures never change whether a route is solved.
+    saveCompletionBests(completionBests);
+  }, [completionBests]);
 
   const moveState = state.history.length > puzzle.targetMoves
     ? "over"
