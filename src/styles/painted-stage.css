@@ -1044,3 +1044,61 @@
   outline: 6px solid #156de5;
   outline-offset: -2px;
 }
+
+/* Native reference Puzzle plaque: its navigation ornaments are small ink
+   diamonds, with real 44px transparent button surfaces underneath.
+   Short phones retain visibly directional arrow buttons for discoverability.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  padding: 9px 16px;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 0;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button::before {
+  content: none;
+  display: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button::after {
+  content: "◆";
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  color: #303641;
+  inset: 0;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button:hover {
+  background: #fff4;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button:focus-visible {
+  outline: 5px solid #1767cf;
+  outline-offset: -2px;
+  background: #fff4;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-index {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  gap: 5px;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-numberline {
+  font-size: 21px;
+  font-weight: 900;
+  letter-spacing: -.3px;
+  white-space: nowrap;
+}
