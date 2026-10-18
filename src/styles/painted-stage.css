@@ -853,3 +853,59 @@
   border-radius: 50%;
   opacity: .7;
 }
+
+/* Keep classic UX unchanged while the painted scene gains a truthful Best
+   readout. Every accepted route is exactly the authored target, so a best
+   appears only after the real center/fire completion was confirmed. */
+.painted-best-readout { display: none; }
+.painted-stage.reference-first-scene .reference-moves-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  font-size: 19px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.painted-stage.reference-first-scene .reference-moves-target > span {
+  display: block;
+}
+.painted-stage.reference-first-scene .reference-moves-card {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.painted-stage[data-photo-layout="true"] .reference-moves-card strong {
+  font-size: 55px;
+}
+.painted-stage[data-photo-layout="true"] .reference-moves-card .reference-card-label {
+  font-size: 19px;
+  line-height: 1;
+}
+.painted-stage[data-photo-layout="true"] .painted-best-readout {
+  display: block;
+  font-size: 17px;
+  color: #31313b;
+}
+.painted-stage[data-photo-layout="true"] .painted-target-readout {
+  display: block;
+  font-size: 13px;
+  color: #58545a;
+}
+.painted-stage[data-photo-layout="false"] .painted-best-readout {
+  display: none;
+}
+.painted-stage[data-photo-layout="false"] .painted-target-readout {
+  font-size: 19px;
+}
+
+/* The right-hand Solution illustration is itself a live accessible button.
+   Don't spend a precious action-cell duplicating it on short phones. */
+.painted-stage.reference-first-scene .actions .solution-compact-action {
+  display: none;
+}
+.painted-stage.reference-first-scene .actions button {
+  font-size: var(--painted-action-font);
+  line-height: 1.05;
+  padding: 1px;
+  white-space: nowrap;
+}
