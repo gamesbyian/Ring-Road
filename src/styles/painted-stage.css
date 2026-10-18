@@ -721,3 +721,87 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/*
+ * Compact landscape card: preserve the reference Goal plaque while using a
+ * small painted question medallion within an accessible 44px physical hitbox.
+ * The earlier background-filled 44px button became a giant ink disk on phones.
+ * A one-line visual instruction is kept alongside the full accessible rule.
+ */
+.painted-stage.reference-first-scene .painted-goal-compact-copy { display: none; }
+.painted-stage.reference-first-scene .painted-goal-full-copy { display: inline; }
+.painted-stage[data-photo-layout="false"] .reference-goal-card::before { display: none; }
+.painted-stage[data-photo-layout="false"] .reference-goal-card {
+  position: relative;
+  padding: 12px 16px;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  height: 96px;
+  margin: 0;
+  padding: 0;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-guide {
+  position: relative;
+  flex: 0 0 var(--painted-touch);
+  width: var(--painted-touch);
+  height: var(--painted-touch);
+  min-width: var(--painted-touch);
+  min-height: var(--painted-touch);
+  margin: -12px 0 0 -16px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-guide::after {
+  content: "?";
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  color: #fff3df;
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 950;
+  border-radius: 50%;
+  background: #303944;
+  box-shadow: inset 0 2px 2px #ffffff2e, 0 4px 0 #9a7955;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-guide:focus-visible {
+  outline: 8px solid #156de5;
+  outline-offset: 0;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-heading strong {
+  display: block;
+  padding: 12px 0 0 0;
+  margin: 0;
+  white-space: nowrap;
+  font-size: 31px;
+  line-height: 1.15;
+  font-weight: 850;
+}
+.painted-stage[data-photo-layout="false"] .reference-goal-card p {
+  position: absolute;
+  top: 108px;
+  left: 17px;
+  right: 14px;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  font-size: 27px;
+  font-weight: 660;
+  line-height: 1.1;
+  color: #343138;
+}
+.painted-stage[data-photo-layout="false"] .painted-goal-full-copy { display: none; }
+.painted-stage[data-photo-layout="false"] .painted-goal-compact-copy { display: inline; }
