@@ -954,3 +954,36 @@
 .painted-stage[data-photo-layout="true"] .reference-solution-card {
   background: linear-gradient(145deg, #38353a 0%, #27272e 100%);
 }
+
+/*
+ * The Solution plaque contains NO dynamic numbers or puzzle-specific words.
+ * At reference aspect ratio, re-use its literal painted pixels from the
+ * canonical 1536x864 user illustration. The button, its aria label, focus
+ * outline and modal behavior remain actual React controls. The static art
+ * replaces only its visual decoration (not the accessible element).
+ *
+ * This JPEG is an existing checked-in reference, and Vite fingerprints the
+ * CSS URL during build. Photo-layout positions are intentionally registered
+ * to x1235, y632 on the 1536x864 logical stage. Ultrawide layouts still
+ * use the same art inside the small button surface, never a baked page.
+ */
+.painted-stage[data-photo-layout="true"] .reference-solution-card {
+  border: 0;
+  border-radius: 14px;
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg");
+  background-size: 1536px 864px;
+  background-position: -1235px -632px;
+  background-origin: border-box;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-heading,
+.painted-stage[data-photo-layout="true"] .reference-solution-preview {
+  opacity: 0;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-card:focus-visible {
+  outline: 6px solid #f6cf65;
+  outline-offset: 3px;
+}
