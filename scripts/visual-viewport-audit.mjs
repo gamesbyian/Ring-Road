@@ -154,7 +154,21 @@ function inspectDOM(requestedSkin) {
     Math.abs(stageRect.height - height) <= 4;
   const readyRows = Array.from(document.querySelectorAll(".ring-control")).every(
     (row) => getComputedStyle(row).visibility !== "hidden");
+  const photoLayout = document.querySelector(".painted-stage")?.getAttribute("data-photo-layout") === "true";
+  const best = document.querySelector(".painted-best-readout");
+  const bestVisible = best ? getComputedStyle(best).display !== "none" : false;
+  const actionTypography = painted ? Array.from(document.querySelectorAll(".actions button"))
+    .filter((button) => getComputedStyle(button).display !== "none")
+    .map((button) => {
+      const rect = button.getBoundingClientRect();
+      const physicalFont = parseFloat(getComputedStyle(button).fontSize) * rect.height /
+        Math.max(1, button.offsetHeight);
+      return {label: button.textContent.trim(), physicalFont};
+    }) : [];
   const failures = [
+    ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
+    ...actionTypography.filter((item) => item.physicalFont < 11.5)
+      .map((item) => "unreadable compact action label: " + item.label),
     ...(requestedSkin !== currentSkin ? ["requested skin not activated (" + skinStatus + ")"] : []),
     ...(rotated !== portrait ? ["rotation"] : []),
     ...(!stageFits ? ["game stage does not fit physical viewport"] : []),
@@ -172,6 +186,7 @@ function inspectDOM(requestedSkin) {
   ];
   return {viewport: {width, height}, portrait, painted, currentSkin, skinStatus,
     rotated, shellFits, stageFits, artDiagnostics, stageRect: stageRect ? rectInfo(stageRect) : null,
+    photoLayout, bestVisible, actionTypography,
     visualViewport: window.visualViewport ? {
       width: window.visualViewport.width, height: window.visualViewport.height,
       scale: window.visualViewport.scale
@@ -231,6 +246,23 @@ async function smokePaintedInteraction(cdp) {
     await click(".actions button:nth-child(3)"); // Hint
     const hintShown = await read("!!document.querySelector('.modal')");
     if (!hintShown) errors.push("Hint did not open a modal");
+    if (hintShown) {
+      await click(".modal-footer button"); // Close Hint
+      await click(".reference-solution-card"); // Solution remains reachable
+      const solutionShown = await read(
+        "document.querySelector('.modal')?.textContent?.includes('Exact solution') || false");
+      if (!solutionShown) errors.push("Solution preview button failed after hiding duplicate action");
+      // Escape should close the modal and restore keyboard focus to the
+      // actual Solution plaque even when the entire shell is CSS-rotated.
+      await cdp.send("Input.dispatchKeyEvent", {type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27});
+      await cdp.send("Input.dispatchKeyEvent", {type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27});
+      await delay(80);
+      const returnedFocus = await read(
+        "document.activeElement?.classList.contains('reference-solution-card') === true");
+      if (!returnedFocus) errors.push("Escape from Solution failed to restore keyboard focus");
+      const dialogStillOpen = await read("!!document.querySelector('.modal')");
+      if (dialogStillOpen) errors.push("Escape failed to dismiss Solution dialog");
+    }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
   }
