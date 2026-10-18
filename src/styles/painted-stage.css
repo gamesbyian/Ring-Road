@@ -1102,3 +1102,11 @@
   letter-spacing: -.3px;
   white-space: nowrap;
 }
+
+/* Photo-reference controls are spaced about half a logical pixel apart.
+ * Keep the compact-height rail flush: its seven physical hit targets need
+ * the entire 864-unit height budget. Alignment at 1536×864 is measured
+ * against the original user-provided 16:9 source, not an aesthetic guess. */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .ring-controls {
+  row-gap: .5px;
+}
