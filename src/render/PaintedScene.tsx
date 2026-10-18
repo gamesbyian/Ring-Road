@@ -119,7 +119,7 @@ export function PaintedScene({
     "--painted-solution-bottom": (photoLayout ? 39 : 13) + "px",
     "--painted-solution-width": (photoLayout ? 192 : 210) + "px",
     "--painted-solution-height": (photoLayout ? 193 : 196) + "px",
-    "--painted-rail-top": (photoLayout ? 245 : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
+    "--painted-rail-top": (photoLayout ? 249 : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
     "--painted-goal-left": (photoLayout ? 128 : 370) + "px",
     "--painted-goal-bottom": (photoLayout ? 55 : 16) + "px",
     "--painted-goal-height": (photoLayout ? 172 : 190) + "px",
