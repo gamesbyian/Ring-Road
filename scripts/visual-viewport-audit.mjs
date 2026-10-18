@@ -319,6 +319,14 @@ try {
       // A capture may otherwise show a fully loaded React UI over an empty
       // matte. Await every image's decode and two compositor frames.
       await cdp.evaluate("Promise.all([...document.querySelectorAll('.painted-stage img')].map(img => img.decode()))");
+      // The large reference-layout Solution art is a CSS background, so an
+      // img-only decode wait is insufficient for deterministic screenshots.
+      await cdp.evaluate(`(async () => {
+        const button = document.querySelector('.reference-solution-card');
+        const bg = button && getComputedStyle(button).backgroundImage;
+        const uri = bg && /url\\(["']?(.*?)["']?\\)/.exec(bg)?.[1];
+        if (uri) { const image = new Image(); image.src = uri; await image.decode(); }
+      })()`);
       await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
     }
     await delay(220);

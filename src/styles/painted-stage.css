@@ -935,3 +935,112 @@
   font-size: 17px;
   line-height: 1.05;
 }
+
+/*
+ * Native-reference 1536x864 pixel registration:
+ * Source Solution ring red paint spans x1273..1390, y689..798.
+ * Previous live paint spans x1285..1407, y672..795, so the miniature
+ * is approximately 15px right, 10px up and 5–10% too large.
+ * This corrects only the large photo layout; the compact button keeps
+ * its existing accessible physical hit area and smaller embedded preview.
+ */
+.painted-stage[data-photo-layout="true"] .reference-solution-preview {
+  width: 122px;
+  height: 122px;
+  max-height: 122px;
+  left: calc(50% - 15px);
+  bottom: -6px;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-card {
+  background: linear-gradient(145deg, #38353a 0%, #27272e 100%);
+}
+
+/*
+ * The Solution plaque contains NO dynamic numbers or puzzle-specific words.
+ * At reference aspect ratio, re-use its literal painted pixels from the
+ * canonical 1536x864 user illustration. The button, its aria label, focus
+ * outline and modal behavior remain actual React controls. The static art
+ * replaces only its visual decoration (not the accessible element).
+ *
+ * This JPEG is an existing checked-in reference, and Vite fingerprints the
+ * CSS URL during build. Photo-layout positions are intentionally registered
+ * to x1235, y632 on the 1536x864 logical stage. Ultrawide layouts still
+ * use the same art inside the small button surface, never a baked page.
+ */
+.painted-stage[data-photo-layout="true"] .reference-solution-card {
+  border: 0;
+  border-radius: 14px;
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg");
+  background-size: 1536px 864px;
+  background-position: -1235px -632px;
+  background-origin: border-box;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-heading,
+.painted-stage[data-photo-layout="true"] .reference-solution-preview {
+  opacity: 0;
+}
+.painted-stage[data-photo-layout="true"] .reference-solution-card:focus-visible {
+  outline: 6px solid #f6cf65;
+  outline-offset: 3px;
+}
+
+/*
+ * Reference-static decorative plates. The original 1536×864 source image
+ * already supplies the exact physical plaque materials, lettering and cast
+ * shadows. Only the STATIC logo and Goal regions are composited from that
+ * reference. The true puzzle board, status, counters, actions and gameplay
+ * remain live; the Goal help button remains a real focusable DOM button.
+ *
+ * These overrides are photo-layout-only: compact phones use their independent
+ * space-efficient semantic text layout.
+ */
+.painted-stage[data-photo-layout="true"] .painted-title-slot {
+  top: 0;
+  width: 356px;
+  height: 233px;
+}
+.painted-stage[data-photo-layout="true"] .title-plaque {
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg") !important;
+  background-size: 1536px 864px;
+  background-repeat: no-repeat;
+  background-position: -175px 0;
+  background-origin: border-box;
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-card {
+  border: 0;
+  border-radius: 0;
+  padding: 11px 16px;
+  clip-path: none;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg");
+  background-size: 1536px 864px;
+  background-position: -128px -637px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-heading strong,
+.painted-stage[data-photo-layout="true"] .reference-goal-card p,
+.painted-stage[data-photo-layout="true"] .reference-goal-miniature,
+.painted-stage[data-photo-layout="true"] .reference-goal-guide::after {
+  opacity: 0;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide {
+  background: transparent;
+  box-shadow: none;
+}
+.painted-stage[data-photo-layout="true"] .reference-goal-guide:focus-visible {
+  opacity: 1;
+  outline: 6px solid #156de5;
+  outline-offset: -2px;
+}
