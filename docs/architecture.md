@@ -28,6 +28,10 @@ The reference composition is a fixed 864-logical-pixel-tall landscape stage. It 
 
 Visual CI enforces 13 landscape/portrait viewport cases, native screenshot similarity, violet-center pixel integrity, and real coordinate clicks through ring rotation, Undo, Reset, navigation, Hint, Solution and Escape focus return. At native reference size the browser harness physically clicks through **both** full rotation directions for all seven rings (±360° each), verifies Reset restores the original source-art transforms, then drives the first puzzle's exact eleven-move solution through the painted controls and fires the live center, checking completion UI and the persisted Best. Source screenshot comparisons cannot replace final visual/user approval or physical phone testing. The active sign-off is [reference-fidelity-finish-plan.md](./reference-fidelity-finish-plan.md) and [issue #244](https://github.com/gamesbyian/Ring-Road/issues/244).
 
+## Native Android packaging
+
+The optional Capacitor 7 shell in `android/` packages the same reducer, renderers and locally copied Vite assets. `capacitor.config.ts` and `scripts/prepare-android.mjs` own Android installation, native asset synchronization and the immersive Android activity. `src/app/android-back.ts` bridges the Android Back button to the existing modal Escape handler (or minimizes the game when no modal is open). Native defaults to the painted candidate if the 20-file image/decode gate passes, with the unchanged classic fallback. Web keeps the classic default until reference acceptance. Device rotation is never locked in Android: the existing CSS-rotated portrait shell owns the user-visible orientation. See [Android APK / Pixel acceptance](android.md). APK and Gradle proof do not replace an actual Pixel touch/safe-area test.
+
 ## Canonical gameplay semantics
 
 The game has seven independently rotatable concentric rings. Each puzzle owns an ID, exact target, seven prime-constrained cycles, seven initial states, and validation-only authoring assertions.
