@@ -52,11 +52,27 @@ const names = [
   "ring-6-indigo-normalized.webp",
   "ring-7-violet-normalized.webp",
 ] as const;
-const sprites = new Map<string, string>();
+interface PaintedTexture {
+  readonly url: string;
+  readonly size: number;
+}
+const sprites = new Map<string, PaintedTexture>();
 let preparing: Promise<void> | undefined;
 
+/** Even centered crop: never discard a nontransparent warped ring pixel. */
+export function paintedRingCropSize(artIndex: number): number {
+  const band = REFERENCE_PAINTED_BANDS[artIndex];
+  if (!band) throw new RangeError("Invalid painted art ring");
+  return 2 * (Math.ceil(band.outer) + 2);
+}
+
 export function paintedRingSpriteUrl(filename: string, assetRoot: string): string {
-  return sprites.get(filename) ?? (assetRoot + filename);
+  return sprites.get(filename)?.url ?? (assetRoot + filename);
+}
+
+/** 900px only for the intact source-image fallback, never for cropped blobs. */
+export function paintedRingSpriteSize(filename: string): number {
+  return sprites.get(filename)?.size ?? PAINTED_RING_CANVAS;
 }
 
 /**
@@ -163,8 +179,15 @@ async function retopologizeRing(
   context.drawImage(image, 0, 0);
   const bytes = context.getImageData(0, 0, PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
   const warped = new ImageData(warpRingPixels(bytes.data, index), PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
-  context.clearRect(0, 0, PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
-  context.putImageData(warped, 0, 0);
+  // The actual largest destination circle has a 350px radius; retaining its
+  // empty 900x900 transparent backing on all seven transform layers wastes
+  // ~17 MiB of decoded texture area on mobile GPUs. Crop EACH output to the
+  // same centred pixel coordinate system, with 2px fully clear safety margin.
+  // Canvas resizing frees the source-sized backing before encoding the crop.
+  const croppedSize = paintedRingCropSize(index);
+  const offset = (PAINTED_RING_CANVAS - croppedSize) / 2;
+  canvas.width = canvas.height = croppedSize;
+  context.putImageData(warped, -offset, -offset);
   return URL.createObjectURL(await encodedWebp(canvas));
 }
 
@@ -178,14 +201,15 @@ export function preparePaintedRingTextures(
 ): Promise<void> {
   if (preparing) return preparing;
   preparing = (async () => {
-    const pending = new Map<string, string>();
+    const pending = new Map<string, PaintedTexture>();
     try {
       for (const [index, filename] of names.entries()) {
-        pending.set(filename, await retopologizeRing(root, filename, index, loadedRings?.get(filename)));
+        const url = await retopologizeRing(root, filename, index, loadedRings?.get(filename));
+        pending.set(filename, {url, size: paintedRingCropSize(index)});
       }
-      for (const [name, url] of pending) sprites.set(name, url);
+      for (const [name, texture] of pending) sprites.set(name, texture);
     } catch (error) {
-      for (const url of pending.values()) URL.revokeObjectURL(url);
+      for (const texture of pending.values()) URL.revokeObjectURL(texture.url);
       console.warn("Painted ring geometry warp unavailable; keeping verified source sprites.", error);
     }
   })();
