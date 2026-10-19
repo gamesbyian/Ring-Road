@@ -1,10 +1,16 @@
 # Painted Ring Road: physical phone acceptance
 
-**Status: NOT VERIFIED ON A REAL HANDSET.** This is a reproducible final human-device test contract, not a claimed pass. The 13-view Chrome geometry suite, emulated DPR2/reduced-motion and real CDP coordinate clicks do **not** model physical Android browser chrome, touch jitter, a notch or navigation gestures. The active release authority is [issue #244](https://github.com/gamesbyian/Ring-Road/issues/244); use [the finish plan](reference-fidelity-finish-plan.md) for source-matching criteria.
+**Status: FAILED ON A REAL ANDROID HANDSET (2026-10-19).** Screenshots of the deployed painted mode show several ring and control layers missing or flickering and a broken/blank-looking rotated Guide. Previous Chrome screenshot CI had GPU compositing disabled, so its clean renders did NOT constitute physical device acceptance. PR #306 reduces sprite GPU texture area, removes permanent layer promotion and replaces the painted Guide backdrop blur, but is **not** confirmed to solve the reported behavior until a repeat physical test. This is a reproducible final human-device test contract, not a claimed pass. The 13-view Chrome geometry suite, emulated DPR2/reduced-motion and real CDP coordinate clicks do **not** model physical Android browser chrome, touch jitter, a notch or navigation gestures. The active release authority is [issue #244](https://github.com/gamesbyian/Ring-Road/issues/244); use [the finish plan](reference-fidelity-finish-plan.md) for source-matching criteria.
 
 ## Preparation
 
 Use an actual Android phone running Chrome, with a normal visible address bar/navigation area (not a desktop simulator or forced fullscreen). Open the deployed or locally served Ring Road page and append `?skin=painted` to its URL. The application should report its real painted presentation, not silently show classic because assets failed. Note device, OS/Chrome versions, browser display/text zoom, orientation and whether the address bar is expanded or collapsed. Preserve a screenshot at each meaningful failure. Do not change phone settings merely to manufacture a pass.
+
+## Recheck the reported missing-layer regression
+
+First return to the **same in-app browser or custom tab** that displayed the broken ring colors and Guide. Force a new page load after the deployed fix is available, rather than viewing a previously cached or suspended tab. Before touching anything, confirm all seven pigments **red, orange, yellow, green, blue, indigo and violet** are present, that all seven real ring control rows are painted and clickable, and no large plain brown wedges replace entire colored arcs. Rotate different rings for at least ten taps total; look for sprite/background/control flicker. Open and dismiss Guide, Hint and Solution, rotate to portrait with Guide open, and check the entire overlay is continuously drawn with its footer visible. Repeat the exact first-puzzle fire and ensure the completed state stays rendered. If blank areas remain, capture before/after screenshots plus a brief screen recording if convenient.
+
+As an isolation test, open the same Page URL in **standalone Chrome** rather than the in-app browser. Record separately whether both contexts reproduce the issue; a working full browser does not excuse a broken in-app game. Please note Android/Chrome build only if readily available, and whether the browser's address bar is visible. Do not mark real-phone acceptance PASS if even one ring/control layer disappears or flickers.
 
 ## Physical test sequence
 

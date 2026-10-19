@@ -16,11 +16,17 @@ const out = option("--out", "artifacts/visual-viewport-audit");
 const externalUrl = option("--url", null);
 const skin = option("--skin", "classic");
 if (!["classic", "painted"].includes(skin)) throw new Error("--skin must be classic or painted");
+const compositor = option("--compositor", "software");
+if (!["software", "swiftshader"].includes(compositor)) throw new Error("--compositor must be software or swiftshader");
 const targetUrl = new URL(externalUrl || "http://127.0.0.1:4173/Ring-Road/");
 if (skin === "painted") targetUrl.searchParams.set("skin", "painted");
 const url = targetUrl.href;
 const spec = JSON.parse(await readFile(new URL("../docs/reference-regions.json", import.meta.url), "utf8"));
-const sizes = [...spec.phoneViewports, ...spec.otherViewports];
+const allSizes = [...spec.phoneViewports, ...spec.otherViewports];
+const sizes = compositor === "swiftshader"
+  ? allSizes.filter(([width, height]) =>
+    ["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height))
+  : allSizes;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /** Single author-verified source of the first puzzle's true 11-step input route. */
 const FIRST_PUZZLE_EXACT_ROUTE = [
@@ -685,7 +691,11 @@ try {
   }
   await awaitHttp(url);
   chrome = spawn(process.env.CHROME_BIN || "google-chrome", [
-    "--headless", "--no-sandbox", "--disable-gpu", "--hide-scrollbars",
+    "--headless", "--no-sandbox", "--hide-scrollbars",
+    ...(compositor === "swiftshader"
+      ? ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader",
+        "--disable-gpu-sandbox"]
+      : ["--disable-gpu"]),
     "--remote-debugging-port=" + port, "--user-data-dir=" + temp, "about:blank"
   ], {stdio: "ignore"});
   cdp = await connect(port);
@@ -880,7 +890,7 @@ try {
     captures.push(result);
     console.log(filename + ": " + result.failures.length + " issue(s): " + result.failures.slice(0, 5).join("; "));
   }
-  const report = {url, skin, date: new Date().toISOString(), strict, results: captures};
+  const report = {url, skin, compositor, date: new Date().toISOString(), strict, results: captures};
   await writeFile(join(out, "report.json"), JSON.stringify(report, null, 2) + "\n");
   const failures = captures.filter((r) => r.failures.length).length;
   console.log("Audit complete: " + sizes.length + " sizes, " + failures + " with issues. See " + out);
