@@ -68,7 +68,7 @@ export function paintedRingSpriteUrl(filename: string, assetRoot: string): strin
  * scalar weights/offsets replace the old per-pixel weights[]/neighbors[] arrays
  * (millions of transient JS allocations across seven 900px sprites).
  */
-export function warpRingPixels(source: Uint8ClampedArray, artIndex: number): Uint8ClampedArray {
+export function warpRingPixels(source: Uint8ClampedArray, artIndex: number): Uint8ClampedArray<ArrayBuffer> {
   const size = PAINTED_RING_CANVAS;
   if (source.length !== size * size * 4) {
     throw new RangeError("Invalid painted source texture size");
