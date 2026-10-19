@@ -3,6 +3,7 @@
 import colorsys
 import importlib.util
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
 from PIL import Image, ImageDraw
@@ -60,6 +61,32 @@ class MultiRayDiagnosticTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _MODULE.multi_ray_ring_material(Image.new("RGB", (1440, 1000)),
                                              Image.new("RGB", (1440, 1000)))
+
+
+class GenuinePoseContactSheetTests(unittest.TestCase):
+    def setUp(self):
+        module_path = Path(__file__).with_name("painted-pose-review.py")
+        spec = importlib.util.spec_from_file_location("painted_pose_review", module_path)
+        self.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.module)
+
+    def test_distinct_real_size_inputs_form_saved_four_panel_sheet(self):
+        images = [Image.new("RGB", (1536, 864), color)
+                  for color in ("#101020", "#202030", "#303040", "#404050")]
+        with TemporaryDirectory() as temp:
+            output = Path(temp) / "board-multipose-contact.png"
+            self.module.make_review_sheet(images[0], images[1:], output)
+            with Image.open(output) as sheet:
+                self.assertEqual(sheet.size, (1532, 1166))
+
+    def test_identical_live_states_cannot_masquerade_as_distinct_poses(self):
+        reference = Image.new("RGB", (1536, 864), "white")
+        live = Image.new("RGB", (1536, 864), "purple")
+        with TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "pixel-identical"):
+                self.module.make_review_sheet(
+                    reference, [live, live.copy(), live.copy()],
+                    Path(temp) / "invalid.png")
 
 
 if __name__ == "__main__":
