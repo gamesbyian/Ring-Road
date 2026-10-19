@@ -55,6 +55,43 @@ export function paintedRingSpriteUrl(filename: string, assetRoot: string): strin
   return sprites.get(filename) ?? (assetRoot + filename);
 }
 
+/**
+ * Source reference: the central violet wheel has an understated engraved
+ * eight-point compass star under its pearl. Its former stationary CSS star
+ * was hidden by the opaque moving C-ring. Etch the design IN the moving
+ * violet paint and never modify alpha, so a real notch stays a real notch.
+ *
+ * The star's radial silhouette has eight tapered points at 45° increments,
+ * with 24px valleys and 48px tips in the 900px source-normalized ring plane.
+ * Return pigment contrast only; the original artwork defines geometry.
+ */
+export function violetStarEtch(radius: number, theta: number): { shade: number; edge: number } {
+  if (!Number.isFinite(radius) || !Number.isFinite(theta) || radius < 18 || radius > 50) {
+    return { shade: 0, edge: 0 };
+  }
+  const tipRadius = 36 + 12 * Math.cos(8 * theta);
+  const shade = Math.max(0, Math.min(1, (tipRadius - radius) * 1.2));
+  const edge = Math.max(0, 1 - Math.abs(tipRadius - radius) / 1.5);
+  return { shade: shade * .22, edge: edge * .12 };
+}
+
+function engraveVioletStar(bytes: Uint8ClampedArray): void {
+  const center = (PAINTED_RING_CANVAS - 1) / 2;
+  for (let y = 399; y <= 501; y++) {
+    for (let x = 399; x <= 501; x++) {
+      const dx = x - center, dy = y - center;
+      const {shade, edge} = violetStarEtch(Math.hypot(dx, dy), Math.atan2(dy, dx));
+      if (!shade && !edge) continue;
+      const offset = (y * PAINTED_RING_CANVAS + x) * 4;
+      if (bytes[offset + 3]! < 90) continue; // never paint into a real gap
+      bytes[offset] = bytes[offset]! * (1 - shade) + edge * 24;
+      bytes[offset + 1] = bytes[offset + 1]! * (1 - shade) + edge * 17;
+      bytes[offset + 2] = bytes[offset + 2]! * (1 - shade * .60) + edge * 19;
+      // Preserve exact source-alpha notch and per-pixel sidewall geometry.
+    }
+  }
+}
+
 /** Bilinear, alpha-premultiplied texture sampling. Angular coordinate never changes. */
 function warpRing(source: Uint8ClampedArray, artIndex: number): ImageData {
   const size = PAINTED_RING_CANVAS;
@@ -105,6 +142,7 @@ function warpRing(source: Uint8ClampedArray, artIndex: number): ImageData {
       result[outIndex + 3] = alpha;
     }
   }
+  if (artIndex === 6) engraveVioletStar(result);
   return target;
 }
 
