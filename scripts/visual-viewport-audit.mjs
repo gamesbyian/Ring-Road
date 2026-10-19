@@ -527,6 +527,48 @@ try {
       }
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
+    if (skin === "painted" && width === 844 && height === 390) {
+      // A DPR=1 CSS viewport does not reproduce modern phone raster density.
+      // Retain an additional *simulated* DPR2 image and rerun the same genuine
+      // pointer-coordinate controls under reduced-motion, without pretending
+      // this is a real-device acceptance test.
+      await cdp.send("Emulation.setDeviceMetricsOverride", {
+        width, height, mobile: true, deviceScaleFactor: 2,
+        screenOrientation: {type: "landscapePrimary", angle: 90}
+      });
+      await cdp.send("Emulation.setEmulatedMedia", {
+        features: [{name: "prefers-reduced-motion", value: "reduce"}]
+      });
+      try {
+        await delay(160);
+        const dpr = await cdp.evaluate("window.devicePixelRatio");
+        const reduced = await cdp.evaluate(`(() => {
+          const sprite = document.querySelector('.painted-ring-sprite');
+          const pearl = document.querySelector('.painted-pearl');
+          const duration = (element) => element ? getComputedStyle(element).transitionDuration : '';
+          const disabled = (text) => text.split(',').every((value) => Number.parseFloat(value) === 0);
+          return {
+            media: matchMedia('(prefers-reduced-motion: reduce)').matches,
+            spriteDuration: duration(sprite), pearlDuration: duration(pearl),
+            disabled: disabled(duration(sprite)) && disabled(duration(pearl))
+          };
+        })()`);
+        if (Math.abs(dpr - 2) > 0.001) result.failures.push("DPR2 emulation unavailable: " + dpr);
+        if (!reduced.media || !reduced.disabled)
+          result.failures.push("reduced motion did not disable painted ring/pearl transitions: " + JSON.stringify(reduced));
+        const hiDpi = await cdp.send("Page.captureScreenshot", {
+          format: "png", captureBeyondViewport: false
+        });
+        await writeFile(join(out, filename + "-dpr2-reduced-motion.png"), Buffer.from(hiDpi.data, "base64"));
+        const dprAudit = await cdp.evaluate("(" + inspectDOM.toString() + ")(" + JSON.stringify(skin) + ")");
+        result.failures.push(...dprAudit.failures.map((reason) => "DPR2 reduced motion: " + reason));
+        const dprInteractions = await smokePaintedInteraction(cdp);
+        result.failures.push(...dprInteractions.map((reason) => "DPR2 physical-coordinate click: " + reason));
+        result.extraPhoneEmulation = {dpr, reduced, failures: dprAudit.failures, interactionFailures: dprInteractions};
+      } finally {
+        await cdp.send("Emulation.setEmulatedMedia", {features: []});
+      }
+    }
     captures.push(result);
     console.log(filename + ": " + result.failures.length + " issue(s): " + result.failures.slice(0, 5).join("; "));
   }
