@@ -343,7 +343,7 @@ try {
     const filename = "game-" + skin + "-" + width + "x" + height;
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
-    if (skin === "painted" && ["568x320", "844x390", "390x844"].includes(width + "x" + height)) {
+    if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
       result.interactionFailures = await smokePaintedInteraction(cdp);
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
