@@ -1112,3 +1112,43 @@
 .painted-stage.reference-first-scene[data-photo-layout="true"] .ring-controls {
   row-gap: .5px;
 }
+
+/*
+ * Native 1536x864 Moves paper was sampled directly from the author's image:
+ * unlettered parchment around x1220..1240 / y160..180 is approximately
+ * RGB(239,198,160), whereas the previous CSS card read RGB(251,235,207).
+ * Reproduce the torn paper silhouette and material, but keep "Moves", the
+ * current count, Best and Target as reducer-derived DOM text.
+ *
+ * Photo-layout-only; compact 568x320 and rotated phones retain their
+ * independently readable HUD, hit targets, and exact no-scroll composition.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-moves-slot {
+  filter: drop-shadow(0 4px 4px rgb(68 47 32 / 36%));
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .reference-moves-card {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding-top: 14px;
+  padding-bottom: 6px;
+  background:
+    radial-gradient(ellipse 75% 65% at 55% 48%, rgb(247 212 179 / 36%), transparent 100%),
+    linear-gradient(107deg, #eec49e 0%, #f1cba7 49%, #edc39e 100%);
+  clip-path: polygon(
+    8% 0.5%, 24% 0%, 32% 0.9%, 60% 0%, 91% 0.8%,
+    99% 11%, 99.4% 34%, 98.8% 54%, 99.6% 85%,
+    93% 99%, 63% 99.2%, 39% 100%, 9% 99%,
+    0.5% 89%, 1% 67%, 0.2% 44%, 0.3% 17%
+  );
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .reference-moves-rule {
+  width: 70%;
+  height: 2px;
+  margin: 5px auto 6px;
+  background: rgb(108 80 61 / 45%);
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-best-readout,
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-best-readout b {
+  font-weight: 560;
+}
