@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** Phone-sized zero-scroll and screenshot audit. Node 22, Chrome, no new npm deps. */
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtemp, mkdir, rm, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -481,20 +482,34 @@ try {
     const filename = "game-" + skin + "-" + width + "x" + height;
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
+    const baselineDigest = createHash("sha256").update(screenshot.data, "base64").digest("hex");
     if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
       const nativePhoto = width === 1536 && height === 864;
       // Additional evidence captures are from the SAME REAL in-page puzzle
       // after physical clicks, never synthetic CSS sprite rotations or a
       // manually altered reducer. Keep the baseline native screenshot stable.
+      const poseDigests = new Map();
       const capturePose = nativePhoto ? async (pose) => {
         await delay(210); // finish the 150ms genuine source-sprite rotation
         await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
         const poseImage = await cdp.send("Page.captureScreenshot", {
           format: "png", captureBeyondViewport: false
         });
-        await writeFile(join(out, filename + "-" + pose + ".png"), Buffer.from(poseImage.data, "base64"));
+        const bytes = Buffer.from(poseImage.data, "base64");
+        const digest = createHash("sha256").update(bytes).digest("hex");
+        if (digest === baselineDigest) {
+          result.failures.push("pose capture identical to untouched initial board: " + pose);
+        }
+        if ([...poseDigests.values()].includes(digest)) {
+          result.failures.push("two physically distinct poses have identical pixels: " + pose);
+        }
+        poseDigests.set(pose, digest);
+        await writeFile(join(out, filename + "-" + pose + ".png"), bytes);
       } : async () => {};
       result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose);
+      if (nativePhoto && (poseDigests.size !== 2 || !poseDigests.has("red-one-step") || !poseDigests.has("exact-aligned-pre-fire"))) {
+        result.failures.push("missing genuine native painted puzzle-pose screenshots");
+      }
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
     captures.push(result);
