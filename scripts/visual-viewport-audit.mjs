@@ -165,7 +165,11 @@ function inspectDOM(requestedSkin) {
         Math.max(1, button.offsetHeight);
       return {label: button.textContent.trim(), physicalFont};
     }) : [];
+  const duplicateSolution = painted && document.querySelector(".actions button.solution-compact-action");
+  const duplicateSolutionVisible = Boolean(duplicateSolution &&
+    getComputedStyle(duplicateSolution).display !== "none");
   const failures = [
+    ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
     ...actionTypography.filter((item) => item.physicalFont < 11.5)
       .map((item) => "unreadable compact action label: " + item.label),
