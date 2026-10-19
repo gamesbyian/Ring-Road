@@ -1328,6 +1328,31 @@
 }
 
 /*
+ * The reference contains the exact STATIC Moves heading, paper silhouette,
+ * painterly grain and divider, but its example count/Best must never remain
+ * visible when game state changes. The tiny source-cleaned (not generated)
+ * WebP removes only those example characters, preserving the photographed
+ * perimeter, and the ACTUAL reducer-driven DOM number/Best/Target stays above.
+ * The source and deterministic offline mask/encode provenance are documented
+ * in docs/reference-asset-inventory.md. Short phones and tall desktops retain
+ * their independent layouts and real HTML labels.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-moves-slot {
+  filter: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .reference-moves-card {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: none;
+  background: url("../assets/painted/moves-clean-1536.webp") 0 0 / 172px 138px no-repeat;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .reference-moves-card .reference-card-label,
+.painted-stage.reference-first-scene[data-photo-layout="true"] .reference-moves-card .reference-moves-rule {
+  opacity: 0;
+}
+
+/*
  * Canonical photo layout: preserve the original Puzzle ticket's irregular
  * paper perimeter, folds, and cast shadow directly from the verified 16:9
  * painting. Cover ONLY the illustrative source text/progress with small
