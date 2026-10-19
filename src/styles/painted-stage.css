@@ -111,7 +111,8 @@
   height: 900px;
   transform-origin: 50% 50%;
   transition: transform 150ms cubic-bezier(.2,.8,.2,1);
-  will-change: transform;
+  /* Allow the compositor to promote a ring WHEN it animates. Keeping all
+     seven transform layers pinned forever exhausted mobile layer budgets. */
   pointer-events: none;
 }
 .painted-ring-sprite.painted-ring-instant { transition: none; }
@@ -455,6 +456,13 @@
   max-height: 100%;
   padding: 12px;
   place-items: center;
+  /* Backdrop blur on a fixed overlay nested in the rotated/scaled painted
+     stage can require a full-screen offscreen GPU render target. Real phone
+     screenshots exposed clipped/blank dialog backdrops. A stable translucent
+     scrim keeps the game visible beneath it without GPU readback/blur. */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(34, 48, 73, .78);
 }
 .painted-app .modal article {
   max-width: 95%;

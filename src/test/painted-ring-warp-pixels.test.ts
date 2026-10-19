@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ORIGINAL_PAINTED_BANDS, PAINTED_RING_CANVAS, REFERENCE_PAINTED_BANDS,
-  sourceRadiusAt, warpRingPixels,
+  paintedRingCropSize, sourceRadiusAt, warpRingPixels,
 } from "../render/painted-ring-retopology";
 
 /** Frozen original algorithm as an independent pixel-for-pixel oracle. */
@@ -78,6 +78,39 @@ describe("painted premultiplied ring warp equivalence", () => {
       }
       expect(firstMismatch, `RGBA mismatch in ring ${artIndex} at byte ${firstMismatch}`).toBe(-1);
     }
+  });
+
+  it("never crops a visible pixel when reducing mobile GPU texture area", () => {
+    const canvas = PAINTED_RING_CANVAS;
+    const source = new Uint8ClampedArray(canvas * canvas * 4);
+    // Full source opacity exposes any mistaken ring clipping regardless of
+    // the seven source-image notches. The warp itself owns alpha cut geometry.
+    for (let i = 0; i < source.length; i += 4) {
+      source[i] = 183;
+      source[i + 1] = 71;
+      source[i + 2] = 218;
+      source[i + 3] = 255;
+    }
+    let croppedArea = 0;
+    for (let art = 0; art < 7; art++) {
+      const side = paintedRingCropSize(art);
+      expect(side % 2).toBe(0);
+      expect(side).toBeLessThan(canvas);
+      const inset = (canvas - side) / 2;
+      const output = warpRingPixels(source, art);
+      let visiblePixels = 0;
+      for (let y = 0; y < canvas; y++) for (let x = 0; x < canvas; x++) {
+        const alpha = output[(y * canvas + x) * 4 + 3];
+        if (!alpha) continue;
+        visiblePixels++;
+        expect(x >= inset && x < inset + side && y >= inset && y < inset + side).toBe(true);
+      }
+      expect(visiblePixels).toBeGreaterThan(5000);
+      croppedArea += side * side;
+    }
+    // Seven full 900x900 RGBA GPU surfaces = 22.68MiB. Cropping retained
+    // artwork reduces decoded footprint by more than 70% for the ring layers.
+    expect(croppedArea).toBeLessThan(7 * canvas * canvas * 0.3);
   });
 
   it("preserves source-band and failure contracts", () => {
