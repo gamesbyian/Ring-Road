@@ -214,6 +214,18 @@ async function runViewport({ width, height, mobile, debugPort, fullFlow = true }
         "document.querySelectorAll('.scene-art img[data-desktop-src]').length === 3"),
       `${width}px viewport did not mount the three desktop scenic assets`,
     );
+    // React can mount the pictures after document.readyState is already
+    // 'complete'. At the 720px zoom proxy, currentSrc can briefly be empty
+    // while the browser is starting the first image request. Wait for real
+    // decoded assets before asserting that the canonical *desktop* package
+    // was selected. This does not weaken the source identity check below.
+    await waitFor(
+      async () => await cdp.evaluate(
+        "Array.from(document.querySelectorAll('.scene-art img')).length === 3 && " +
+        "Array.from(document.querySelectorAll('.scene-art img')).every(img => " +
+        "Boolean(img.currentSrc) && img.complete && img.naturalWidth > 0)"),
+      `${width}px scenic artwork did not resolve after React mounted its pictures`,
+    );
     const scenicLayers = await cdp.evaluate(`Array.from(document.querySelectorAll('.scene-art img')).map((img) => ({
       currentSrc: img.currentSrc,
       pointerEvents: getComputedStyle(img).pointerEvents,
