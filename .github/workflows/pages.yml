@@ -27,6 +27,23 @@ jobs:
           SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          # Pages was previously configured to publish directly from main
+          # AND from this Vite workflow. Branch publishing can intermittently
+          # overwrite the compiled app with unbuilt /src/main.tsx, producing a
+          # blank page on real phones. When the repository owner switches
+          # Settings > Pages > Source to GitHub Actions, NEVER wait for a
+          # branch publisher that is intentionally disabled.
+          pages="$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPO/pages")"
+          build_type="$(printf '%s' "$pages" | jq -r '.build_type // "legacy"')"
+          if [ "$build_type" = "workflow" ]; then
+            echo "Pages source is GitHub Actions only: no competing branch publisher."
+            exit 0
+          fi
+          echo "::warning::GitHub Pages is still branch-published as well as using Vite Actions. In Settings > Pages, choose Source: GitHub Actions to eliminate transient white-screen deployments."
           echo "Waiting for GitHub's legacy Pages publisher so the Vite deploy is always last."
           for attempt in {1..60}; do
             runs="$(curl -fsSL \
@@ -86,6 +103,10 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Verify deployed Pages shell and assets
         env:
           PAGE_URL: ${{ needs.deploy.outputs.page_url }}
@@ -116,3 +137,15 @@ jobs:
           curl -fsSI "$origin$js_path" >/dev/null
           curl -fsSI "$origin$css_path" >/dev/null
           echo "Live Pages verification passed: built Vite shell and assets are being served."
+      - name: Run deployed Pages in actual mobile Chrome
+        env:
+          PAGE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: node scripts/live-pages-browser-smoke.mjs
+      - name: Preserve deployed Pages blank-screen debugging captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-road-deployed-pages-browser-smoke
+          path: artifacts/live-pages
+          retention-days: 7
+          if-no-files-found: warn
