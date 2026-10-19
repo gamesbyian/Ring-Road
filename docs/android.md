@@ -1,6 +1,6 @@
 # Ring Road for Android (Pixel 6 Pro and other modern Android devices)
 
-This build wraps the **same React/TypeScript game** in a native Capacitor 7 WebView. Gameplay, campaign, touch controls, best scores, and the classic fallback are shared with the web edition. Android launches into the in-development **painted** presentation when the bundled WebPs decode. A failed art decode falls back to classic; the public website retains its classic default until visual signoff.
+This build wraps the **same React/TypeScript game** in a native Capacitor 7 WebView. Painted is now the **only production mode** on Android and the public website. The 20-piece reference artwork manifest must validate and decode; on failure a visible retry control appears, never a classic-mode fallback. Gameplay, campaign, touch controls and best scores share one reducer across APK/web.
 
 **Orientation:** The Android Activity is intentionally **not** locked to landscape. The existing game shell rotates 90 degrees in portrait and renders normally in landscape. There is no orientation splash, second portrait UI or browser bar. Immersive system bars may be temporarily revealed by a system edge swipe.
 
@@ -30,10 +30,14 @@ npm run android:apk
 
 The Capacitor Android project and pinned dependency lockfile are **checked in**. Actions performs a clean `npm ci`, regenerates the relative web bundle, syncs it into the Android project, verifies offline assets, and builds an APK from those sources. The Android APK workflow runs on relevant `main` changes, can validate pull requests, and also supports manual dispatch.
 
+## Pixel 6 Pro display target
+
+The handset has a 1440×3120 LTPO panel at 19.5:9. The target CSS viewport is **892×412 landscape**, **412×892 portrait** at approximately **DPR 3.5**. The strict browser audit additionally exercises **840×360** for reduced visible height (browser chrome) and **360×840** after CSS rotation. Pixel-width-aware gutters protect left ring arrows and right navigation from screen curves/camera and touch-edge gestures without hiding any controls. Retain no page/stage scrolling and all seven 44×44 CSS-pixel tap targets. Do not force native OS orientation; full-shell CSS rotation remains canonical. The actual device's window and text sizing must still be checked in the APK.
+
 ## Required acceptance before calling Android complete
 
 - Native Gradle `assembleDebug` passes and GitHub retains an installable APK artifact.
-- A Pixel 6 Pro opens the app with mobile data/Wi-Fi disabled, with painted art and its fallback available offline.
+- A Pixel 6 Pro opens the app offline with the complete painted art and no classic fallback; forced asset failure shows recovery instructions and retry instead of a half-rendered scene.
 - Both physical orientations keep the entire game visible without stage/page scrolling or extra orientation UI.
 - All 14 rotation controls, center fire, Undo, Reset, Hint, Solution, previous/next puzzle and guide operate by actual touch.
 - Modal and Android hardware/gesture Back correctly close a dialog, and Back at the main game minimizes the app.
@@ -41,3 +45,5 @@ The Capacitor Android project and pinned dependency lockfile are **checked in**.
 - Best records persist after app relaunch, and accessibility/reduced-motion behavior remains functional.
 
 Web simulation, CI's built APK, and a Pixel hardware acceptance are three **different** evidence levels. Do not claim physical Pixel validation solely from Gradle or Chrome tests.
+
+**Important open hardware issue:** Previous physical Android screenshots of painted mode showed missing/flickering ring/control layers and a blank-looking rotated Guide. Chrome/SwiftShader CI passing does not establish that real Pixel compositing is fixed. Retest on the physical Pixel before signoff; capture screenshots of the complete seven colors, real touches and rotated modal.
