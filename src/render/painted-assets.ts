@@ -1,3 +1,5 @@
+import { preparePaintedRingTextures } from "./painted-ring-retopology";
+
 /** Browser-side integrity gate for the optional painted renderer.
  * Compile-time list is also an audit contract; a single loaded red ring is not
  * evidence that the complete scene is installed correctly.
@@ -59,6 +61,9 @@ export async function paintedAssetsReady(): Promise<boolean> {
       img.onerror = () => reject(new Error("Reference skin asset failed: " + name));
       img.src = root + name;
     })));
+    // Purely visual image-space remap. Source assets remain the fallback.
+    // Wait for this to finish before mounting the real painted game scene.
+    await preparePaintedRingTextures(root);
     return true;
   } catch {
     return false;
