@@ -18,7 +18,7 @@ Do not preserve prototype architecture merely for compatibility.
 | Completion / release-validation audit | `docs/production-completion.md`, then `docs/testing.md` or the relevant authority |
 | Gameplay/domain semantics | `docs/architecture.md`, then `src/domain/` and `src/test/`; prototype only for parity evidence |
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
-| Renderer/UI/accessibility | `docs/reference-fidelity-finish-plan.md` for active acceptance, then `docs/diorama-visual-overhaul-plan.md` for historical art direction, then `src/render/PaintedScene.tsx`, `src/render/painted-geometry.ts`, `src/render/painted-ring-retopology.ts`, `src/styles/painted-stage.css`, `public/reference-skin/` and `src/App.tsx` for the painted visual candidate; `DioramaScene.tsx` and `src/assets/diorama/manifest.ts` own the classic fallback; use the completed dimensional-renderer plan for historical architecture/invariants |
+| Renderer/UI/accessibility | `docs/reference-fidelity-finish-plan.md` for active acceptance, then `docs/diorama-visual-overhaul-plan.md` for historical art direction, then `src/render/PaintedScene.tsx`, `src/render/painted-geometry.ts`, `src/render/painted-ring-retopology.ts`, `src/styles/painted-stage.css`, `public/reference-skin/` and `src/App.tsx` for the painted visual candidate; the classic diorama renderer is retired from runtime; use the completed dimensional-renderer plan for historical architecture/invariants |
 | Solver/alignment/exact-move behavior | `docs/architecture.md`, then `src/domain/solver.ts` and domain tests |
 | Android APK / Pixel testing | `docs/android.md`, then `capacitor.config.ts`, `scripts/prepare-android.mjs` and `.github/workflows/android-apk.yml`; native source lives in `android/` |
 | Validation / red CI | `docs/testing.md`, then the failing script/test |
@@ -64,3 +64,7 @@ Use `npm run check` for deterministic local validation. Android edits also requi
 ## Context budget
 
 Keep agent routing and current architecture compact. Archived prototype size does not count as ordinary agent context because agents should not load it unless reference behavior is specifically needed.
+
+## Production mode and device baseline
+
+As of 2026-10-19 painted art is the **only** running renderer for web and Android. No `?skin` switch, no classic fallback on artwork failure: show the deliberate artwork retry UI instead. Preserve frozen prototype and historical renderer files as reference evidence, not new production options. The primary physical target is a Pixel 6 Pro: 1440×3120 panel, approximately 892×412 CSS landscape / 412×892 portrait (DPR 3.5), plus 840×360 browser-chrome reduced viewport. Keep all seven true controls, complete artwork, touch-safe edge gutters, no scrolling, CSS rotated portrait. Device compositor flicker is still unverified on a physical Pixel; do not claim it fixed from Chrome emulation.
