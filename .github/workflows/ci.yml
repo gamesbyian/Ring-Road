@@ -30,6 +30,7 @@ jobs:
       - name: Compare native-ratio painted image to supplied landscape reference
         run: |
           python3 -m pip install --quiet Pillow
+          python3 -m unittest discover -s scripts -p "test_visual_reference_*.py"
           python3 scripts/visual-reference-compare.py \
             --reference docs/assets/reference-play-1536x864.jpg \
             --actual artifacts/painted-viewport/game-painted-1536x864.png \
@@ -37,6 +38,10 @@ jobs:
             --out artifacts/painted-viewport/reference-diff \
             --mode native \
             --max-rgb-mae 45
+          python3 scripts/painted-pose-review.py \
+            --capture-dir artifacts/painted-viewport \
+            --reference docs/assets/reference-play-1536x864.jpg \
+            --out artifacts/painted-viewport/reference-diff/board-multipose-contact.png
       - name: Verify painted violet center is not sandstone
         run: python3 scripts/check-painted-medallion.py artifacts/painted-viewport/game-painted-1536x864.png
       - name: Upload painted scene captures and geometry
