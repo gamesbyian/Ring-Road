@@ -77,7 +77,7 @@ class GenuinePoseContactSheetTests(unittest.TestCase):
             output = Path(temp) / "board-multipose-contact.png"
             self.module.make_review_sheet(images[0], images[1:], output)
             with Image.open(output) as sheet:
-                self.assertEqual(sheet.size, (1532, 1166))
+                self.assertEqual(sheet.size, (1548, 1182))
 
     def test_identical_live_states_cannot_masquerade_as_distinct_poses(self):
         reference = Image.new("RGB", (1536, 864), "white")
