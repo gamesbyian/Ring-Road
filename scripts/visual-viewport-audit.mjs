@@ -390,6 +390,19 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     const restored = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (restored !== first) errors.push("Previous puzzle did not restore first puzzle");
     if (await bead() !== firstBead) errors.push("Campaign progress bead did not reset with navigation");
+    // Reopen the tutorial through the REAL painted Goal medallion after the
+    // initial first-load guide was dismissed; test its physical hit region,
+    // all rendered content and always-reachable Play footer across phones.
+    await click(".reference-goal-guide");
+    const guideShown = await read(
+      "document.querySelector('.modal h2')?.textContent?.trim() === 'How to play'");
+    if (!guideShown) errors.push("painted Goal medallion failed to open Guide");
+    if (guideShown) {
+      await verifyOpenModal("guide");
+      await click(".modal-footer button"); // Play
+      if (await read("!!document.querySelector('.modal')"))
+        errors.push("Guide Play button did not close tutorial");
+    }
     await click(".actions button:nth-child(3)"); // Hint
     const hintShown = await read("!!document.querySelector('.modal')");
     if (!hintShown) errors.push("Hint did not open a modal");
@@ -652,11 +665,10 @@ try {
       };
       result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose, captureOpenModal);
       if (["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height)) {
-        if (!modalEvidence.hint || !modalEvidence.solution ||
-            modalEvidence.hint.sha256 === modalEvidence.solution.sha256 ||
-            modalEvidence.hint.sha256 === baselineDigest ||
-            modalEvidence.solution.sha256 === baselineDigest) {
-          result.failures.push("missing or duplicate actual painted open-dialog screenshots");
+        if (!modalEvidence.guide || !modalEvidence.hint || !modalEvidence.solution ||
+            new Set(Object.values(modalEvidence).map((item) => item.sha256)).size !== 3 ||
+            Object.values(modalEvidence).some((item) => item.sha256 === baselineDigest)) {
+          result.failures.push("missing or duplicated live painted Guide/Hint/Solution screenshots");
         }
         result.modalEvidence = modalEvidence;
       }
