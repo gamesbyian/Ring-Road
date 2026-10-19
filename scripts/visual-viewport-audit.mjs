@@ -356,6 +356,39 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
         if (await ringTransform(art) !== originals[art])
           errors.push("reset after reverse wrap failed for painted ring " + (art + 1));
       }
+      // Author-verified first-puzzle exact route. Drive the REAL controls and
+      // fire the painted pearl by physical mouse coordinates: no reducer
+      // bypass or synthetic DOM click. This is the complete 11-move solution.
+      const exactRoute = [
+        [0, 1, 1], [1, -1, 2], [2, -1, 1],
+        [3, -1, 2], [4, 1, 3], [6, -1, 2],
+      ];
+      let solvedMoves = 0;
+      for (const [domain, direction, count] of exactRoute) {
+        const control = ".ring-control-" + domain +
+          (direction === 1 ? " button:last-child" : " button:first-of-type");
+        for (let step = 0; step < count; step++) {
+          await click(control);
+          solvedMoves++;
+        }
+      }
+      await expectMoves(solvedMoves, "exact painted first puzzle route");
+      const canFire = await read("document.querySelector('.painted-hub-button')?.disabled === false");
+      if (solvedMoves !== 11 || !canFire) {
+        errors.push("painted center did not unlock after exact eleven-move solution");
+      } else {
+        await click(".painted-hub-button");
+        await delay(480); // complete-state modal follows real fire animation
+        const completed = await read(
+          "document.querySelector('.modal')?.textContent?.includes('Puzzle complete') || false");
+        if (!completed) errors.push("painted center fire failed to present puzzle completion");
+        const firedPearl = await read(
+          "!!document.querySelector('.painted-pearl-fired')");
+        if (!firedPearl) errors.push("painted center did not enter pearl-fired presentation state");
+        const best = await read(
+          "document.querySelector('.painted-best-readout b')?.textContent?.trim() || ''");
+        if (best !== "11") errors.push("painted Best record was not created after true completion: " + best);
+      }
     }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
