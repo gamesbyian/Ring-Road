@@ -203,7 +203,7 @@ function inspectDOM(requestedSkin) {
  * painted layer, the CSS-rotated portrait shell, and React reducer agree.
  * Screenshots are captured BEFORE these actions to preserve stable comparisons.
  */
-async function smokePaintedInteraction(cdp) {
+async function smokePaintedInteraction(cdp, testFullTurns = false) {
   const errors = [];
   const read = (expression) => cdp.evaluate(expression);
   const moveCount = () => read("Number(document.querySelector('.reference-moves-card strong')?.textContent?.trim() || -1)");
@@ -274,6 +274,53 @@ async function smokePaintedInteraction(cdp) {
       if (!returnedFocus) errors.push("Escape from Solution failed to restore keyboard focus");
       const dialogStillOpen = await read("!!document.querySelector('.modal')");
       if (dialogStillOpen) errors.push("Escape failed to dismiss Solution dialog");
+    }
+    if (testFullTurns) {
+      // Seven true clockwise 360-degree turns, through actual coordinates on
+      // the native reference viewport. Preserve logical unbounded visual
+      // degrees and each original alpha notch, not just normalized state.
+      const degrees = (value) => {
+        const match = /^rotate\\((-?[0-9.]+)deg\\)$/.exec(value || "");
+        return match ? Number(match[1]) : NaN;
+      };
+      const ringTransform = (art) => read(
+        "document.querySelectorAll('.painted-ring-sprite')[" + art + "]?.style.transform");
+      const originals = [];
+      let turns = 0;
+      for (let art = 0; art < 7; art++) {
+        const domain = 6 - art;
+        const control = ".ring-control-" + domain;
+        const initial = await ringTransform(art);
+        originals.push(initial);
+        const groupLabel = await read("document.querySelector(" +
+          JSON.stringify(control) + ")?.getAttribute('aria-label')");
+        const cycle = Number(/ of (\\d+)$/.exec(groupLabel || "")?.[1]);
+        if (!(cycle >= 2 && cycle <= 19)) {
+          errors.push("invalid ring cycle in accessibility label: " + groupLabel);
+          continue;
+        }
+        for (let step = 0; step < cycle; step++) {
+          await click(control + " button:last-child");
+        }
+        turns += cycle;
+        await expectMoves(turns, "painted full-turn ring " + (art + 1));
+        const current = await ringTransform(art);
+        if (Math.abs((degrees(current) - degrees(initial)) - 360) > 0.001) {
+          errors.push("full clockwise rotation failed for ring " + (art + 1) +
+            ": " + initial + " -> " + current);
+        }
+        const restoredLabel = await read("document.querySelector(" +
+          JSON.stringify(control) + ")?.getAttribute('aria-label')");
+        if (restoredLabel !== groupLabel)
+          errors.push("full turn did not restore normalized orientation: " + (art + 1));
+      }
+      await click(".actions button:nth-child(2)"); // reset after all wraps
+      await expectMoves(0, "reset all seven full turns");
+      for (let art = 0; art < 7; art++) {
+        const current = await ringTransform(art);
+        if (current !== originals[art])
+          errors.push("reset did not restore painted ring " + (art + 1));
+      }
     }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
@@ -348,7 +395,7 @@ try {
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
     if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
-      result.interactionFailures = await smokePaintedInteraction(cdp);
+      result.interactionFailures = await smokePaintedInteraction(cdp, width === 1536 && height === 864);
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
     captures.push(result);
