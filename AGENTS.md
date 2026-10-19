@@ -20,6 +20,7 @@ Do not preserve prototype architecture merely for compatibility.
 | Puzzle authoring / campaign | `src/content/campaign.ts`, domain validation/tests, then archived prototype only as reference |
 | Renderer/UI/accessibility | `docs/reference-fidelity-finish-plan.md` for active acceptance, then `docs/diorama-visual-overhaul-plan.md` for historical art direction, then `src/render/PaintedScene.tsx`, `src/render/painted-geometry.ts`, `src/render/painted-ring-retopology.ts`, `src/styles/painted-stage.css`, `public/reference-skin/` and `src/App.tsx` for the painted visual candidate; `DioramaScene.tsx` and `src/assets/diorama/manifest.ts` own the classic fallback; use the completed dimensional-renderer plan for historical architecture/invariants |
 | Solver/alignment/exact-move behavior | `docs/architecture.md`, then `src/domain/solver.ts` and domain tests |
+| Android APK / Pixel testing | `docs/android.md`, then `capacitor.config.ts`, `scripts/prepare-android.mjs` and `.github/workflows/android-apk.yml`; native source lives in `android/` |
 | Validation / red CI | `docs/testing.md`, then the failing script/test |
 | Repository hygiene | execute `docs/periodic-repository-hygiene.md` from current `main` |
 | Documentation ownership | `docs/README.md` |
@@ -58,7 +59,7 @@ If production intentionally differs from prototype behavior, encode the intended
 
 ## Verification
 
-Use `npm run check` for deterministic local validation. Browser-facing changes also require `npm run browser:smoke` after a production build when Chrome is available, plus direct visual judgment where appearance itself is the subject of the change.
+Use `npm run check` for deterministic local validation. Android edits also require `npm run android:apk` and the offline bundle assertions; only a real handset can sign off physical touch/cutout fit. Browser-facing changes also require `npm run browser:smoke` after a production build when Chrome is available, plus direct visual judgment where appearance itself is the subject of the change.
 
 ## Context budget
 
