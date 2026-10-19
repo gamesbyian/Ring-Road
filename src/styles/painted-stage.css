@@ -1432,8 +1432,11 @@
  * and aspect <1.65. Native 1536x864 reference and all phone viewports remain
  * byte-for-byte governed by their established styles and artwork.
  */
+/* Preserve the same source-registered horizontal board/arena centre as native
+ * photo layout. Tall mode shrinks the LIVE rings but must not slide them 79px
+ * left of the actual baked circular sandstone plinth. */
 .painted-stage.reference-first-scene[data-tall-layout="true"] .painted-board-slot {
-  left: calc(50% - 36px);
+  left: calc(50% + 43px);
   top: 407px;
   transform: translate(-50%, -50%) scale(.85);
 }
