@@ -8,25 +8,29 @@ import { join } from "node:path";
 
 const args = process.argv.slice(2);
 const strict = args.includes("--strict");
+const smoke = args.includes("--smoke");
 function option(flag, defaultValue) {
   const index = args.indexOf(flag);
   return index < 0 ? defaultValue : args[index + 1];
 }
 const out = option("--out", "artifacts/visual-viewport-audit");
 const externalUrl = option("--url", null);
-const skin = option("--skin", "classic");
-if (!["classic", "painted"].includes(skin)) throw new Error("--skin must be classic or painted");
+const skin = option("--skin", "painted");
+if (skin !== "painted") throw new Error("Painted is the only supported Ring Road renderer");
 const compositor = option("--compositor", "software");
 if (!["software", "swiftshader"].includes(compositor)) throw new Error("--compositor must be software or swiftshader");
 const targetUrl = new URL(externalUrl || "http://127.0.0.1:4173/Ring-Road/");
-if (skin === "painted") targetUrl.searchParams.set("skin", "painted");
+// Deliberately test the real unparameterized production entrypoint.
 const url = targetUrl.href;
 const spec = JSON.parse(await readFile(new URL("../docs/reference-regions.json", import.meta.url), "utf8"));
 const allSizes = [...spec.phoneViewports, ...spec.otherViewports];
-const sizes = compositor === "swiftshader"
+const sizes = smoke
   ? allSizes.filter(([width, height]) =>
-    ["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height))
-  : allSizes;
+    ["568x320", "892x412", "412x892", "840x360", "1536x864"].includes(width + "x" + height))
+  : compositor === "swiftshader"
+    ? allSizes.filter(([width, height]) =>
+      ["568x320", "844x390", "892x412", "412x892", "390x844", "1536x864"].includes(width + "x" + height))
+    : allSizes;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /** Single author-verified source of the first puzzle's true 11-step input route. */
 const FIRST_PUZZLE_EXACT_ROUTE = [
@@ -188,7 +192,17 @@ function inspectDOM(requestedSkin) {
     Math.abs(stageRect.height - height) <= 4;
   const readyRows = Array.from(document.querySelectorAll(".ring-control")).every(
     (row) => getComputedStyle(row).visibility !== "hidden");
-  const photoLayout = document.querySelector(".painted-stage")?.getAttribute("data-photo-layout") === "true";
+  const stageNode = document.querySelector(".painted-stage");
+  const photoLayout = stageNode?.getAttribute("data-photo-layout") === "true";
+  const deviceLayout = stageNode?.getAttribute("data-device-layout");
+  const pixelSize = [[892,412],[412,892],[840,360],[360,840]].some(
+    ([w,h]) => w === width && h === height);
+  const gutter = (() => {
+    const rail = document.querySelector(".ring-controls")?.getBoundingClientRect();
+    const navigation = document.querySelector(".painted-navigation-slot")?.getBoundingClientRect();
+    if (portrait || !pixelSize || !rail || !navigation) return null;
+    return {left: rail.left, right: width - navigation.right};
+  })();
   const best = document.querySelector(".painted-best-readout");
   const bestVisible = best ? getComputedStyle(best).display !== "none" : false;
   const actionTypography = painted ? Array.from(document.querySelectorAll(".actions button"))
@@ -247,6 +261,9 @@ function inspectDOM(requestedSkin) {
     return actions.some((button) => getComputedStyle(button).borderTopLeftRadius !== "50%");
   })();
   const failures = [
+    ...(pixelSize && deviceLayout !== "pixel-6-pro" ? ["Pixel 6 Pro layout profile not activated"] : []),
+    ...(gutter && gutter.left < 15 ? ["Pixel left ring-control gutter under 15 CSS px: " + gutter.left] : []),
+    ...(gutter && gutter.right < 15 ? ["Pixel right navigation gutter under 15 CSS px: " + gutter.right] : []),
     ...(tallGoalOverlap ? ["tall landscape Goal heading overlaps painted help medallion"] : []),
     ...(tallBoardCenterDrift > 2 ? ["tall landscape live rings drift from source sandstone board: " + tallBoardCenterDrift.toFixed(2) + "px"] : []),
     ...(tallActionsUnregistered ? ["tall landscape actions not three accessible painted seals in one row"] : []),
@@ -272,7 +289,7 @@ function inspectDOM(requestedSkin) {
   ];
   return {viewport: {width, height}, portrait, painted, currentSkin, skinStatus,
     rotated, shellFits, stageFits, artDiagnostics, stageRect: stageRect ? rectInfo(stageRect) : null,
-    photoLayout, bestVisible, actionTypography, ringTextureAudit,
+    photoLayout, deviceLayout, pixelGutter: gutter, bestVisible, actionTypography, ringTextureAudit,
     visualViewport: window.visualViewport ? {
       width: window.visualViewport.width, height: window.visualViewport.height,
       scale: window.visualViewport.scale
@@ -757,7 +774,7 @@ try {
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
     const baselineDigest = createHash("sha256").update(screenshot.data, "base64").digest("hex");
-    if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
+    if (skin === "painted" && ["568x320", "844x390", "892x412", "412x892", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
       const nativePhoto = width === 1536 && height === 864;
       // Additional evidence captures are from the SAME REAL in-page puzzle
       // after physical clicks, never synthetic CSS sprite rotations or a
@@ -784,7 +801,7 @@ try {
       // Solution actions, never a manually inserted screenshot-only modal.
       const modalEvidence = {};
       const captureOpenModal = async (kind, geometry) => {
-        if (!["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height)) return;
+        if (!["568x320", "844x390", "892x412", "412x892", "390x844", "1536x864"].includes(width + "x" + height)) return;
         await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
         const screen = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
         const bytes = Buffer.from(screen.data, "base64");
@@ -810,13 +827,13 @@ try {
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
       if (nativePhoto) result.nativePoseDigests = Object.fromEntries(poseDigests);
     }
-    if (skin === "painted" && width === 844 && height === 390) {
+    if (skin === "painted" && ((width === 844 && height === 390) || (width === 892 && height === 412))) {
       // A DPR=1 CSS viewport does not reproduce modern phone raster density.
       // Retain an additional *simulated* DPR2 image and rerun the same genuine
       // pointer-coordinate controls under reduced-motion, without pretending
       // this is a real-device acceptance test.
       await cdp.send("Emulation.setDeviceMetricsOverride", {
-        width, height, mobile: true, deviceScaleFactor: 2,
+        width, height, mobile: true, deviceScaleFactor: width === 892 ? 3.5 : 2,
         screenOrientation: {type: "landscapePrimary", angle: 90}
       });
       await cdp.send("Emulation.setEmulatedMedia", {
@@ -836,7 +853,8 @@ try {
             disabled: disabled(duration(sprite)) && disabled(duration(pearl))
           };
         })()`);
-        if (Math.abs(dpr - 2) > 0.001) result.failures.push("DPR2 emulation unavailable: " + dpr);
+        if (Math.abs(dpr - (width === 892 ? 3.5 : 2)) > 0.001)
+          result.failures.push("Pixel density emulation unavailable: " + dpr);
         if (!reduced.media || !reduced.disabled)
           result.failures.push("reduced motion did not disable painted ring/pearl transitions: " + JSON.stringify(reduced));
         const hiDpi = await cdp.send("Page.captureScreenshot", {
@@ -853,10 +871,10 @@ try {
       }
     }
     if (skin === "painted" &&
-        ["568x320", "844x390", "390x844"].includes(width + "x" + height)) {
+        ["568x320", "844x390", "892x412", "412x892", "390x844"].includes(width + "x" + height)) {
       // The preceding DPR2 smoke legitimately changed Chrome's pixel ratio.
       // Re-establish CSS-pixel native-size evidence without changing game state.
-      if (width === 844 && height === 390) {
+      if ((width === 844 && height === 390) || (width === 892 && height === 412)) {
         await cdp.send("Emulation.setDeviceMetricsOverride", {
           width, height, mobile: true, deviceScaleFactor: 1,
           screenOrientation: {type: "landscapePrimary", angle: 90}

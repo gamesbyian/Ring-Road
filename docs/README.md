@@ -29,3 +29,5 @@ Production code lives under `src/`. The frozen single-file exhibit and its sourc
 - Prototype behavior is evidence, not current architecture.
 - Preserve useful historical reasoning in Git/PR history rather than inflating mandatory context.
 - Add a new live document only when it owns a distinct durable concern.
+
+Current shipping presentation (2026-10-19): painted-only across website and Android. `architecture.md` and `android.md` own the current mode, Pixel 6 Pro (892×412 CSS) acceptance target and missing-asset recovery. Chronological classic-fallback instructions in visual history are superseded.

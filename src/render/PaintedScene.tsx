@@ -122,6 +122,15 @@ export function PaintedScene({
   const scale = Math.max(0.01, screen.short / DESIGN_HEIGHT);
   const stageWidth = screen.long / scale;
   const touch = 44 / scale;
+  // Pixel 6 Pro: 1440x3120 physical, approximately 892x412 CSS landscape
+  // (412x892 portrait at DPR 3.5). Chrome's bars may reduce usable height
+  // to ~360 CSS px. Use a slightly wider edge gutter for touch/cutout safety.
+  // Match its logical viewport geometry, never sniff user agents or DPR.
+  const pixelProfile = screen.long >= 820 && screen.long <= 930 &&
+    screen.short >= 350 && screen.short <= 430 &&
+    screen.long / screen.short >= 2.0 && screen.long / screen.short <= 2.45;
+  const edgeGutter = pixelProfile ? 40 : 8;
+  const pixelRailTop = Math.max(0, Math.min(185, DESIGN_HEIGHT - touch * 7 - 15));
   // The 16:9 illustration is the exact 1536×864 registration authority;
   // shorter phone layouts must keep the full-height seven-button rail.
   const photoLayout = screen.short >= 600 && screen.long / screen.short >= 1.65;
@@ -133,33 +142,33 @@ export function PaintedScene({
     "--painted-scale": String(scale),
     "--painted-touch": touch + "px",
     "--painted-action-font": Math.max(22, Math.min(38, 13 / scale)) + "px",
-    "--painted-logo-left": (photoLayout ? 175 : tallLayout ? 8 : screen.short < 370 ? 365 : 20) + "px",
+    "--painted-logo-left": (photoLayout ? 175 : tallLayout ? 8 : pixelProfile && screen.short < 405 ? 405 : screen.short < 370 ? 365 : pixelProfile ? 40 : 20) + "px",
     "--painted-logo-top": (photoLayout ? 19 : tallLayout ? 5 : 6) + "px",
     "--painted-logo-width": (photoLayout ? 356 : tallLayout ? 258 : 335) + "px",
     "--painted-logo-height": (photoLayout ? 214 : tallLayout ? 155 : 180) + "px",
-    "--painted-rail-left": (photoLayout ? 190 : 8) + "px",
+    "--painted-rail-left": (photoLayout ? 190 : tallLayout ? 8 : edgeGutter) + "px",
     "--painted-rail-width": (photoLayout ? 205 : tallLayout ? 205 : 345) + "px",
     "--painted-row-height": (photoLayout ? 50 : tallLayout ? Math.max(50, touch) : touch) + "px",
-    "--painted-nav-right": (photoLayout ? 161 : tallLayout ? 12 : 12) + "px",
+    "--painted-nav-right": (photoLayout ? 161 : pixelProfile ? 40 : 12) + "px",
     "--painted-nav-top": (photoLayout ? 36 : tallLayout ? 12 : 12) + "px",
     "--painted-nav-width": (photoLayout ? 223 : tallLayout ? 215 : 400) + "px",
     "--painted-nav-height": (photoLayout ? 104 : tallLayout ? 92 : 132) + "px",
-    "--painted-moves-right": (photoLayout ? 161 : tallLayout ? 19 : 18) + "px",
+    "--painted-moves-right": (photoLayout ? 161 : pixelProfile ? 40 : tallLayout ? 19 : 18) + "px",
     "--painted-moves-top": (photoLayout ? 147 : tallLayout ? 120 : 155) + "px",
     "--painted-moves-width": (photoLayout ? 172 : tallLayout ? 180 : 245) + "px",
     "--painted-moves-height": (photoLayout ? 138 : tallLayout ? 140 : 158) + "px",
-    "--painted-solution-right": (photoLayout ? 109 : tallLayout ? 12 : 17) + "px",
+    "--painted-solution-right": (photoLayout ? 109 : pixelProfile ? 40 : tallLayout ? 12 : 17) + "px",
     "--painted-solution-bottom": (photoLayout ? 39 : tallLayout ? 12 : 13) + "px",
     "--painted-solution-width": (photoLayout ? 192 : tallLayout ? 194 : 210) + "px",
     "--painted-solution-height": (photoLayout ? 193 : tallLayout ? 190 : 196) + "px",
-    "--painted-rail-top": (photoLayout ? 249 : tallLayout ? 165 : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
-    "--painted-goal-left": (photoLayout ? 128 : tallLayout ? 9 : 370) + "px",
+    "--painted-rail-top": (photoLayout ? 249 : tallLayout ? 165 : pixelProfile ? pixelRailTop : Math.max(0, Math.min(180, DESIGN_HEIGHT - touch * 7))) + "px",
+    "--painted-goal-left": (photoLayout ? 128 : tallLayout ? 9 : pixelProfile ? 390 : 370) + "px",
     "--painted-goal-bottom": (photoLayout ? 55 : tallLayout ? 12 : 16) + "px",
-    "--painted-goal-height": (photoLayout ? 172 : 190) + "px",
+    "--painted-goal-height": (photoLayout ? 172 : pixelProfile ? 174 : 190) + "px",
   } as CSSProperties;
   return (
     <section className="painted-stage-host" aria-label="Ring Road play area">
-      <div className="painted-stage reference-first-scene" data-photo-layout={photoLayout ? "true" : "false"} data-tall-layout={tallLayout ? "true" : "false"} style={customProperties}>
+      <div className="painted-stage reference-first-scene" data-photo-layout={photoLayout ? "true" : "false"} data-tall-layout={tallLayout ? "true" : "false"} data-device-layout={pixelProfile ? "pixel-6-pro" : "responsive"} style={customProperties}>
         <ArtImage filename="ocean-sky-mountains.webp" className="painted-ocean" />
         <div className="painted-world" aria-hidden="true">
           <ArtImage filename="reference-empty-arena.webp" className="painted-registered-scene" />

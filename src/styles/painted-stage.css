@@ -1677,3 +1677,59 @@
     padding: 7px 14px 11px;
   }
 }
+
+/*
+ * Pixel 6 Pro production target: 892×412 CSS px at DPR 3.5 (1440×3120
+ * native display). Its wide landscape usable area also shrinks to roughly
+ * 840×360 with browser chrome. Both native landscape and CSS-rotated
+ * portrait use the SAME logical stage; JavaScript applies inset gutters and
+ * a full-height seven-row control rail. Avoid adding extra GPU effects here:
+ * prior physical Android tests reported dropped compositor layers.
+ */
+.painted-stage[data-device-layout="pixel-6-pro"] .painted-control-slot,
+.painted-stage[data-device-layout="pixel-6-pro"] .painted-navigation-slot,
+.painted-stage[data-device-layout="pixel-6-pro"] .painted-moves-slot,
+.painted-stage[data-device-layout="pixel-6-pro"] .painted-solution-slot {
+  isolation: auto;
+  filter: none;
+}
+
+/*
+ * No alternate renderer is available. If the artwork manifest or one of the
+ * required ring images cannot load, show a complete retry UI instead of a
+ * blank game, half-painted rings or a silent return to the retired fallback.
+ */
+.painted-app .painted-startup {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: max(20px, env(safe-area-inset-top))
+           max(24px, env(safe-area-inset-right))
+           max(20px, env(safe-area-inset-bottom))
+           max(24px, env(safe-area-inset-left));
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, #d9eff4 0 22%, transparent 60%),
+    linear-gradient(#77bae2, #bee0bc 56%, #d8bc88);
+  color: #253249;
+  text-align: center;
+}
+.painted-app .painted-startup h1 {
+  margin: 0;
+  font-size: clamp(24px, 7dvmin, 42px);
+}
+.painted-app .painted-startup p {
+  max-width: 440px;
+  margin: 0;
+  font-size: clamp(14px, 3dvmin, 18px);
+  line-height: 1.35;
+}
+.painted-app .painted-startup button {
+  min-width: 140px;
+  min-height: 44px;
+}

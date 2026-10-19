@@ -54,7 +54,7 @@ async function evaluate(expr) {
   if (result.exceptionDetails) throw Error(result.exceptionDetails.text);
   return result.result?.value;
 }
-async function probe(label,url) {
+async function probe(label,url,{requirePainted=false}={}) {
   events=[];
   await send("Page.navigate",{url});
   let sample=null;
@@ -92,8 +92,11 @@ async function probe(label,url) {
   console.log("LIVE PAGES "+JSON.stringify(entry));
   if (!sample?.shell||sample?.controls!==7||!sample?.visibleMain)
     throw Error(label+" deployed page did not render the game; see "+out+"/"+label+".json");
-  if(label.startsWith("painted")&&(sample.skinMode!=="painted"||!sample.painted))
-    throw Error("Painted hosted page did not activate painted scene: "+JSON.stringify(sample));
+  // The public Pages deployment can lag behind the PR branch. Always
+  // require painted for the explicit legacy query, but validate the new
+  // default against the *local PR build* in strict browser:smoke instead.
+  if(requirePainted&&(sample.skinMode!=="painted"||sample.skinStatus!=="ready"||!sample.painted))
+    throw Error("Explicit painted hosted page did not activate: "+JSON.stringify(sample));
   if(events.some(x=>x.event==="Runtime.exceptionThrown"||x.event==="Inspector.targetCrashed"))
     throw Error(label+" hosted JS crash: "+JSON.stringify(events.slice(-5)));
 }
@@ -113,12 +116,14 @@ try {
     screenOrientation:{type:"landscapePrimary",angle:90}
   });
   const suffix="?diagnostic="+Date.now();
-  await probe("classic",new URL(suffix,target).toString());
-  await probe("painted",new URL("?skin=painted&diagnostic="+Date.now(),target).toString());
-  // Test the *exact* URL previously handed to the owner, including its
-  // cache-buster; do not mistake a differently formatted link for the fix.
-  await probe("painted-exact-link",
-    new URL("?skin=painted&build=android-render-fix-20261019",target).toString());
+  // This job checks a separately deployed remote site, which can still be
+  // running classic while a painted-only PR is under review. Both remote
+  // default and legacy URLs must remain healthy during the rollout.
+  // Explicit painted must decode even on the pre-migration deployed site.
+  // Strict local browser:smoke guarantees the NEW code never selects classic.
+  await probe("hosted-default",new URL(suffix,target).toString());
+  await probe("hosted-legacy-query",new URL("?skin=classic&diagnostic="+Date.now(),target).toString());
+  await probe("hosted-explicit-painted",new URL("?skin=painted&diagnostic="+Date.now(),target).toString(),{requirePainted:true});
 } finally {
   socket?.close();
   if(chrome&&chrome.exitCode===null){chrome.kill("SIGTERM");await Promise.race([new Promise(r=>chrome.once("exit",r)),sleep(1800)]);}
