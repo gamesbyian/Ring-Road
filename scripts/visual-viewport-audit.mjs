@@ -294,7 +294,11 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     await click(".puzzle-plaque button:last-child"); // Next, puzzle 2
     const second = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (second === first) errors.push("Next puzzle did not change current puzzle");
+    if (testFullTurns && second !== first) await capturePose("puzzle-two");
     await click(".puzzle-plaque button:last-child"); // Next, puzzle 3
+    const third = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
+    if (third === second) errors.push("Next puzzle did not advance from second to third");
+    if (testFullTurns && third !== second) await capturePose("puzzle-three");
     const thirdBead = await bead();
     if (thirdBead !== Math.min(5, firstBead + 1))
       errors.push("Campaign progress beads did not advance across puzzle pair");
@@ -550,9 +554,11 @@ try {
         await writeFile(join(out, filename + "-" + pose + ".png"), bytes);
       } : async () => {};
       result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose);
-      if (nativePhoto && (poseDigests.size !== 3 || !poseDigests.has("red-one-step") ||
-        !poseDigests.has("exact-aligned-pre-fire") || !poseDigests.has("fired-completion"))) {
-        result.failures.push("missing genuine native painted one-step, aligned or fired-completion screenshots");
+      if (nativePhoto && (poseDigests.size !== 5 ||
+        !poseDigests.has("puzzle-two") || !poseDigests.has("puzzle-three") ||
+        !poseDigests.has("red-one-step") || !poseDigests.has("exact-aligned-pre-fire") ||
+        !poseDigests.has("fired-completion"))) {
+        result.failures.push("missing genuine native Puzzle 2/3, one-step, aligned or fired-completion screenshots");
       }
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
       if (nativePhoto) result.nativePoseDigests = Object.fromEntries(poseDigests);
