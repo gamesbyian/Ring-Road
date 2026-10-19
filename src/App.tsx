@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { completionStatus, initialGameState, isExactSolved, nextMoveHint, reduceGame } from "./app/game-state";
 import { CAMPAIGN, CAMPAIGN_ANALYSES } from "./content/campaign";
 import { DioramaScene } from "./render/DioramaScene";
@@ -17,7 +18,12 @@ const RING_ORDER = [6, 5, 4, 3, 2, 1, 0] as const;
 export default function App() {
   // Experimental art stays opt-in. A full, checksum-described and decoded
   // scene is required: one present red-ring image is insufficient.
-  const wantsPaintedSkin = new URLSearchParams(window.location.search).get("skin") === "painted";
+  const requestedSkin = new URLSearchParams(window.location.search).get("skin");
+  // Android launches directly into the visual candidate, while preserving
+  // the classic fallback if bundled painted assets fail to decode.
+  // Web remains opt-in pending owner approval of painted reference fidelity.
+  const wantsPaintedSkin = requestedSkin === "painted"
+    || (requestedSkin === null && Capacitor.isNativePlatform());
   const [paintedStatus, setPaintedStatus] = useState<"inactive" | "loading" | "ready" | "unavailable">(
     wantsPaintedSkin ? "loading" : "inactive",
   );
