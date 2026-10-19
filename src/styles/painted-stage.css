@@ -1360,3 +1360,31 @@
   z-index: 1;
   background: transparent !important;
 }
+
+/*
+ * Physical undercut beneath every moving ring, not a stationary ring or a
+ * photographed solution pose. The source painting's exposed annular seams
+ * and radial notches open onto a deep ochre-brown trough, while our transparent
+ * source C-ring pixels reveal unshaded pale sandstone. Put a single inert
+ * recessed bed UNDER all seven genuinely rotating source sprites; actual
+ * notches remain transparent, independently rotatable and state-derived.
+ * The board's source-projection ellipse applies automatically to this bed.
+ */
+.painted-ring-projection::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  left: 100px;
+  top: 100px;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 43% 31%,
+    #85694e 0%,
+    #71563d 56%,
+    #523d2c 100%
+  );
+  box-shadow: inset 0 0 14px rgb(38 25 16 / 39%);
+}
