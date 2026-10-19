@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ring Road</string>
+    <string name="title_activity_main">Ring Road</string>
+    <string name="package_name">com.gamesbyian.ringroad</string>
+    <string name="custom_url_scheme">com.gamesbyian.ringroad</string>
+</resources>

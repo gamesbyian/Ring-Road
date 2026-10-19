@@ -13,6 +13,7 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 | `reference-skin-calibration-results.md` | Experimental textured ring geometry, 16:9/full-phone mock results, unverified browser gates |
 | `diorama-visual-overhaul-plan.md` | Prior diorama implementation history; visual completion claims superseded |
 | `architecture.md` | Implemented production boundaries and gameplay semantics |
+| `android.md` | Android packaging, offline APK publication, Pixel installation and physical-hardware acceptance |
 | `testing.md` | Quality gate, executable coverage, and browser finish line |
 | `production-completion.md` | Final acceptance-evidence map and external release-validation boundary |
 | `periodic-repository-hygiene.md` | Recurring repository entropy-control procedure |
