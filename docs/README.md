@@ -7,6 +7,8 @@ Task routing lives in `../AGENTS.md`. This file inventories current ownership; i
 | `3d-ring-renderer-plan.md` | Completed production rebuild and dimensional-renderer architecture record |
 | `reference-fidelity-finish-plan.md` | **Current reference-exact visual finish and single-screen landscape acceptance**; phase plan + tooling |
 | `reference-regions.json` | Machine-readable reference landmarks and viewport test matrix |
+| `reference-landscape-regions.json` | Registered 1536×864 canonical-photo visual comparison regions; distinct from the 4:3 landmark map |
+| `sparse-reference-visual-verification.md` | Evidence confidence, image-limited agent review, and multi-state visual QA procedure |
 | `reference-asset-inventory.md` | Exact map of all 18 source images, alpha/material details and importer workflow |
 | `reference-skin-calibration-results.md` | Experimental textured ring geometry, 16:9/full-phone mock results, unverified browser gates |
 | `diorama-visual-overhaul-plan.md` | Prior diorama implementation history; visual completion claims superseded |
