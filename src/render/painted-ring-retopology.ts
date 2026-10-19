@@ -80,7 +80,6 @@ export function warpRingPixels(source: Uint8ClampedArray, artIndex: number): Uin
   const innerSquared = band.inner * band.inner;
   const outerSquared = band.outer * band.outer;
   const original = ORIGINAL_PAINTED_BANDS[artIndex]!;
-  const radiusScale = (original.outer - original.inner) / (band.outer - band.inner);
   const bound = Math.ceil(band.outer + 1);
   const low = Math.max(0, Math.floor(center - bound));
   const high = Math.min(size - 1, Math.ceil(center + bound));
@@ -96,10 +95,10 @@ export function warpRingPixels(source: Uint8ClampedArray, artIndex: number): Uin
       // Match the historical radial map's order of arithmetic, while skipping
       // its bounds checks at each valid pixel.
       const radius = Math.hypot(dx, dy);
-      const sampleRadius = original.inner + (radius - band.inner) * radiusScale;
-      const factor = sampleRadius / radius;
-      const sx = center + dx * factor;
-      const sy = center + dy * factor;
+      const sampleRadius = original.inner + (radius - band.inner) *
+        (original.outer - original.inner) / (band.outer - band.inner);
+      const sx = center + dx * sampleRadius / radius;
+      const sy = center + dy * sampleRadius / radius;
       const x0 = Math.max(0, Math.min(size - 2, Math.floor(sx)));
       const y0 = Math.max(0, Math.min(size - 2, Math.floor(sy)));
       const fx = sx - x0, fy = sy - y0;
