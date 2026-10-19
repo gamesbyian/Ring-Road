@@ -136,6 +136,27 @@ function inspectDOM(requestedSkin) {
     : ".scene-art img"));
   const artLoaded = art.length >= (painted ? 8 : 3) &&
     art.every((img) => img.complete && img.naturalWidth > 0);
+  // Real phones can fail to composite several 900x900 transformed WebPs even
+  // while DOM bounds and click targets are correct. Constrain the actual
+  // decoded ring layer footprint and prevent permanent seven-layer promotion.
+  const ringTextureAudit = painted ? (() => {
+    const rings = Array.from(document.querySelectorAll(".painted-ring-sprite"));
+    const expected = [704, 598, 510, 400, 306, 210, 134];
+    const data = rings.map((image, i) => {
+      const css = getComputedStyle(image);
+      return {width: image.naturalWidth, height: image.naturalHeight,
+        drawnWidth: parseFloat(css.width), drawnHeight: parseFloat(css.height),
+        willChange: css.willChange, expected: expected[i]};
+    });
+    return {
+      data, pixels: data.reduce((sum, item) => sum + item.width * item.height, 0),
+      failure: rings.length !== 7 || data.some((item) =>
+        item.width !== item.expected || item.height !== item.expected ||
+        Math.abs(item.drawnWidth - item.expected) > 1 ||
+        Math.abs(item.drawnHeight - item.expected) > 1 ||
+        item.willChange === "transform")
+    };
+  })() : null;
   const artDiagnostics = painted ? [
     ".painted-stage", ".painted-ocean", ".painted-world",
     ".painted-registered-scene", ".painted-board-slot",
@@ -223,6 +244,7 @@ function inspectDOM(requestedSkin) {
     ...(tallGoalOverlap ? ["tall landscape Goal heading overlaps painted help medallion"] : []),
     ...(tallBoardCenterDrift > 2 ? ["tall landscape live rings drift from source sandstone board: " + tallBoardCenterDrift.toFixed(2) + "px"] : []),
     ...(tallActionsUnregistered ? ["tall landscape actions not three accessible painted seals in one row"] : []),
+    ...(ringTextureAudit?.failure ? ["painted ring textures unexpectedly uncropped or permanently promoted"] : []),
     ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
     ...actionTypography.filter((item) => item.physicalFont < 11.5)
@@ -244,7 +266,7 @@ function inspectDOM(requestedSkin) {
   ];
   return {viewport: {width, height}, portrait, painted, currentSkin, skinStatus,
     rotated, shellFits, stageFits, artDiagnostics, stageRect: stageRect ? rectInfo(stageRect) : null,
-    photoLayout, bestVisible, actionTypography,
+    photoLayout, bestVisible, actionTypography, ringTextureAudit,
     visualViewport: window.visualViewport ? {
       width: window.visualViewport.width, height: window.visualViewport.height,
       scale: window.visualViewport.scale
