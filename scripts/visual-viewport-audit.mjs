@@ -329,6 +329,16 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
   const verifyOpenModal = async (label) => {
     const result = await read("(" + inspectPaintedModal.toString() + ")()");
     errors.push(...result.failures.map((reason) => label + " modal: " + reason));
+    if (label === "guide") {
+      // The complete rule explanation should be visible above Play in the
+      // constrained phone landscape, rather than relying on invisible scroll.
+      const shortEdge = Math.min(result.viewport.width, result.viewport.height);
+      if (shortEdge <= 430 && result.content &&
+          result.content.scrollHeight > result.content.clientHeight + 2) {
+        errors.push("compact painted Guide hides rules below its scroll region: " +
+          result.content.scrollHeight + " > " + result.content.clientHeight);
+      }
+    }
     if (label === "solution") {
       const count = await read("document.querySelectorAll('.modal-solution .modal-scroll > p').length");
       if (count !== 7) errors.push("painted Solution does not display seven live ring instructions: " + count);

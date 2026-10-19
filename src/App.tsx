@@ -242,8 +242,10 @@ export default function App() {
       />
 
       {state.guideOpen && (
-        <Modal title="How to play" onClose={closeGuide} closeLabel="Play">
-          <p>Rotate each colored ring one legal step at a time. Make all seven gaps meet on one shared spoke in exactly the target number of moves. A full same-direction turn can be part of a solution, but changing direction on a ring cannot be used to pad the count.</p>
+        <Modal title="How to play" onClose={closeGuide} closeLabel="Play" variant={paintedSkin ? "guide" : "paper"}>
+          <p>{paintedSkin
+            ? "Rotate each ring one legal step at a time. Align all seven gaps on one spoke in exactly the target moves. A full same-direction turn counts, but reversing to pad the total does not."
+            : "Rotate each colored ring one legal step at a time. Make all seven gaps meet on one shared spoke in exactly the target number of moves. A full same-direction turn can be part of a solution, but changing direction on a ring cannot be used to pad the count."}</p>
         </Modal>
       )}
       {state.solutionOpen && (
