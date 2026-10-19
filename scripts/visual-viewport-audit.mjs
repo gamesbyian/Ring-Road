@@ -321,6 +321,41 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
         if (current !== originals[art])
           errors.push("reset did not restore painted ring " + (art + 1));
       }
+      // Negative wraps follow a distinct unbounded animation trajectory.
+      // Verify that source alpha gaps rotate a genuine full turn in the other
+      // direction without reversing around the 0/360 normalized boundary.
+      let reverseMoves = 0;
+      for (let art = 0; art < 7; art++) {
+        const domain = 6 - art;
+        const control = ".ring-control-" + domain;
+        const groupLabel = await read("document.querySelector(" +
+          JSON.stringify(control) + ")?.getAttribute('aria-label')");
+        const cycle = Number(/ of (\d+)$/.exec(groupLabel || "")?.[1]);
+        if (!(cycle >= 2 && cycle <= 19)) {
+          errors.push("invalid counterclockwise ring cycle: " + groupLabel);
+          continue;
+        }
+        for (let step = 0; step < cycle; step++) {
+          await click(control + " button:first-of-type");
+        }
+        reverseMoves += cycle;
+        await expectMoves(reverseMoves, "reverse full-turn ring " + (art + 1));
+        const current = await ringTransform(art);
+        if (Math.abs((degrees(current) - degrees(originals[art])) + 360) > 0.001) {
+          errors.push("full counterclockwise rotation failed for ring " + (art + 1) +
+            ": " + originals[art] + " -> " + current);
+        }
+        const restoredLabel = await read("document.querySelector(" +
+          JSON.stringify(control) + ")?.getAttribute('aria-label')");
+        if (restoredLabel !== groupLabel)
+          errors.push("reverse full turn changed normalized orientation: " + (art + 1));
+      }
+      await click(".actions button:nth-child(2)");
+      await expectMoves(0, "reset all reverse turns");
+      for (let art = 0; art < 7; art++) {
+        if (await ringTransform(art) !== originals[art])
+          errors.push("reset after reverse wrap failed for painted ring " + (art + 1));
+      }
     }
   } catch (error) {
     errors.push("interaction exception: " + String(error));
