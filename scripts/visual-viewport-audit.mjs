@@ -505,10 +505,14 @@ try {
       // The large reference-layout Solution art is a CSS background, so an
       // img-only decode wait is insufficient for deterministic screenshots.
       await cdp.evaluate(`(async () => {
-        const surfaces = ['.reference-solution-card', '.reference-moves-card'];
-        await Promise.all(surfaces.map(async (selector) => {
+        const surfaces = [
+          ['.reference-solution-card', null],
+          ['.reference-moves-card', null],
+          ['.puzzle-plaque', '::before'],
+        ];
+        await Promise.all(surfaces.map(async ([selector, pseudo]) => {
           const element = document.querySelector(selector);
-          const bg = element && getComputedStyle(element).backgroundImage;
+          const bg = element && getComputedStyle(element, pseudo).backgroundImage;
           const uri = bg && /url\\(["']?(.*?)["']?\\)/.exec(bg)?.[1];
           if (uri) { const image = new Image(); image.src = uri; await image.decode(); }
         }));
