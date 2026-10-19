@@ -1,4 +1,4 @@
-import { paintedRingSpriteUrl } from "./painted-ring-retopology";
+import { PAINTED_RING_CANVAS, paintedRingSpriteSize, paintedRingSpriteUrl } from "./painted-ring-retopology";
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import type { Puzzle } from "../domain/puzzle";
 import { PAINTED_RING_COLORS, paintedRingDegrees } from "./painted-geometry";
@@ -41,12 +41,20 @@ export function PaintedRingBoard({
         <span className="painted-violet-medallion" aria-hidden="true" />
         {PAINTED_RING_COLORS.map((color, artIndex) => {
           const degrees = paintedRingDegrees(puzzle, visualStates, boardOrientation, artIndex);
+          const filename = "ring-" + (artIndex + 1) + "-" + color + "-normalized.webp";
+          const textureSize = paintedRingSpriteSize(filename);
+          // Both cropped warp and complete-source fallback share the original
+          // 900px center. Rotation, gaps and gameplay therefore never shift.
+          const inset = (PAINTED_RING_CANVAS - textureSize) / 2;
           return (
             <img key={color}
               className={"painted-ring-sprite " + (rotationMotion === "instant" ? "painted-ring-instant" : "")}
-              src={paintedRingSpriteUrl("ring-" + (artIndex + 1) + "-" + color + "-normalized.webp", import.meta.env.BASE_URL + "reference-skin/")}
-              width={900} height={900} alt="" draggable={false} aria-hidden="true"
-              style={{ transform: "rotate(" + degrees + "deg)", zIndex: artIndex + 1 }}
+              src={paintedRingSpriteUrl(filename, import.meta.env.BASE_URL + "reference-skin/")}
+              width={textureSize} height={textureSize} alt="" draggable={false} aria-hidden="true"
+              style={{
+                left: inset, top: inset, width: textureSize, height: textureSize,
+                transform: "rotate(" + degrees + "deg)", zIndex: artIndex + 1,
+              }}
             />
           );
         })}
