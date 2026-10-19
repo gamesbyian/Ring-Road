@@ -1319,3 +1319,10 @@
   outline: 5px solid #1162d2;
   outline-offset: 3px;
 }
+
+/* The painted Solution plaque already is the genuine clickable Solution action.
+   An explicit selector guards against the broader photo-toolbar display:flex
+   accidentally resurrecting the hidden fourth action. */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button.solution-compact-action {
+  display: none;
+}
