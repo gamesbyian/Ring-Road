@@ -247,7 +247,7 @@ export default function App() {
         </Modal>
       )}
       {state.solutionOpen && (
-        <Modal title="Exact solution" onClose={closeSolution}>
+        <Modal title="Exact solution" onClose={closeSolution} variant={paintedSkin ? "solution" : "paper"}>
           {RING_ORDER.map((ring) => {
             const option = analysis?.exactPlan?.selectedRingOptions[ring];
             if (!option) return null;
