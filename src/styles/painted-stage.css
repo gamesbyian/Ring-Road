@@ -1629,3 +1629,43 @@
     padding: 8px 16px 12px;
   }
 }
+
+/*
+ * The genuine eleven-move completion screenshot at 568x320 exposed a
+ * previously hidden "Next puzzle" action inside the modal scroll pane.
+ * Keep BOTH real Next and Close buttons touch-sized and visibly reachable
+ * above the fixed footer at very short landscape heights. This changes
+ * only painted-mode compact completion typography/layout, never gameplay,
+ * the winning state or the default classic presentation.
+ */
+@media (orientation: landscape) and (max-height: 370px),
+       (orientation: portrait) and (max-width: 370px) {
+  .painted-app .modal-completion .modal-scroll {
+    padding: 10px 18px 6px;
+  }
+  .painted-app .modal-completion h2 {
+    margin: 0 0 4px;
+    padding-bottom: 4px;
+    font-size: 24px;
+    line-height: 1.13;
+  }
+  .painted-app .modal-completion h2::after {
+    height: 4px;
+    margin: 5px auto 0;
+  }
+  .painted-app .modal-completion p {
+    margin: 3px 0 4px;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .painted-app .modal-completion .modal-scroll > button {
+    min-width: min(260px, 86%);
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 5px 12px;
+    font-size: 16px;
+  }
+  .painted-app .modal-completion .modal-footer {
+    padding: 7px 14px 11px;
+  }
+}
