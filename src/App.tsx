@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { Capacitor } from "@capacitor/core";
 import { completionStatus, initialGameState, isExactSolved, nextMoveHint, reduceGame } from "./app/game-state";
 import { CAMPAIGN, CAMPAIGN_ANALYSES } from "./content/campaign";
-import { DioramaScene } from "./render/DioramaScene";
-import { RingBoard } from "./render/RingBoard";
 import { PaintedRingBoard, PaintedScene, paintedAsset } from "./render/PaintedScene";
 import { paintedAssetsReady } from "./render/painted-assets";
 import { completedBestFor, loadCompletionBests, saveCompletionBests, withExactCompletion } from "./app/completion-bests";
@@ -16,26 +13,18 @@ const LABELS = ["Violet", "Indigo", "Blue", "Green", "Yellow", "Orange", "Red"];
 const RING_ORDER = [6, 5, 4, 3, 2, 1, 0] as const;
 
 export default function App() {
-  // Experimental art stays opt-in. A full, checksum-described and decoded
-  // scene is required: one present red-ring image is insufficient.
-  const requestedSkin = new URLSearchParams(window.location.search).get("skin");
-  // Android launches directly into the visual candidate, while preserving
-  // the classic fallback if bundled painted assets fail to decode.
-  // Web remains opt-in pending owner approval of painted reference fidelity.
-  const wantsPaintedSkin = requestedSkin === "painted"
-    || (requestedSkin === null && Capacitor.isNativePlatform());
-  const [paintedStatus, setPaintedStatus] = useState<"inactive" | "loading" | "ready" | "unavailable">(
-    wantsPaintedSkin ? "loading" : "inactive",
-  );
+  // Painted is the single shipping presentation in both Android and web.
+  // Fail visibly if artwork is absent; never silently fall back to obsolete
+  // classic visuals or claim a partially loaded painted scene succeeded.
+  const [paintedStatus, setPaintedStatus] = useState<"loading" | "ready" | "unavailable">("loading");
+  const [assetRetry, setAssetRetry] = useState(0);
   useEffect(() => {
-    if (!wantsPaintedSkin) return;
     let active = true;
     void paintedAssetsReady().then((ready) => {
       if (active) setPaintedStatus(ready ? "ready" : "unavailable");
     });
     return () => { active = false; };
-  }, [wantsPaintedSkin]);
-  const paintedSkin = paintedStatus === "ready";
+  }, [assetRetry]);
   const [completionBests, setCompletionBests] = useState(loadCompletionBests);
   const [state, dispatch] = useReducer(
     (current: ReturnType<typeof initialGameState>, action: Parameters<typeof reduceGame>[1]) =>
@@ -92,7 +81,7 @@ export default function App() {
 
   const title = (
     <header className="world-header">
-      <div className="title-plaque world-plaque" style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("logo.webp") + ")" } : undefined}>
+      <div className="title-plaque world-plaque" style={{ backgroundImage: "url(" + paintedAsset("logo.webp") + ")" }}>
         <span className="eyebrow">Precision alignment puzzle</span>
         <h1><span>Ring</span><span>Road</span></h1>
         <span className="title-mountain-mark" aria-hidden="true" />
@@ -102,11 +91,8 @@ export default function App() {
     </header>
   );
 
-  const Board = paintedSkin ? PaintedRingBoard : RingBoard;
-  const Scene = paintedSkin ? PaintedScene : DioramaScene;
-
   const board = (
-    <Board
+    <PaintedRingBoard
       puzzle={puzzle}
       visualStates={state.visualStates}
       boardOrientation={state.boardOrientation}
@@ -126,7 +112,7 @@ export default function App() {
             <div
               className={`ring-control ring-control-${ring}`}
               key={ring}
-              style={paintedSkin ? { backgroundImage: "url(" + paintedAsset("row-" + (7 - ring) + ".webp") + ")" } : undefined}
+              style={{ backgroundImage: "url(" + paintedAsset("row-" + (7 - ring) + ".webp") + ")" }}
               role="group"
               aria-label={`${LABELS[ring]} ring, orientation ${(state.rotations[ring] ?? 0) + 1} of ${cycle}`}
             >
@@ -177,13 +163,10 @@ export default function App() {
         >?</button>
         <strong>Goal</strong>
       </div>
-      <p aria-label={paintedSkin ? "Rotate the rings to align all seven gaps into one straight path." : undefined}>{paintedSkin
-        ? <>
-            <span className="painted-goal-full-copy" aria-hidden="true">Rotate the rings to align all 7 gaps into one straight path.</span>
-            <span className="painted-goal-compact-copy" aria-hidden="true">Align all 7 gaps into one path.</span>
-          </>
-        : <>Align all seven gaps into one straight road in exactly <b>{puzzle.targetMoves}</b> moves, then fire the center.</>
-      }</p>
+      <p aria-label="Rotate the rings to align all seven gaps into one straight path.">
+        <span className="painted-goal-full-copy" aria-hidden="true">Rotate the rings to align all 7 gaps into one straight path.</span>
+        <span className="painted-goal-compact-copy" aria-hidden="true">Align all 7 gaps into one path.</span>
+      </p>
       <div className="reference-goal-miniature" aria-hidden="true">
         <span />
         <span />
@@ -234,9 +217,28 @@ export default function App() {
     </nav>
   );
 
+  if (paintedStatus !== "ready") {
+    return (
+      <main className="app-shell painted-app" data-skin-mode="painted" data-skin-status={paintedStatus}>
+        <section className="painted-startup" role={paintedStatus === "unavailable" ? "alert" : "status"}>
+          <h1>Ring Road</h1>
+          {paintedStatus === "loading"
+            ? <p>Loading the painted game…</p>
+            : <>
+                <p>The painted artwork could not be loaded. All seven rings and scenery must be intact before play.</p>
+                <button onClick={() => { setPaintedStatus("loading"); setAssetRetry((value) => value + 1); }}>
+                  Retry artwork
+                </button>
+              </>
+          }
+        </section>
+      </main>
+    );
+  }
+
   return (
-    <main className={"app-shell" + (paintedSkin ? " painted-app" : "")} data-skin-mode={paintedSkin ? "painted" : "classic"} data-skin-status={paintedStatus}>
-      <Scene
+    <main className="app-shell painted-app" data-skin-mode="painted" data-skin-status="ready">
+      <PaintedScene
         title={title}
         board={board}
         controls={controls}
@@ -248,14 +250,12 @@ export default function App() {
       />
 
       {state.guideOpen && (
-        <Modal title="How to play" onClose={closeGuide} closeLabel="Play" variant={paintedSkin ? "guide" : "paper"}>
-          <p>{paintedSkin
-            ? "Rotate each ring one legal step at a time. Align all seven gaps on one spoke in exactly the target moves. A full same-direction turn counts, but reversing to pad the total does not."
-            : "Rotate each colored ring one legal step at a time. Make all seven gaps meet on one shared spoke in exactly the target number of moves. A full same-direction turn can be part of a solution, but changing direction on a ring cannot be used to pad the count."}</p>
+        <Modal title="How to play" onClose={closeGuide} closeLabel="Play" variant="guide">
+          <p>Rotate each ring one legal step at a time. Align all seven gaps on one spoke in exactly the target moves. A full same-direction turn counts, but reversing to pad the total does not.</p>
         </Modal>
       )}
       {state.solutionOpen && (
-        <Modal title="Exact solution" onClose={closeSolution} variant={paintedSkin ? "solution" : "paper"}>
+        <Modal title="Exact solution" onClose={closeSolution} variant="solution">
           {RING_ORDER.map((ring) => {
             const option = analysis?.exactPlan?.selectedRingOptions[ring];
             if (!option) return null;
