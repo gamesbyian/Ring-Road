@@ -124,7 +124,12 @@ jobs:
               --prerelease \
               --notes "Automatically published sideload test builds. See docs/android.md for device acceptance status."
           fi
-          gh release upload "$TAG" "$APK#ring-road.apk" --clobber
+          # The #label syntax changes only the label, not the binary filename.
+          cp "$APK" "release-apk/ring-road.apk"
+          gh release upload "$TAG" "release-apk/ring-road.apk" --clobber
+          if gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq "app-debug.apk"; then
+            gh release delete-asset "$TAG" "app-debug.apk" --yes
+          fi
           gh release edit "$TAG" --notes "$(printf \
             'Painted-only Android debug APK.\n\nBuilt from commit: %s\nWorkflow: %s\nSHA-256 (ring-road.apk): %s\n\nTest build for sideloading, not Play Store distribution. Physical Pixel 6 Pro validation remains separate.\n' \
             "$GITHUB_SHA" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$SUM")"
