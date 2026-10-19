@@ -4,6 +4,12 @@
 
 This inventory is an addendum to [reference-fidelity-finish-plan.md](./reference-fidelity-finish-plan.md). The new **16:9 (1536×864) scene/UI combined image `1000020068.png`** is now the strongest landscape source composition. Keep the earlier 4:3 reference for visual lineage. Modern ~2.1:1 phones still need composition reflow and accessibility-aware hit regions, not a literal 16:9 shrink.
 
+## Source-cleaned live-photo Moves plate (2026-10-19)
+
+The native 1536×864 Moves panel is now available as a **3,654-byte, 172×138 WebP** in `src/assets/painted/moves-clean-1536.webp` (SHA256 `bb2936968a3653716095206f3315b067def36e6cd1aa8a41b9d60ef3f0d355a3`). It is a derived runtime plate, **not** a nineteenth original illustration or a replacement for a true counter. The source is the existing `docs/assets/reference-play-1536x864.jpg`, crop `(1203,147)..(1375,285)`; the example zero at local `x67..104,y38..85` and illustrative Best text at `x54..124,y101..120` were filled from adjacent original paper using OpenCV 4.13 `INPAINT_TELEA` radius 7, then encoded as WebP quality 92. The source border, static “Moves” heading and divider are otherwise conserved. The live count, saved Best and target remain actual React text above the plate, not photograph pixels.
+
+This small specialized plate ships via Vite's CSS asset import, not the strict 20-image `public/reference-skin` manifest. Source/original checksums, the existing no-scroll/control tests and direct screenshot comparisons remain binding. A masked square on top of source paper is not a substitute for a clean plate: see rejected CSS mask prototype #290.
+
 ## Exact user-file mapping
 
 | Filename | Meaning | Source dimensions | Alpha? | Production usage |
