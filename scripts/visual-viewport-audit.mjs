@@ -329,6 +329,18 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
   const verifyOpenModal = async (label) => {
     const result = await read("(" + inspectPaintedModal.toString() + ")()");
     errors.push(...result.failures.map((reason) => label + " modal: " + reason));
+    if (label === "solution") {
+      const count = await read("document.querySelectorAll('.modal-solution .modal-scroll > p').length");
+      if (count !== 7) errors.push("painted Solution does not display seven live ring instructions: " + count);
+      // The seven steps now occupy two real columns on short/rotated
+      // landscape screens. A hidden lower half silently failed usability.
+      const shortEdge = Math.min(result.viewport.width, result.viewport.height);
+      if (shortEdge <= 430 && result.content &&
+          result.content.scrollHeight > result.content.clientHeight + 2) {
+        errors.push("compact Solution still hides ring instructions below scrolling content: " +
+          result.content.scrollHeight + " > " + result.content.clientHeight);
+      }
+    }
     await cdp.send("Input.dispatchMouseEvent", {type: "mouseMoved", x: 4, y: 4});
     await delay(70);
     await captureOpenModal(label, result);
