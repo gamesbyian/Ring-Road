@@ -1,21 +1,34 @@
 name: Android APK
+
 on:
-  workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feat/android-apk-pipeline]
     paths:
       - 'src/**'
       - 'public/**'
       - 'android/**'
+      - 'scripts/prepare-android.mjs'
+      - 'scripts/check-android-bundle.mjs'
       - 'capacitor.config.ts'
-      - 'package*.json'
+      - 'package.json'
+      - 'package-lock.json'
       - 'vite.config.ts'
       - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+# Branch bootstrap commits the generated lockfile/native sources after a
+# successful APK build. Main builds never write back to the repository.
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  android-apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,15 +40,52 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: android-actions/setup-android@v3
-      - run: npm ci
-      - run: npm run build:android
-      - run: npx cap sync android
-      - name: Build installable debug APK
+
+      # Initial PR introduced Capacitor without a lockfile. Resolve the pinned
+      # package versions once, commit the lock after a verified build, and use
+      # npm ci from then on. This is harmless on already-synced builds.
+      - name: Synchronize pinned Android dependency lockfile
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Install locked JavaScript dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Validate production app
+        run: npm run check
+      - name: Build native-relative web assets
+        run: npm run build:android
+      - name: Prepare/sync native Android project
+        run: npm run android:prepare
+      - name: Verify offline bundle and native activity
+        run: node scripts/check-android-bundle.mjs
+      - name: Install Android API and build tools
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Compile installable debug APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
-      - uses: actions/upload-artifact@v4
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+      - name: Verify nonempty APK and report checksum
+        run: |
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload installable Android APK
+        uses: actions/upload-artifact@v4
         with:
           name: ring-road-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      # Bootstrap the reviewed native source from an actual successful build;
+      # this never commits build products, platform SDKs, or debug signing keys.
+      - name: Commit verified Android sources on feature branch
+        if: github.ref == 'refs/heads/feat/android-apk-pipeline'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json android/
+          if ! git diff --cached --quiet; then
+            git commit -m "Bootstrap verified Capacitor Android project and lockfile"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          else
+            echo "Native Android sources and lockfile are already up to date."
+          fi
