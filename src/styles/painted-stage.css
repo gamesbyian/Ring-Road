@@ -1212,7 +1212,7 @@
   max-width: calc(100% - 80px);
   overflow: visible;
   transform: translateX(-50%);
-  font-size: 24px;
+  font-size: 21px;
   line-height: 1.15;
   font-weight: 900;
   letter-spacing: -0.5px;
@@ -1324,6 +1324,34 @@
    An explicit selector guards against the broader photo-toolbar display:flex
    accidentally resurrecting the hidden fourth action. */
 .painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button.solution-compact-action {
+  display: none;
+}
+
+/*
+ * Canonical photo layout: preserve the original Puzzle ticket's irregular
+ * paper perimeter, folds, and cast shadow directly from the verified 16:9
+ * painting. Cover ONLY the illustrative source text/progress with small
+ * parchment-toned patches, then render true current puzzle text and six
+ * reducer-driven progress beads above them. No screenshot-baked state is
+ * actionable. The compact and portrait arrangements retain their existing
+ * independently fitted artwork.
+ *
+ * The small ink diamonds are STATIC source art, exactly behind the real
+ * two 44px previous/next buttons, so do not paint a duplicate glyph.
+ * Source crop: (1152,36)..(1375,140) on the 1536x864 reference.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque::before {
+  background-image:
+    linear-gradient(180deg, #f3cba8, #f5d1b1),
+    linear-gradient(180deg, #f3cba9, #eec7a3),
+    url("../../docs/assets/reference-play-1536x864.jpg");
+  background-position: 50px 15px, 18px 52px, -1152px -36px;
+  background-size: 124px 33px, 187px 33px, 1536px 864px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button::after {
+  content: none;
   display: none;
 }
 
