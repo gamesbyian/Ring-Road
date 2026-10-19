@@ -1246,3 +1246,76 @@
   background: radial-gradient(circle at 33% 28%, #ffe28c, #eeb334 65%, #d89021);
   box-shadow: 0 1px 2px rgb(99 66 24 / 50%), inset 0 1px 1px #fff4af;
 }
+
+/*
+ * The source 1536x864 reference shows the right-side landscape uninterrupted
+ * below Moves; the extra Undo/Reset/Hint actions have no exact painted source.
+ * Consolidate the three LIVE actions into 3 small, tactile parchment seals
+ * beneath the counter rather than a floating two-row 248x90 utility block.
+ *
+ * On compact phones the 2-column action group has separately tested 44px
+ * physical hitboxes; do not touch its layout or typography here.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .control-monument .actions {
+  left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 333px);
+  top: calc(294px - var(--painted-rail-top));
+  width: 168px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 3px 0 2px;
+  border: 2px solid #a58258;
+  border-radius: 50%;
+  color: #313642;
+  background:
+    radial-gradient(circle at 34% 27%, #fff8e6 0%, #f5dfbd 53%, #cba77e 100%);
+  box-shadow:
+    inset 0 1px 2px #fffdf0d0,
+    inset 0 -2px 2px #79523220,
+    0 3px 0 #8e6846,
+    0 5px 6px #49372845;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -.25px;
+  text-shadow: 0 1px 0 #fff6;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button::before {
+  display: block;
+  flex: none;
+  height: 22px;
+  font-size: 21px;
+  line-height: 22px;
+  font-weight: 850;
+  color: #454247;
+  text-shadow: 0 1px 0 #fff9;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(1)::before {
+  content: "↶";
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(2)::before {
+  content: "↺";
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(3)::before {
+  content: "?";
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:disabled {
+  opacity: .60;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:hover:not(:disabled) {
+  background: radial-gradient(circle at 34% 27%, #fffdf1, #e7c08c);
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:focus-visible {
+  outline: 5px solid #1162d2;
+  outline-offset: 3px;
+}
