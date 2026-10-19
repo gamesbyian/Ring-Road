@@ -2,7 +2,19 @@ name: Android APK
 
 on:
   push:
-    branches: [main, feat/android-apk-pipeline]
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'android/**'
+      - 'scripts/prepare-android.mjs'
+      - 'scripts/check-android-bundle.mjs'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - '.github/workflows/android-apk.yml'
+  pull_request:
     paths:
       - 'src/**'
       - 'public/**'
@@ -31,6 +43,8 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -78,14 +92,14 @@ jobs:
       # Bootstrap the reviewed native source from an actual successful build;
       # this never commits build products, platform SDKs, or debug signing keys.
       - name: Commit verified Android sources on feature branch
-        if: github.ref == 'refs/heads/feat/android-apk-pipeline'
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/android-apk-pipeline' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package-lock.json android/
           if ! git diff --cached --quiet; then
             git commit -m "Bootstrap verified Capacitor Android project and lockfile"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_HEAD_REF}"
           else
             echo "Native Android sources and lockfile are already up to date."
           fi
