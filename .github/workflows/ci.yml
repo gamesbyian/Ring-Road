@@ -44,6 +44,16 @@ jobs:
             --out artifacts/painted-viewport/reference-diff/board-multipose-contact.png
       - name: Verify painted violet center is not sandstone
         run: python3 scripts/check-painted-medallion.py artifacts/painted-viewport/game-painted-1536x864.png
+      - name: Exercise painted phone compositor with SwiftShader
+        run: npm run visual:audit -- --skin painted --strict --compositor swiftshader --out artifacts/painted-swiftshader
+      - name: Retain SwiftShader compositor captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-road-painted-swiftshader
+          path: artifacts/painted-swiftshader
+          if-no-files-found: warn
+          retention-days: 7
       - name: Upload painted scene captures and geometry
         if: always()
         uses: actions/upload-artifact@v4
