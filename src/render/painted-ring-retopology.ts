@@ -21,8 +21,12 @@ export const ORIGINAL_PAINTED_BANDS: readonly RadialBand[] = Array.from(
 );
 export const REFERENCE_PAINTED_BANDS: readonly RadialBand[] = [
   { outer: 350, inner: 299 },
-  { outer: 297, inner: 249 },
-  { outer: 248, inner: 201 },
+  // 2026-10-19 multi-ray optical trial: the source orange material reads
+  // ~4px narrower and yellow ~6px wider than the live C-rings across five
+  // native unobstructed-left transects. Shift only their shared boundary
+  // by 5 local sprite pixels, preserving their 1px recessed groove.
+  { outer: 297, inner: 254 },
+  { outer: 253, inner: 201 },
   { outer: 198, inner: 153 },
   { outer: 151, inner: 104 },
   { outer: 103, inner: 66 },
