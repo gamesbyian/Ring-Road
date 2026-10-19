@@ -25,6 +25,16 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run browser:smoke
+      - name: Run LIVE deployed Pages in mobile Chrome (white-screen regression)
+        run: node scripts/live-pages-browser-smoke.mjs
+      - name: Retain live hosted HTML/JS diagnostic screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-road-live-pages-diagnostic
+          path: artifacts/live-pages
+          if-no-files-found: warn
+          retention-days: 7
       - name: Capture painted reference at phone sizes
         run: npm run visual:audit -- --skin painted --strict --out artifacts/painted-viewport
       - name: Compare native-ratio painted image to supplied landscape reference
