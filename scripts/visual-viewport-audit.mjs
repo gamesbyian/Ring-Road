@@ -22,6 +22,12 @@ const url = targetUrl.href;
 const spec = JSON.parse(await readFile(new URL("../docs/reference-regions.json", import.meta.url), "utf8"));
 const sizes = [...spec.phoneViewports, ...spec.otherViewports];
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+/** Single author-verified source of the first puzzle's true 11-step input route. */
+const FIRST_PUZZLE_EXACT_ROUTE = [
+  [0, 1, 1], [1, -1, 2], [2, -1, 1],
+  [3, -1, 2], [4, 1, 3], [6, -1, 2],
+];
+
 
 async function awaitHttp(url, attempts = 120) {
   for (let i = 0; i < attempts; i++) {
@@ -520,10 +526,7 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
       // Author-verified first-puzzle exact route. Drive the REAL controls and
       // fire the painted pearl by physical mouse coordinates: no reducer
       // bypass or synthetic DOM click. This is the complete 11-move solution.
-      const exactRoute = [
-        [0, 1, 1], [1, -1, 2], [2, -1, 1],
-        [3, -1, 2], [4, 1, 3], [6, -1, 2],
-      ];
+      const exactRoute = FIRST_PUZZLE_EXACT_ROUTE;
       let solvedMoves = 0;
       for (const [domain, direction, count] of exactRoute) {
         const control = ".ring-control-" + domain +
@@ -562,6 +565,87 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     errors.push("interaction exception: " + String(error));
   }
   return errors;
+}
+
+
+/**
+ * First independently recorded COMPLETE race through a simulated PHONE, not
+ * merely 1536x864. Uses the SAME author-verified eleven-step route as native
+ * acceptance, genuine CDP mouse coordinates and the actual shared reducer.
+ * Runs after the normal interaction smoke, so it can leave the game completed.
+ */
+async function smokeCompactPaintedCompletion(cdp, capture = async () => {}) {
+  const failures = [];
+  const read = (expr) => cdp.evaluate(expr);
+  const physicalClick = async (selector) => {
+    const point = await read("(() => {const el = document.querySelector(" +
+      JSON.stringify(selector) + "); if (!el || el.disabled) return null; " +
+      "const r = el.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};})()");
+    if (!point) { failures.push("not clickable: " + selector); return false; }
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mousePressed", x: point.x, y: point.y, button: "left", clickCount: 1
+    });
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseReleased", x: point.x, y: point.y, button: "left", clickCount: 1
+    });
+    await delay(90);
+    return true;
+  };
+  const moves = () => read("Number(document.querySelector('.reference-moves-card strong')?.textContent?.trim() || -1)");
+  try {
+    if (await moves() !== 0) {
+      failures.push("compact completion journey did not start at zero moves");
+      return failures;
+    }
+    for (const [domain, direction, count] of FIRST_PUZZLE_EXACT_ROUTE) {
+      const selector = ".ring-control-" + domain +
+        (direction === 1 ? " button:last-child" : " button:first-of-type");
+      for (let i = 0; i < count; i++) {
+        if (!await physicalClick(selector)) return failures;
+      }
+    }
+    if (await moves() !== 11) failures.push("compact exact route not eleven actual moves");
+    const unlocked = await read("document.querySelector('.painted-hub-button')?.disabled === false");
+    if (!unlocked) {
+      failures.push("compact pearl did not unlock after eleven genuine steps");
+      return failures;
+    }
+    await cdp.send("Input.dispatchMouseEvent", {type: "mouseMoved", x: 4, y: 4});
+    await capture("aligned-pre-fire", null);
+    await physicalClick(".painted-hub-button");
+    await delay(480);
+    const title = await read("document.querySelector('.modal h2')?.textContent?.trim()");
+    if (title !== "Puzzle complete!") failures.push("compact fire did not open completion modal: " + title);
+    const best = await read("document.querySelector('.painted-best-readout b')?.textContent?.trim()");
+    if (best !== "11") failures.push("compact fire did not preserve truthful Best 11: " + best);
+    if (!await read("!!document.querySelector('.painted-pearl-fired')"))
+      failures.push("compact fire failed to visually dismiss pearl");
+    if (title === "Puzzle complete!") {
+      const geometry = await read("(" + inspectPaintedModal.toString() + ")()");
+      failures.push(...geometry.failures.map((reason) => "completion modal: " + reason));
+      const nextVisible = await read(`(() => {
+        const button = document.querySelector('.modal-completion .modal-scroll > button');
+        const scroll = document.querySelector('.modal-completion .modal-scroll');
+        if (!button || !scroll) return false;
+        const b = button.getBoundingClientRect(), s = scroll.getBoundingClientRect();
+        const x = (b.left + b.right) / 2, y = (b.top + b.bottom) / 2;
+        const top = document.elementFromPoint(x, y);
+        return b.left >= s.left - 2 && b.right <= s.right + 2 &&
+          b.top >= s.top - 2 && b.bottom <= s.bottom + 2 &&
+          b.width >= 43.5 && b.height >= 43.5 &&
+          (top === button || button.contains(top));
+      })()`);
+      if (!nextVisible) failures.push("compact Next puzzle in completion is clipped or not hittable");
+      await cdp.send("Input.dispatchMouseEvent", {type: "mouseMoved", x: 4, y: 4});
+      await capture("fired-completion", geometry);
+      await physicalClick(".modal-footer button");
+      if (await read("!!document.querySelector('.modal')"))
+        failures.push("compact completion Close did not dismiss the actual dialog");
+    }
+  } catch (error) {
+    failures.push("compact genuine completion exception: " + String(error));
+  }
+  return failures;
 }
 
 let preview, chrome, cdp;
