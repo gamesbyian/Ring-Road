@@ -1256,14 +1256,14 @@
  * On compact phones the 2-column action group has separately tested 44px
  * physical hitboxes; do not touch its layout or typography here.
  */
-.painted-stage.reference-first-scene[data-photo-layout="true"] .control-monument .actions {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .control-monument .actions {
   left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 333px);
   top: calc(294px - var(--painted-rail-top));
   width: 168px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1290,7 +1290,7 @@
   letter-spacing: -.25px;
   text-shadow: 0 1px 0 #fff6;
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button::before {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button::before {
   display: block;
   flex: none;
   height: 22px;
@@ -1300,22 +1300,22 @@
   color: #454247;
   text-shadow: 0 1px 0 #fff9;
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(1)::before {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:nth-child(1)::before {
   content: "↶";
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(2)::before {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:nth-child(2)::before {
   content: "↺";
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:nth-child(3)::before {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:nth-child(3)::before {
   content: "?";
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:disabled {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:disabled {
   opacity: .60;
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:hover:not(:disabled) {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:hover:not(:disabled) {
   background: radial-gradient(circle at 34% 27%, #fffdf1, #e7c08c);
 }
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button:focus-visible {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button:focus-visible {
   outline: 5px solid #1162d2;
   outline-offset: 3px;
 }
@@ -1323,7 +1323,7 @@
 /* The painted Solution plaque already is the genuine clickable Solution action.
    An explicit selector guards against the broader photo-toolbar display:flex
    accidentally resurrecting the hidden fourth action. */
-.painted-stage.reference-first-scene[data-photo-layout="true"] .actions button.solution-compact-action {
+.painted-stage.reference-first-scene:is([data-photo-layout="true"], [data-tall-layout="true"]) .actions button.solution-compact-action {
   display: none;
 }
 
@@ -1438,9 +1438,11 @@
   font-size: 52px;
 }
 .painted-stage.reference-first-scene[data-tall-layout="true"] .control-monument .actions {
-  left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 207px);
-  top: calc(335px - var(--painted-rail-top));
-  width: 194px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 5px;
+  /* Beneath Moves, three genuine illustrated seals in a single row. The
+     180px logical width keeps each hitbox >=44px even at 1024×768. */
+  left: calc(var(--painted-stage-width) - var(--painted-rail-left) - 191px);
+  top: calc(290px - var(--painted-rail-top));
+  width: 180px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
