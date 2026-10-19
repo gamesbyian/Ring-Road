@@ -28,9 +28,10 @@ on:
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
 
-# Build artifacts are uploaded by Actions. The workflow never pushes code.
+# Releases are first-class repository downloads, not committed binaries.
+# Only a verified build on main publishes the rolling APK; PR runs never publish.
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: android-apk-${{ github.ref }}
@@ -93,4 +94,36 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      # GitHub Actions artifacts are expiring ZIP archives behind the Actions
+      # interface. Releases provide an actual stable direct .apk download URL.
+      # Keep this out of Git history and publish only a verified main build.
+      - name: Publish directly downloadable APK to repository Releases
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          SUM="$(sha256sum "$APK" | cut -d ' ' -f 1)"
+          TAG="android-latest"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --target "$GITHUB_SHA" \
+              --title "Ring Road for Android (latest test build)" \
+              --prerelease \
+              --notes "Automatically published sideload test builds. See docs/android.md for device acceptance status."
+          fi
+          # Use the same stable asset name every time: existing bookmark links
+          # still resolve to the most recent successful main APK.
+          gh release upload "$TAG" "$APK#ring-road.apk" --clobber
+          gh release edit "$TAG" --notes "$(printf \
+            'Painted-only Android debug APK.\n\nBuilt from commit: %s\nWorkflow: %s\nSHA-256 (ring-road.apk): %s\n\nTest build for sideloading, not Play Store distribution. Physical Pixel 6 Pro validation remains separate.\n' \
+            "$GITHUB_SHA" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$SUM")"
+          # Verify that GitHub actually lists the file before claiming a
+          # successful publication.
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "ring-road.apk"
+          echo "Direct APK: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG/ring-road.apk" >> "$GITHUB_STEP_SUMMARY"
+          echo "SHA-256: $SUM" >> "$GITHUB_STEP_SUMMARY"
 
