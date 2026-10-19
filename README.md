@@ -2,6 +2,12 @@
 
 Ring Road is a seven-ring alignment puzzle implemented as a production TypeScript application. Rotate every concentric ring until its gap shares one spoke, using exactly the puzzle's target number of moves.
 
+## Android APK: direct download
+
+**[Download Ring Road for Android (.apk)](https://github.com/gamesbyian/Ring-Road/releases/download/android-latest/ring-road.apk)**
+
+The newest successfully verified `main` build is published as a stable **GitHub Release asset**, with no ZIP extraction or Actions login required for public downloads. Use the same link for future updates. The release page includes the exact source commit and SHA-256 checksum. On your Pixel 6 Pro, open the APK from Downloads and grant the installing app permission if prompted. This is a sideload/debug build; hardware compositing and touch acceptance remain separate. See [Android install notes](docs/android.md).
+
 ## Production development
 
 Requires Node.js 22.12 or newer.
@@ -30,10 +36,10 @@ The complete optimized **20-WebP runtime package** and its SHA256/byte-size mani
 ```bash
 npm ci
 npm run dev
-# open the local Ring Road app and append ?skin=painted
+# painted mode is the sole production presentation, with no skin query required
 ```
 
-The painted mode is an **opt-in visual acceptance candidate** until user-approved as the default. The existing game remains the fallback if the full art package fails to decode or validate. Source art remains separate from browser-delivered assets.
+Painted is the only production renderer in both web and Android. A missing or corrupt art package displays an actionable Retry screen instead of silently falling back to classic. Source art remains separate from browser-delivered assets.
 
 After building, run `npm run visual:audit -- --skin painted --strict` and inspect `artifacts/visual-viewport-audit/` (PNG captures plus JSON bounds). The test includes actual coordinate-driven browser interactions on selected landscape/portrait screens; it does not replace final physical-device inspection or visual review against the 1536×864 reference. A reproducible [physical-phone acceptance script](./docs/painted-physical-device-acceptance.md) covers browser chrome, real touch, portrait rotation, genuine eleven-move completion, dialog layout, screenshots and explicit user signoff.
 

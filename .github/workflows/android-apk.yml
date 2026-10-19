@@ -28,7 +28,8 @@ on:
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
 
-# Build artifacts are uploaded by Actions. The workflow never pushes code.
+# Releases are first-class repository downloads, not committed binaries.
+# Only a verified build on main publishes the rolling APK; PR runs never publish.
 permissions:
   contents: read
 
@@ -94,3 +95,39 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  publish-apk:
+    name: Publish direct APK
+    needs: android-apk
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified APK from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: ring-road-android-debug-apk
+          path: release-apk
+      - name: Publish directly downloadable APK to repository Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          APK="release-apk/app-debug.apk"
+          test -s "$APK"
+          SUM="$(sha256sum "$APK" | cut -d ' ' -f 1)"
+          TAG="android-latest"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --target "$GITHUB_SHA" \
+              --title "Ring Road for Android (latest test build)" \
+              --prerelease \
+              --notes "Automatically published sideload test builds. See docs/android.md for device acceptance status."
+          fi
+          gh release upload "$TAG" "$APK#ring-road.apk" --clobber
+          gh release edit "$TAG" --notes "$(printf \
+            'Painted-only Android debug APK.\n\nBuilt from commit: %s\nWorkflow: %s\nSHA-256 (ring-road.apk): %s\n\nTest build for sideloading, not Play Store distribution. Physical Pixel 6 Pro validation remains separate.\n' \
+            "$GITHUB_SHA" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$SUM")"
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "ring-road.apk"
+          echo "Direct APK: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG/ring-road.apk" >> "$GITHUB_STEP_SUMMARY"
+          echo "SHA-256: $SUM" >> "$GITHUB_STEP_SUMMARY"
