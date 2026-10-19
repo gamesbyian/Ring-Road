@@ -185,8 +185,23 @@ function inspectDOM(requestedSkin) {
     const scale = rect.width / badge.offsetWidth;
     return heading.getBoundingClientRect().left < rect.left + (left + width) * scale + 1;
   })();
+  // The tall landscape action triplet must occupy one readable, clickable
+  // row like the source/native photo seals, not a spillover 2×2 grid.
+  const tallActionsUnregistered = (() => {
+    if (document.querySelector(".painted-stage")?.dataset.tallLayout !== "true") return false;
+    const actions = Array.from(document.querySelectorAll(".actions button")).filter(
+      (button) => getComputedStyle(button).display !== "none");
+    if (actions.length !== 3 || actions.map((button) => button.textContent.trim()).join("/") !== "Undo/Reset/Hint") return true;
+    const rects = actions.map((button) => button.getBoundingClientRect());
+    if (rects.some((r) => r.width < 43.5 || r.height < 43.5)) return true;
+    if (rects.some((r) => Math.abs(r.top - rects[0].top) > 2 ||
+      Math.abs(r.bottom - rects[0].bottom) > 2)) return true;
+    if (rects.some((r, i) => i > 0 && r.left <= rects[i-1].right + 2)) return true;
+    return actions.some((button) => getComputedStyle(button).borderTopLeftRadius !== "50%");
+  })();
   const failures = [
     ...(tallGoalOverlap ? ["tall landscape Goal heading overlaps painted help medallion"] : []),
+    ...(tallActionsUnregistered ? ["tall landscape actions not three accessible painted seals in one row"] : []),
     ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
     ...actionTypography.filter((item) => item.physicalFont < 11.5)
