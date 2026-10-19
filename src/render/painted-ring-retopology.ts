@@ -25,8 +25,8 @@ export const REFERENCE_PAINTED_BANDS: readonly RadialBand[] = [
   { outer: 248, inner: 201 },
   { outer: 198, inner: 153 },
   { outer: 151, inner: 104 },
-  { outer: 103, inner: 64 },
-  { outer: 63, inner: 19 },
+  { outer: 103, inner: 66 },
+  { outer: 65, inner: 19 },
 ];
 
 /** Pure invertible monotone transform for each preserved angular ray. */
