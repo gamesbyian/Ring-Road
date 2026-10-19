@@ -35,6 +35,6 @@ npm run dev
 
 The painted mode is an **opt-in visual acceptance candidate** until user-approved as the default. The existing game remains the fallback if the full art package fails to decode or validate. Source art remains separate from browser-delivered assets.
 
-After building, run `npm run visual:audit -- --skin painted --strict` and inspect `artifacts/visual-viewport-audit/` (PNG captures plus JSON bounds). The test includes actual coordinate-driven browser interactions on selected landscape/portrait screens; it does not replace final physical-device inspection or visual review against the 1536×864 reference.
+After building, run `npm run visual:audit -- --skin painted --strict` and inspect `artifacts/visual-viewport-audit/` (PNG captures plus JSON bounds). The test includes actual coordinate-driven browser interactions on selected landscape/portrait screens; it does not replace final physical-device inspection or visual review against the 1536×864 reference. A reproducible [physical-phone acceptance script](./docs/painted-physical-device-acceptance.md) covers browser chrome, real touch, portrait rotation, genuine eleven-move completion, dialog layout, screenshots and explicit user signoff.
 
 For optional art regeneration experiments, see `tools/import-reference-art.py`, `tools/normalize-reference-rings.py` and [the active finish plan](./docs/reference-fidelity-finish-plan.md). The source PNGs are never modified by the runtime.
