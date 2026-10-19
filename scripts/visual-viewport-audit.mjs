@@ -247,11 +247,65 @@ function inspectDOM(requestedSkin) {
 
 
 /**
+ * Physical-screen inspection of an OPEN painted modal. The modal's internal
+ * scroll pane may scroll; the game/page must not, and its Close action and
+ * heading must remain physically visible and operable, even after CSS portrait
+ * rotation. Keep modal checks separate from the at-rest inspectDOM audit.
+ */
+function inspectPaintedModal() {
+  const modal = document.querySelector(".modal");
+  const article = modal?.querySelector("article");
+  const heading = article?.querySelector("h2");
+  const scroll = article?.querySelector(".modal-scroll");
+  const footer = article?.querySelector(".modal-footer");
+  const close = footer?.querySelector("button");
+  const width = window.innerWidth, height = window.innerHeight;
+  const within = (r) => !!r && r.left >= -2 && r.top >= -2 &&
+    r.right <= width + 2 && r.bottom <= height + 2;
+  const rect = (element) => element?.getBoundingClientRect() ?? null;
+  const buttonRect = rect(close);
+  const center = buttonRect ? {
+    x: buttonRect.left + buttonRect.width / 2,
+    y: buttonRect.top + buttonRect.height / 2
+  } : null;
+  const hit = center && document.elementFromPoint(center.x, center.y);
+  const topLevel = ["html", "body", "#root", ".app-shell"].filter((selector) => {
+    const node = selector === "html" ? document.documentElement : document.querySelector(selector);
+    return node && (node.scrollWidth > node.clientWidth + 2 ||
+      node.scrollHeight > node.clientHeight + 2);
+  });
+  const failures = [];
+  if (!within(rect(modal))) failures.push("overlay exceeds physical viewport");
+  if (!within(rect(article))) failures.push("dialog panel clipped by physical viewport");
+  if (!within(rect(heading))) failures.push("dialog heading clipped");
+  if (!within(rect(footer))) failures.push("dialog footer clipped");
+  if (!within(buttonRect)) failures.push("Close button clipped");
+  if (!buttonRect || buttonRect.width < 43.5 || buttonRect.height < 43.5)
+    failures.push("Close button smaller than 44 physical CSS pixels");
+  if (!hit || (hit !== close && !close?.contains(hit)))
+    failures.push("Close button center obstructed");
+  if (scroll && (!Number.isFinite(scroll.clientHeight) || scroll.clientHeight <= 0))
+    failures.push("dialog content scroll region collapsed");
+  if (topLevel.length) failures.push("page/shell scrolls while modal open: " + topLevel.join(", "));
+  return {
+    viewport: {width, height}, panel: article ? {
+      left: rect(article).left, top: rect(article).top,
+      width: rect(article).width, height: rect(article).height
+    } : null,
+    content: scroll ? {clientHeight: scroll.clientHeight, scrollHeight: scroll.scrollHeight,
+      overflowY: getComputedStyle(scroll).overflowY} : null,
+    footerButton: buttonRect ? {width: buttonRect.width, height: buttonRect.height} : null,
+    failures
+  };
+}
+
+
+/**
  * Real physical-coordinate CDP clicks (not DOM .click()) confirm that the
  * painted layer, the CSS-rotated portrait shell, and React reducer agree.
  * Screenshots are captured BEFORE these actions to preserve stable comparisons.
  */
-async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose = async () => {}) {
+async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose = async () => {}, captureOpenModal = async () => {}) {
   const errors = [];
   const read = (expression) => cdp.evaluate(expression);
   const moveCount = () => read("Number(document.querySelector('.reference-moves-card strong')?.textContent?.trim() || -1)");
@@ -271,6 +325,13 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     });
     await delay(90);
     return true;
+  };
+  const verifyOpenModal = async (label) => {
+    const result = await read("(" + inspectPaintedModal.toString() + ")()");
+    errors.push(...result.failures.map((reason) => label + " modal: " + reason));
+    await cdp.send("Input.dispatchMouseEvent", {type: "mouseMoved", x: 4, y: 4});
+    await delay(70);
+    await captureOpenModal(label, result);
   };
   const expectMoves = async (count, stage) => {
     const actual = await moveCount();
@@ -321,11 +382,13 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     const hintShown = await read("!!document.querySelector('.modal')");
     if (!hintShown) errors.push("Hint did not open a modal");
     if (hintShown) {
+      await verifyOpenModal("hint");
       await click(".modal-footer button"); // Close Hint
       await click(".reference-solution-card"); // Solution remains reachable
       const solutionShown = await read(
         "document.querySelector('.modal')?.textContent?.includes('Exact solution') || false");
       if (!solutionShown) errors.push("Solution preview button failed after hiding duplicate action");
+      if (solutionShown) await verifyOpenModal("solution");
       // Escape should close the modal and restore keyboard focus to the
       // actual Solution plaque even when the entire shell is CSS-rotated.
       await cdp.send("Input.dispatchKeyEvent", {type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27});
@@ -563,7 +626,28 @@ try {
         poseDigests.set(pose, digest);
         await writeFile(join(out, filename + "-" + pose + ".png"), bytes);
       } : async () => {};
-      result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose);
+      // Open-dialog captures come from the same REAL pointer-driven Hint and
+      // Solution actions, never a manually inserted screenshot-only modal.
+      const modalEvidence = {};
+      const captureOpenModal = async (kind, geometry) => {
+        if (!["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height)) return;
+        await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+        const screen = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
+        const bytes = Buffer.from(screen.data, "base64");
+        const digest = createHash("sha256").update(bytes).digest("hex");
+        modalEvidence[kind] = {sha256: digest, geometry};
+        await writeFile(join(out, filename + "-" + kind + "-open.png"), bytes);
+      };
+      result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose, captureOpenModal);
+      if (["568x320", "844x390", "390x844", "1536x864"].includes(width + "x" + height)) {
+        if (!modalEvidence.hint || !modalEvidence.solution ||
+            modalEvidence.hint.sha256 === modalEvidence.solution.sha256 ||
+            modalEvidence.hint.sha256 === baselineDigest ||
+            modalEvidence.solution.sha256 === baselineDigest) {
+          result.failures.push("missing or duplicate actual painted open-dialog screenshots");
+        }
+        result.modalEvidence = modalEvidence;
+      }
       if (nativePhoto && (poseDigests.size !== 5 ||
         !poseDigests.has("puzzle-two") || !poseDigests.has("puzzle-three") ||
         !poseDigests.has("red-one-step") || !poseDigests.has("exact-aligned-pre-fire") ||
