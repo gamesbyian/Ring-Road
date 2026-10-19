@@ -168,7 +168,24 @@ function inspectDOM(requestedSkin) {
   const duplicateSolution = painted && document.querySelector(".actions button.solution-compact-action");
   const duplicateSolutionVisible = Boolean(duplicateSolution &&
     getComputedStyle(duplicateSolution).display !== "none");
+  // Tall landscape cannot silently hide the Goal label under its illustrated
+  // help medallion. CSS pseudo-elements have no DOM hitbox, so measure their
+  // rendered width using the actual scaled button as the coordinate frame.
+  const tallGoalOverlap = (() => {
+    if (document.querySelector(".painted-stage")?.dataset.tallLayout !== "true") return false;
+    const badge = document.querySelector(".reference-goal-guide");
+    const heading = document.querySelector(".reference-goal-heading strong");
+    if (!badge || !heading || badge.offsetWidth <= 0) return true;
+    const art = getComputedStyle(badge, "::after");
+    const left = parseFloat(art.left);
+    const width = parseFloat(art.width);
+    if (!Number.isFinite(left) || !Number.isFinite(width)) return true;
+    const rect = badge.getBoundingClientRect();
+    const scale = rect.width / badge.offsetWidth;
+    return heading.getBoundingClientRect().left < rect.left + (left + width) * scale + 1;
+  })();
   const failures = [
+    ...(tallGoalOverlap ? ["tall landscape Goal heading overlaps painted help medallion"] : []),
     ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
     ...actionTypography.filter((item) => item.physicalFont < 11.5)
