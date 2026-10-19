@@ -1170,9 +1170,29 @@
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  background: transparent;
+  clip-path: none;
+  isolation: isolate;
+}
+/* The older photo-sized classic ::after is opaque parchment; removing it is
+   essential. Render exactly ONE underlying paper layer, separate from real
+   focusable navigation controls, whose hitboxes may not be clipped. */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque::after {
+  content: none;
+  display: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 44%, rgb(247 211 176 / 53%), transparent 100%),
-    linear-gradient(112deg, #eec29a, #f0caa6 56%, #eabf98);
+    radial-gradient(ellipse 75% 65% at 55% 48%, rgb(247 212 179 / 36%), transparent 100%),
+    linear-gradient(107deg, #eec49e 0%, #f1cba7 49%, #edc39e 100%);
   clip-path: polygon(
     7% 0.6%, 26% 0.3%, 32% 1.7%, 55% 0%, 90% 0.5%,
     99% 12%, 99.6% 44%, 99% 85%, 94% 99%,
@@ -1186,7 +1206,7 @@
 }
 .painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-numberline {
   position: absolute;
-  top: 13px;
+  top: 19px;
   left: 50%;
   width: max-content;
   max-width: calc(100% - 80px);
