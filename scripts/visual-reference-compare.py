@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Offline reference/game image comparator. Requires Pillow; never part of browser runtime."""
 import argparse
+import colorsys
 import json
 from pathlib import Path
 
@@ -40,6 +41,64 @@ def errors(first, second):
         "edge_mean_abs_error_0_255": round(
             ImageStat.Stat(ImageChops.difference(edge_first, edge_second)).mean[0], 3
         ),
+    }
+
+
+
+# Native photo and initial-puzzle screenshot, not a solved-state fixture.
+# Scan the left half of the real board, where the canonical and initial live
+# poses have no notches. Hue runs measure material geometry, not puzzle state.
+_RING_HUES = (
+    ("red", 0), ("orange", 26), ("yellow", 51), ("green", 124),
+    ("blue", 200), ("indigo", 245), ("violet", 282),
+)
+
+
+def _ring_material_runs(image, y=394, x0=430, x1=817):
+    runs = []
+    current, first = None, x0
+    for x in range(x0, x1 + 1):
+        if x == x1:
+            color = None
+        else:
+            r, g, b = image.getpixel((x, y))[:3]
+            hue, saturation, brightness = colorsys.rgb_to_hsv(
+                r / 255, g / 255, b / 255
+            )
+            if saturation < .35 or brightness < .30:
+                color = None
+            else:
+                hue *= 360
+                color = min(_RING_HUES, key=lambda item:
+                    min(abs(hue - item[1]), 360 - abs(hue - item[1])))[0]
+        if color == current:
+            continue
+        if current is not None and x - first >= 8:
+            runs.append((current, first, x - 1))
+        current, first = color, x
+    found = {}
+    for name, _ in _RING_HUES:
+        options = [(start, end) for color, start, end in runs if color == name]
+        if options:
+            start, end = max(options, key=lambda item: item[1] - item[0])
+            found[name] = {"left": start, "right": end, "width": end - start + 1}
+    return found
+
+
+def native_ring_transect(reference, actual):
+    """One measured unobstructed ray; never make gameplay or ship decisions on it."""
+    ref, live = _ring_material_runs(reference), _ring_material_runs(actual)
+    missing = [name for name, _ in _RING_HUES if name not in ref or name not in live]
+    return {
+        "probe": {"y": 394, "x0": 430, "x1_exclusive": 817},
+        "warning": "Hue-heuristic single-ray initial-puzzle diagnostic; gaps, pose, and global fidelity are not evaluated.",
+        "missing_colors": missing,
+        "bands": [
+            {"color": color, "reference": ref[color], "actual": live[color],
+             "width_delta_px": live[color]["width"] - ref[color]["width"],
+             "left_edge_shift_px": live[color]["left"] - ref[color]["left"]}
+            for color, _ in _RING_HUES if color in ref and color in live
+        ],
     }
 
 
@@ -91,6 +150,9 @@ def main():
         "full_image": errors(baseline, actual),
         "regions": [],
     }
+
+    if registration == "aspect-matched" and reference_native_size == (1536, 864):
+        report["ring_material_transect"] = native_ring_transect(baseline, actual)
 
     if args.regions.is_file():
         specification = json.loads(args.regions.read_text(encoding="utf8"))
