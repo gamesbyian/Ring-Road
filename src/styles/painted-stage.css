@@ -1326,3 +1326,37 @@
 .painted-stage.reference-first-scene[data-photo-layout="true"] .actions button.solution-compact-action {
   display: none;
 }
+
+/*
+ * The source illustration already contains these seven STATIC control row
+ * labels, swatches and arrow medallions at x188..394, y245..610.
+ *
+ * Reuse their exact registered pixels on the full 1536x864 photo layout
+ * rather than restyling the extracted WebP rows (which shifted shadows and
+ * paper edges). The backing is pointer-inert. All fourteen 44px DOM rotation
+ * buttons, aria labels, group state, pointer events, focus outlines and
+ * gameplay reducers remain fully real and ABOVE this art.
+ *
+ * Compact and rotated phone layouts continue using their own row sprites and
+ * physical touch targets; no separate portrait layout is introduced.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-control-slot::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  left: -2px;
+  top: -4px;
+  width: 206px;
+  height: 365px;
+  background-image: url("../../docs/assets/reference-play-1536x864.jpg");
+  background-size: 1536px 864px;
+  background-position: -188px -245px;
+  background-repeat: no-repeat;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .ring-control {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
