@@ -438,6 +438,12 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
         const best = await read(
           "document.querySelector('.painted-best-readout b')?.textContent?.trim() || ''");
         if (best !== "11") errors.push("painted Best record was not created after true completion: " + best);
+        if (completed && firedPearl && best === "11") {
+          // The final UI is unpictured in the source photograph. Retain the
+          // GENUINE post-fire Chrome state for visual review, not a fabricated
+          // modal or decorative screenshot.
+          await capturePose("fired-completion");
+        }
       }
     }
   } catch (error) {
@@ -540,10 +546,12 @@ try {
         await writeFile(join(out, filename + "-" + pose + ".png"), bytes);
       } : async () => {};
       result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose);
-      if (nativePhoto && (poseDigests.size !== 2 || !poseDigests.has("red-one-step") || !poseDigests.has("exact-aligned-pre-fire"))) {
-        result.failures.push("missing genuine native painted puzzle-pose screenshots");
+      if (nativePhoto && (poseDigests.size !== 3 || !poseDigests.has("red-one-step") ||
+        !poseDigests.has("exact-aligned-pre-fire") || !poseDigests.has("fired-completion"))) {
+        result.failures.push("missing genuine native painted one-step, aligned or fired-completion screenshots");
       }
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
+      if (nativePhoto) result.nativePoseDigests = Object.fromEntries(poseDigests);
     }
     if (skin === "painted" && width === 844 && height === 390) {
       // A DPR=1 CSS viewport does not reproduce modern phone raster density.
