@@ -817,6 +817,41 @@ try {
         await cdp.send("Emulation.setEmulatedMedia", {features: []});
       }
     }
+    if (skin === "painted" &&
+        ["568x320", "844x390", "390x844"].includes(width + "x" + height)) {
+      // The preceding DPR2 smoke legitimately changed Chrome's pixel ratio.
+      // Re-establish CSS-pixel native-size evidence without changing game state.
+      if (width === 844 && height === 390) {
+        await cdp.send("Emulation.setDeviceMetricsOverride", {
+          width, height, mobile: true, deviceScaleFactor: 1,
+          screenOrientation: {type: "landscapePrimary", angle: 90}
+        });
+        await delay(130);
+      }
+      const finishedScreens = {};
+      const captureCompact = async (pose, geometry) => {
+        await delay(190);
+        await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+        const image = await cdp.send("Page.captureScreenshot", {
+          format: "png", captureBeyondViewport: false
+        });
+        const bytes = Buffer.from(image.data, "base64");
+        finishedScreens[pose] = {
+          sha256: createHash("sha256").update(bytes).digest("hex"),
+          geometry
+        };
+        await writeFile(join(out, filename + "-phone-" + pose + ".png"), bytes);
+      };
+      result.compactCompletionFailures = await smokeCompactPaintedCompletion(cdp, captureCompact);
+      result.failures.push(...result.compactCompletionFailures.map((problem) =>
+        "phone complete: " + problem));
+      if (!finishedScreens["aligned-pre-fire"] || !finishedScreens["fired-completion"] ||
+          finishedScreens["aligned-pre-fire"].sha256 === finishedScreens["fired-completion"].sha256 ||
+          Object.values(finishedScreens).some((item) => item.sha256 === baselineDigest)) {
+        result.failures.push("missing or duplicated genuine compact aligned/completion screenshots");
+      }
+      result.compactCompletionEvidence = finishedScreens;
+    }
     captures.push(result);
     console.log(filename + ": " + result.failures.length + " issue(s): " + result.failures.slice(0, 5).join("; "));
   }
