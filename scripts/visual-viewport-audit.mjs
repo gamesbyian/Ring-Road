@@ -294,11 +294,21 @@ async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose =
     await click(".puzzle-plaque button:last-child"); // Next, puzzle 2
     const second = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (second === first) errors.push("Next puzzle did not change current puzzle");
-    if (testFullTurns && second !== first) await capturePose("puzzle-two");
+    if (testFullTurns && second !== first) {
+      await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseMoved", x: 4, y: 4,
+    });
+      await capturePose("puzzle-two");
+    }
     await click(".puzzle-plaque button:last-child"); // Next, puzzle 3
     const third = await read("document.querySelector('.puzzle-numberline')?.textContent.trim()");
     if (third === second) errors.push("Next puzzle did not advance from second to third");
-    if (testFullTurns && third !== second) await capturePose("puzzle-three");
+    if (testFullTurns && third !== second) {
+      await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseMoved", x: 4, y: 4,
+    });
+      await capturePose("puzzle-three");
+    }
     const thirdBead = await bead();
     if (thirdBead !== Math.min(5, firstBead + 1))
       errors.push("Campaign progress beads did not advance across puzzle pair");
