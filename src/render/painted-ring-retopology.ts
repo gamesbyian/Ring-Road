@@ -90,12 +90,12 @@ function warpRing(source: Uint8ClampedArray, artIndex: number): ImageData {
       ];
       let alpha = 0, red = 0, green = 0, blue = 0;
       for (let k = 0; k < 4; k++) {
-        const index = neighbors[k];
-        const coverage = source[index + 3] * weights[k];
+        const index = neighbors[k]!;
+        const coverage = source[index + 3]! * weights[k]!;
         alpha += coverage;
-        red += source[index] * coverage;
-        green += source[index + 1] * coverage;
-        blue += source[index + 2] * coverage;
+        red += source[index]! * coverage;
+        green += source[index + 1]! * coverage;
+        blue += source[index + 2]! * coverage;
       }
       if (alpha < 0.1) continue;
       const outIndex = (y * size + x) * 4;
