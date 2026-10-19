@@ -1,3 +1,4 @@
+import { paintedRingSpriteUrl } from "./painted-ring-retopology";
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import type { Puzzle } from "../domain/puzzle";
 import { PAINTED_RING_COLORS, paintedRingDegrees } from "./painted-geometry";
@@ -43,7 +44,7 @@ export function PaintedRingBoard({
           return (
             <img key={color}
               className={"painted-ring-sprite " + (rotationMotion === "instant" ? "painted-ring-instant" : "")}
-              src={paintedAsset("ring-" + (artIndex + 1) + "-" + color + "-normalized.webp")}
+              src={paintedRingSpriteUrl("ring-" + (artIndex + 1) + "-" + color + "-normalized.webp", import.meta.env.BASE_URL + "reference-skin/")}
               width={900} height={900} alt="" draggable={false} aria-hidden="true"
               style={{ transform: "rotate(" + degrees + "deg)", zIndex: artIndex + 1 }}
             />
