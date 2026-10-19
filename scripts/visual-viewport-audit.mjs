@@ -165,7 +165,11 @@ function inspectDOM(requestedSkin) {
         Math.max(1, button.offsetHeight);
       return {label: button.textContent.trim(), physicalFont};
     }) : [];
+  const duplicateSolution = painted && document.querySelector(".actions button.solution-compact-action");
+  const duplicateSolutionVisible = Boolean(duplicateSolution &&
+    getComputedStyle(duplicateSolution).display !== "none");
   const failures = [
+    ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
     ...actionTypography.filter((item) => item.physicalFont < 11.5)
       .map((item) => "unreadable compact action label: " + item.label),
@@ -343,7 +347,7 @@ try {
     const filename = "game-" + skin + "-" + width + "x" + height;
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
-    if (skin === "painted" && ["568x320", "844x390", "390x844"].includes(width + "x" + height)) {
+    if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
       result.interactionFailures = await smokePaintedInteraction(cdp);
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
