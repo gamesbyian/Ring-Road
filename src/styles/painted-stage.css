@@ -1152,3 +1152,97 @@
 .painted-stage.reference-first-scene[data-photo-layout="true"] .painted-best-readout b {
   font-weight: 560;
 }
+
+/*
+ * Native photo reference: the puzzle ticket's diamonds belong on the title
+ * baseline (roughly y~65 in source image), and the six progress beads sit
+ * on their own full-width row (source first gold centre x~1189, y~100).
+ * The semantic Previous/Next buttons keep their real 44x44 hit regions.
+ * Dynamic puzzle text and segment progress are NEVER part of the backdrop.
+ * Restrict this to photo layout; compact phone/rotated screens are untouched.
+ */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .painted-navigation-slot {
+  filter: drop-shadow(0 4px 4px rgb(65 46 33 / 34%));
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque {
+  align-items: flex-start;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  clip-path: none;
+  isolation: isolate;
+}
+/* The older photo-sized classic ::after is opaque parchment; removing it is
+   essential. Render exactly ONE underlying paper layer, separate from real
+   focusable navigation controls, whose hitboxes may not be clipped. */
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque::after {
+  content: none;
+  display: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 65% at 55% 48%, rgb(247 212 179 / 36%), transparent 100%),
+    linear-gradient(107deg, #eec49e 0%, #f1cba7 49%, #edc39e 100%);
+  clip-path: polygon(
+    7% 0.6%, 26% 0.3%, 32% 1.7%, 55% 0%, 90% 0.5%,
+    99% 12%, 99.6% 44%, 99% 85%, 94% 99%,
+    73% 99.4%, 43% 100%, 8% 99%, 0.3% 89%,
+    0% 68%, 1% 36%, 0% 13%
+  );
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-index {
+  position: static;
+  overflow: visible;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-numberline {
+  position: absolute;
+  top: 19px;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 80px);
+  overflow: visible;
+  transform: translateX(-50%);
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  pointer-events: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-progress-dots {
+  position: absolute;
+  bottom: 31px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  margin: 0;
+  gap: 14px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-progress-dots i {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border: 2px solid #a8886e;
+  border-radius: 50%;
+  background: #efd0b0;
+  box-shadow: inset 0 1px 2px rgb(98 75 54 / 18%);
+}
+.painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-progress-dots i.active {
+  border-color: #a66f26;
+  background: radial-gradient(circle at 33% 28%, #ffe28c, #eeb334 65%, #d89021);
+  box-shadow: 0 1px 2px rgb(99 66 24 / 50%), inset 0 1px 1px #fff4af;
+}
