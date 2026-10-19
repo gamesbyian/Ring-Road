@@ -1054,7 +1054,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 0;
-  padding: 9px 16px;
+  /* Preserve both 44px arrow hits while exposing the complete live
+     “Puzzle 01” heading; earlier 16px gutters clipped the final digit. */
+  padding: 9px 11px;
 }
 .painted-stage.reference-first-scene[data-photo-layout="true"] .puzzle-plaque button {
   flex: 0 0 44px;
