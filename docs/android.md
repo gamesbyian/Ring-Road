@@ -28,7 +28,7 @@ npm run android:apk
 
 `npm run build:android` creates a separate Vite bundle with **relative** asset paths, preserving the web release's `/Ring-Road/` base. `npm run android:prepare` adds the native Android project if missing, syncs compiled assets and plugins, and deterministically configures immersive native bars while leaving device orientation free. `node scripts/check-android-bundle.mjs` asserts bundled offline HTML and the painted WebPs. Normal web `npm run build` and GitHub Pages are unchanged.
 
-The first GitHub Actions run on the bootstrap feature branch restores `package-lock.json`, creates the checked-in native Android Gradle project, compiles a debug APK, and commits verified generated native sources and lockfile back to that branch. Once this source is committed, subsequent builds run from the checked-in Android project. The APK workflow then runs on every relevant `main` change and supports manual dispatch.
+The Capacitor Android project and pinned dependency lockfile are **checked in**. Actions performs a clean `npm ci`, regenerates the relative web bundle, syncs it into the Android project, verifies offline assets, and builds an APK from those sources. The Android APK workflow runs on relevant `main` changes, can validate pull requests, and also supports manual dispatch.
 
 ## Required acceptance before calling Android complete
 
