@@ -1446,3 +1446,9 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
 }
+
+/* The native 12px seals become less than 11.5 physical px at 1024x768;
+   preserve readable labels without compromising 44px actual hit targets. */
+.painted-stage.reference-first-scene[data-tall-layout="true"] .actions button {
+  font-size: 14px;
+}
