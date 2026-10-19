@@ -144,9 +144,13 @@ function encodedWebp(canvas: HTMLCanvasElement): Promise<Blob> {
   });
 }
 
-async function retopologizeRing(root: string, filename: string, index: number): Promise<string> {
-  const image = new Image();
-  image.src = root + filename;
+async function retopologizeRing(
+  root: string, filename: string, index: number, loadedImage?: HTMLImageElement,
+): Promise<string> {
+  // The manifest gate has already fetched every source ring; reuse its exact
+  // loaded image rather than instantiate/reload a second decoded bitmap.
+  const image = loadedImage ?? new Image();
+  if (!loadedImage) image.src = root + filename;
   await image.decode();
   if (image.naturalWidth !== PAINTED_RING_CANVAS ||
       image.naturalHeight !== PAINTED_RING_CANVAS) {
@@ -169,13 +173,15 @@ async function retopologizeRing(root: string, filename: string, index: number): 
  * the manifest-verified original assets still render and remain playable.
  * Sequential encoding keeps peak RAM sane on physically small Android phones.
  */
-export function preparePaintedRingTextures(root: string): Promise<void> {
+export function preparePaintedRingTextures(
+  root: string, loadedRings?: ReadonlyMap<string, HTMLImageElement>,
+): Promise<void> {
   if (preparing) return preparing;
   preparing = (async () => {
     const pending = new Map<string, string>();
     try {
       for (const [index, filename] of names.entries()) {
-        pending.set(filename, await retopologizeRing(root, filename, index));
+        pending.set(filename, await retopologizeRing(root, filename, index, loadedRings?.get(filename)));
       }
       for (const [name, url] of pending) sprites.set(name, url);
     } catch (error) {
