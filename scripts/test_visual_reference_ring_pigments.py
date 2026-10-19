@@ -22,9 +22,6 @@ def fixture(missing=None):
     bands = [(350, 299), (297, 254), (253, 201), (198, 153),
              (151, 104), (103, 66), (65, 19)]
     for (color, (outer, inner), (name, *_)) in zip(colors, bands, module.BANDS):
-        for radius, tone in ((outer, (124, 86, 51)),
-                             (outer - 1, (124, 86, 51))):
-            pass
         x, y = module.CENTER_X, module.CENTER_Y
         ellipse = lambda r: (x - module.PROJECTION_X * r,
                              y - module.PROJECTION_Y * r,
