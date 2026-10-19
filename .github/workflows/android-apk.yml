@@ -53,7 +53,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
+      - name: Verify preinstalled Android SDK
+        run: |
+          command -v sdkmanager
+          test -d "${ANDROID_HOME}/cmdline-tools"
 
       # Initial PR introduced Capacitor without a lockfile. Resolve the pinned
       # package versions once, commit the lock after a verified build, and use
@@ -71,7 +74,9 @@ jobs:
       - name: Verify offline bundle and native activity
         run: node scripts/check-android-bundle.mjs
       - name: Install Android API and build tools
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Compile installable debug APK
         working-directory: android
         run: |
