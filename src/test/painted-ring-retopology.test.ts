@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ORIGINAL_PAINTED_BANDS, REFERENCE_PAINTED_BANDS, paintedRingSpriteUrl,
-  sourceRadiusAt,
+  sourceRadiusAt, violetStarEtch,
 } from "../render/painted-ring-retopology";
 
 describe("painted source-exact radial ring correction", () => {
@@ -31,6 +31,19 @@ describe("painted source-exact radial ring correction", () => {
       expect(sourceRadiusAt(corrected.inner - 0.01, index)).toBeNull();
       expect(sourceRadiusAt(corrected.outer + 0.01, index)).toBeNull();
     }
+  });
+
+  it("etches the violet star's eight genuine moving radial tips without filling alpha gaps", () => {
+    const atPoint = violetStarEtch(40, 0);
+    const betweenPoints = violetStarEtch(40, Math.PI / 8);
+    const repeatedPoint = violetStarEtch(40, Math.PI / 4);
+    expect(atPoint.shade).toBeGreaterThan(0.20);
+    expect(betweenPoints.shade).toBe(0);
+    expect(repeatedPoint.shade).toBeCloseTo(atPoint.shade, 10);
+    expect(violetStarEtch(48, 0).edge).toBeGreaterThan(0.1);
+    expect(violetStarEtch(51, 0)).toEqual({shade: 0, edge: 0});
+    expect(violetStarEtch(17, 0)).toEqual({shade: 0, edge: 0});
+    expect(violetStarEtch(Number.NaN, 0)).toEqual({shade: 0, edge: 0});
   });
 
   it("never invents ring data at invalid radii or indices", () => {
