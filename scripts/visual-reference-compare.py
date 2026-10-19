@@ -3,6 +3,7 @@
 import argparse
 import colorsys
 import json
+from statistics import median
 from pathlib import Path
 
 try:
@@ -102,6 +103,66 @@ def native_ring_transect(reference, actual):
     }
 
 
+
+# Inspect several safe-ish left-half rays, not only the y=394 transect.
+# These samples may traverse shadows or pose-dependent notches: keep their
+# per-ray misses and raw values visible and NEVER convert them to a ship gate.
+_NATIVE_MATERIAL_RAYS = (354, 374, 394, 414, 434)
+
+
+def multi_ray_ring_material(reference, actual):
+    """Source/live pigment geometry on several native, fixed pixel rows.
+
+    Report every raw sample, plus robust median and worst observed discrepancy.
+    The existing single-ray diagnostic remains unchanged for continuity.
+    """
+    if reference.size != (1536, 864) or actual.size != (1536, 864):
+        raise ValueError("Multi-ray ring material probe requires native 1536x864")
+    samples = []
+    for y in _NATIVE_MATERIAL_RAYS:
+        ref = _ring_material_runs(reference, y=y)
+        live = _ring_material_runs(actual, y=y)
+        bands = []
+        for name, _ in _RING_HUES:
+            source = ref.get(name)
+            measured = live.get(name)
+            bands.append({
+                "color": name,
+                "reference": source,
+                "actual": measured,
+                "width_delta_px": (measured["width"] - source["width"])
+                    if source and measured else None,
+                "left_edge_shift_px": (measured["left"] - source["left"])
+                    if source and measured else None,
+            })
+        samples.append({"y": y, "bands": bands})
+    aggregate = []
+    for name, _ in _RING_HUES:
+        entries = [band for sample in samples for band in sample["bands"]
+                   if band["color"] == name and band["width_delta_px"] is not None]
+        widths = [band["width_delta_px"] for band in entries]
+        edges = [band["left_edge_shift_px"] for band in entries]
+        aggregate.append({
+            "color": name,
+            "valid_rays": len(widths),
+            "total_rays": len(samples),
+            "median_width_delta_px": median(widths) if widths else None,
+            "max_abs_width_delta_px": max(map(abs, widths)) if widths else None,
+            "median_left_edge_shift_px": median(edges) if edges else None,
+            "max_abs_left_edge_shift_px": max(map(abs, edges)) if edges else None,
+        })
+    return {
+        "warning": "Hue-based source-vs-live optical sampling, NOT a pose-invariant "
+                   "or geometric ground truth. Inspect per-ray bands, lighting, "
+                   "real notches and screenshot state before changing art.",
+        "source_size": [1536, 864],
+        "x0": 430,
+        "x1_exclusive": 817,
+        "rays": samples,
+        "aggregate": aggregate,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", required=True, type=Path, help="Approved reference image")
@@ -153,6 +214,7 @@ def main():
 
     if registration == "aspect-matched" and reference_native_size == (1536, 864):
         report["ring_material_transect"] = native_ring_transect(baseline, actual)
+        report["ring_material_multi_ray"] = multi_ray_ring_material(baseline, actual)
 
     if args.regions.is_file():
         specification = json.loads(args.regions.read_text(encoding="utf8"))
