@@ -68,19 +68,40 @@ function ArtImage({ filename, className }: { filename: string; className: string
 }
 
 const DESIGN_HEIGHT = 864;
+type LandscapeDimensions = { long: number; short: number };
+
+export function landscapeDimensions(width: number, height: number): LandscapeDimensions {
+  return { long: Math.max(width, height), short: Math.min(width, height) };
+}
+
+function readLandscapeDimensions(): LandscapeDimensions {
+  if (typeof window === "undefined") return { long: 1536, short: DESIGN_HEIGHT };
+  return landscapeDimensions(window.innerWidth, window.innerHeight);
+}
+
 function useLandscapeDimensions() {
-  const getDimensions = () => ({
-    long: typeof window === "undefined" ? 1536 : Math.max(window.innerWidth, window.innerHeight),
-    short: typeof window === "undefined" ? 864 : Math.min(window.innerWidth, window.innerHeight),
-  });
-  const [value, setValue] = useState(getDimensions);
+  const [value, setValue] = useState(readLandscapeDimensions);
   useEffect(() => {
-    const update = () => setValue(getDimensions());
+    let pendingFrame: number | undefined;
+    const commit = () => {
+      pendingFrame = undefined;
+      const current = readLandscapeDimensions();
+      // Browsers commonly report the same viewport update via both window and
+      // visualViewport. An unchanged logical landscape size must not rerender
+      // seven image rotors or recompute the entire painted stage.
+      setValue((previous) => previous.long === current.long && previous.short === current.short
+        ? previous : current);
+    };
+    const update = () => {
+      if (pendingFrame === undefined) pendingFrame = window.requestAnimationFrame(commit);
+    };
     window.addEventListener("resize", update);
     window.visualViewport?.addEventListener("resize", update);
+    update(); // resync once if the viewport changed before effects attached
     return () => {
       window.removeEventListener("resize", update);
       window.visualViewport?.removeEventListener("resize", update);
+      if (pendingFrame !== undefined) window.cancelAnimationFrame(pendingFrame);
     };
   }, []);
   return value;
