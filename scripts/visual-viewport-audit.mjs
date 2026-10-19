@@ -303,6 +303,9 @@ function inspectPaintedModal() {
       node.scrollHeight > node.clientHeight + 2);
   });
   const failures = [];
+  const blur = modal ? getComputedStyle(modal).backdropFilter : "unknown";
+  if (document.querySelector(".painted-app") && blur !== "none")
+    failures.push("painted modal still uses expensive background blur: " + blur);
   if (!within(rect(modal))) failures.push("overlay exceeds physical viewport");
   if (!within(rect(article))) failures.push("dialog panel clipped by physical viewport");
   if (!within(rect(heading))) failures.push("dialog heading clipped");
