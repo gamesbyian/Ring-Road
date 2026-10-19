@@ -203,7 +203,7 @@ function inspectDOM(requestedSkin) {
  * painted layer, the CSS-rotated portrait shell, and React reducer agree.
  * Screenshots are captured BEFORE these actions to preserve stable comparisons.
  */
-async function smokePaintedInteraction(cdp, testFullTurns = false) {
+async function smokePaintedInteraction(cdp, testFullTurns = false, capturePose = async () => {}) {
   const errors = [];
   const read = (expression) => cdp.evaluate(expression);
   const moveCount = () => read("Number(document.querySelector('.reference-moves-card strong')?.textContent?.trim() || -1)");
@@ -301,6 +301,7 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
         }
         for (let step = 0; step < cycle; step++) {
           await click(control + " button:last-child");
+          if (art === 0 && step === 0) await capturePose("red-one-step");
         }
         turns += cycle;
         await expectMoves(turns, "painted full-turn ring " + (art + 1));
@@ -377,6 +378,7 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
       if (solvedMoves !== 11 || !canFire) {
         errors.push("painted center did not unlock after exact eleven-move solution");
       } else {
+        await capturePose("exact-aligned-pre-fire");
         await click(".painted-hub-button");
         await delay(480); // complete-state modal follows real fire animation
         const completed = await read(
@@ -463,7 +465,19 @@ try {
     const screenshot = await cdp.send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(out, filename + ".png"), Buffer.from(screenshot.data, "base64"));
     if (skin === "painted" && ["568x320", "844x390", "390x844", "1536x864", "1920x1080"].includes(width + "x" + height)) {
-      result.interactionFailures = await smokePaintedInteraction(cdp, width === 1536 && height === 864);
+      const nativePhoto = width === 1536 && height === 864;
+      // Additional evidence captures are from the SAME REAL in-page puzzle
+      // after physical clicks, never synthetic CSS sprite rotations or a
+      // manually altered reducer. Keep the baseline native screenshot stable.
+      const capturePose = nativePhoto ? async (pose) => {
+        await delay(210); // finish the 150ms genuine source-sprite rotation
+        await cdp.evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+        const poseImage = await cdp.send("Page.captureScreenshot", {
+          format: "png", captureBeyondViewport: false
+        });
+        await writeFile(join(out, filename + "-" + pose + ".png"), Buffer.from(poseImage.data, "base64"));
+      } : async () => {};
+      result.interactionFailures = await smokePaintedInteraction(cdp, nativePhoto, capturePose);
       result.failures.push(...result.interactionFailures.map((reason) => "interaction: " + reason));
     }
     captures.push(result);
