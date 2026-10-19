@@ -59,57 +59,81 @@ export function paintedRingSpriteUrl(filename: string, assetRoot: string): strin
   return sprites.get(filename) ?? (assetRoot + filename);
 }
 
-/** Bilinear, alpha-premultiplied texture sampling. Angular coordinate never changes. */
-function warpRing(source: Uint8ClampedArray, artIndex: number): ImageData {
+/**
+ * Bilinear, premultiplied-alpha image-space remap. Pure pixels so a fixture
+ * can verify output against the original implementation without a browser.
+ *
+ * Runtime geometry and numerical sampling are unchanged. Pixel visits outside
+ * the destination annulus never allocate or compute square roots. Inside it,
+ * scalar weights/offsets replace the old per-pixel weights[]/neighbors[] arrays
+ * (millions of transient JS allocations across seven 900px sprites).
+ */
+export function warpRingPixels(source: Uint8ClampedArray, artIndex: number): Uint8ClampedArray {
   const size = PAINTED_RING_CANVAS;
+  if (source.length !== size * size * 4) {
+    throw new RangeError("Invalid painted source texture size");
+  }
   const center = (size - 1) / 2;
-  const target = new ImageData(size, size);
-  const result = target.data;
+  const result = new Uint8ClampedArray(size * size * 4);
   const band = REFERENCE_PAINTED_BANDS[artIndex];
   if (!band) throw new RangeError("Invalid painted art ring");
+  const innerSquared = band.inner * band.inner;
+  const outerSquared = band.outer * band.outer;
+  const original = ORIGINAL_PAINTED_BANDS[artIndex]!;
+  const radiusScale = (original.outer - original.inner) / (band.outer - band.inner);
   const bound = Math.ceil(band.outer + 1);
   const low = Math.max(0, Math.floor(center - bound));
   const high = Math.min(size - 1, Math.ceil(center + bound));
+  const stride = size * 4;
+
   for (let y = low; y <= high; y++) {
     const dy = y - center;
+    const dySquared = dy * dy;
     for (let x = low; x <= high; x++) {
       const dx = x - center;
+      const squared = dx * dx + dySquared;
+      if (squared < innerSquared || squared > outerSquared) continue;
+      // Match the historical radial map's order of arithmetic, while skipping
+      // its bounds checks at each valid pixel.
       const radius = Math.hypot(dx, dy);
-      const sampleRadius = sourceRadiusAt(radius, artIndex);
-      if (sampleRadius === null) continue;
-      const sx = center + dx * sampleRadius / radius;
-      const sy = center + dy * sampleRadius / radius;
+      const sampleRadius = original.inner + (radius - band.inner) * radiusScale;
+      const factor = sampleRadius / radius;
+      const sx = center + dx * factor;
+      const sy = center + dy * factor;
       const x0 = Math.max(0, Math.min(size - 2, Math.floor(sx)));
       const y0 = Math.max(0, Math.min(size - 2, Math.floor(sy)));
       const fx = sx - x0, fy = sy - y0;
-      const weights = [
-        (1 - fx) * (1 - fy), fx * (1 - fy),
-        (1 - fx) * fy, fx * fy,
-      ];
-      const neighbors = [
-        (y0 * size + x0) * 4,
-        (y0 * size + x0 + 1) * 4,
-        ((y0 + 1) * size + x0) * 4,
-        ((y0 + 1) * size + x0 + 1) * 4,
-      ];
-      let alpha = 0, red = 0, green = 0, blue = 0;
-      for (let k = 0; k < 4; k++) {
-        const index = neighbors[k]!;
-        const coverage = source[index + 3]! * weights[k]!;
-        alpha += coverage;
-        red += source[index]! * coverage;
-        green += source[index + 1]! * coverage;
-        blue += source[index + 2]! * coverage;
-      }
+      const a = (1 - fx) * (1 - fy);
+      const b = fx * (1 - fy);
+      const c = (1 - fx) * fy;
+      const d = fx * fy;
+      const p00 = y0 * stride + x0 * 4;
+      const p01 = p00 + 4;
+      const p10 = p00 + stride;
+      const p11 = p10 + 4;
+      const w00 = source[p00 + 3]! * a;
+      const w01 = source[p01 + 3]! * b;
+      const w10 = source[p10 + 3]! * c;
+      const w11 = source[p11 + 3]! * d;
+      const alpha = w00 + w01 + w10 + w11;
       if (alpha < 0.1) continue;
-      const outIndex = (y * size + x) * 4;
-      result[outIndex] = red / alpha;
-      result[outIndex + 1] = green / alpha;
-      result[outIndex + 2] = blue / alpha;
-      result[outIndex + 3] = alpha;
+      const out = y * stride + x * 4;
+      result[out] = (
+        source[p00]! * w00 + source[p01]! * w01 +
+        source[p10]! * w10 + source[p11]! * w11
+      ) / alpha;
+      result[out + 1] = (
+        source[p00 + 1]! * w00 + source[p01 + 1]! * w01 +
+        source[p10 + 1]! * w10 + source[p11 + 1]! * w11
+      ) / alpha;
+      result[out + 2] = (
+        source[p00 + 2]! * w00 + source[p01 + 2]! * w01 +
+        source[p10 + 2]! * w10 + source[p11 + 2]! * w11
+      ) / alpha;
+      result[out + 3] = alpha;
     }
   }
-  return target;
+  return result;
 }
 
 function encodedWebp(canvas: HTMLCanvasElement): Promise<Blob> {
@@ -135,7 +159,7 @@ async function retopologizeRing(root: string, filename: string, index: number): 
   if (!context) throw new Error("Canvas 2D unavailable");
   context.drawImage(image, 0, 0);
   const bytes = context.getImageData(0, 0, PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
-  const warped = warpRing(bytes.data, index);
+  const warped = new ImageData(warpRingPixels(bytes.data, index), PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
   context.clearRect(0, 0, PAINTED_RING_CANVAS, PAINTED_RING_CANVAS);
   context.putImageData(warped, 0, 0);
   return URL.createObjectURL(await encodedWebp(canvas));
