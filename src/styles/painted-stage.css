@@ -1559,3 +1559,44 @@
 .painted-stage.reference-first-scene[data-photo-layout="false"][data-tall-layout="false"] .actions button.solution-compact-action {
   display: none;
 }
+
+/*
+ * A 568×320 landscape phone previously revealed only the first three of the
+ * seven live Solution instructions. The source image has no open-dialog state,
+ * so make the existing PARCHMENT dialog useful without scrolling: two balanced
+ * columns of the real ring instructions on short painted viewports only.
+ *
+ * The main stage stays one-screen landscape, and the app-shell's CSS rotation
+ * still carries the whole modal into portrait. Classic mode and larger
+ * painted modal layouts retain their original single-column presentation.
+ */
+@media (orientation: landscape) and (max-height: 430px),
+       (orientation: portrait) and (max-width: 430px) {
+  .painted-app .modal-solution .modal-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    column-gap: 12px;
+    row-gap: 5px;
+    padding: 12px 18px 10px;
+  }
+  .painted-app .modal-solution .modal-scroll > h2 {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0 0 3px;
+    padding-bottom: 7px;
+    font-size: 1.45rem;
+    line-height: 1.1;
+  }
+  .painted-app .modal-solution .modal-scroll > p {
+    min-width: 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  .painted-app .modal-solution .modal-footer {
+    padding: 8px 16px 12px;
+  }
+}
