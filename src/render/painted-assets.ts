@@ -55,15 +55,23 @@ export async function paintedAssetsReady(): Promise<boolean> {
   try {
     const response = await fetch(root + "manifest.json", { cache: "no-cache" });
     if (!response.ok || !isCompletePaintedManifest(await response.json())) return false;
+    // Keep only the *already loaded* seven originals for retopology; the
+    // remaining 13 validated images need no JS object references afterward.
+    // Previously each ring was opened again as a new Image() in the warp path,
+    // adding seven redundant image/decode lifetimes during mobile startup.
+    const loadedRings = new Map<string, HTMLImageElement>();
     await Promise.all(REQUIRED_PAINTED_ASSETS.map((name) => new Promise<void>((resolve, reject) => {
       const img = new Image();
-      img.onload = () => resolve();
+      img.onload = () => {
+        if (name.startsWith("ring-")) loadedRings.set(name, img);
+        resolve();
+      };
       img.onerror = () => reject(new Error("Reference skin asset failed: " + name));
       img.src = root + name;
     })));
     // Purely visual image-space remap. Source assets remain the fallback.
     // Wait for this to finish before mounting the real painted game scene.
-    await preparePaintedRingTextures(root);
+    await preparePaintedRingTextures(root, loadedRings);
     return true;
   } catch {
     return false;
