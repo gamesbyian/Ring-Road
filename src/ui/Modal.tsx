@@ -5,7 +5,7 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   closeLabel?: string;
-  variant?: "paper" | "completion";
+  variant?: "paper" | "completion" | "solution";
 }
 
 export function Modal({ title, onClose, children, closeLabel = "Close", variant = "paper" }: ModalProps) {
