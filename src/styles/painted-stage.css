@@ -1600,3 +1600,32 @@
     padding: 8px 16px 12px;
   }
 }
+
+/*
+ * The native painting does not depict an open tutorial. At 568x320 the
+ * unabridged paper-guide paragraph scrolled beneath Play with no obvious
+ * affordance. Keep ALL the actual rules in concise copy and set a compact
+ * vertical typographic rhythm for painted's short landscape/rotated phones.
+ * Classic retains its full text and original modal layout.
+ */
+@media (orientation: landscape) and (max-height: 430px),
+       (orientation: portrait) and (max-width: 430px) {
+  .painted-app .modal-guide .modal-scroll {
+    padding: 10px 18px 8px;
+  }
+  .painted-app .modal-guide .modal-scroll > h2 {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    font-size: 24px;
+    line-height: 1.15;
+  }
+  .painted-app .modal-guide .modal-scroll > p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.32;
+    font-weight: 550;
+  }
+  .painted-app .modal-guide .modal-footer {
+    padding: 8px 16px 12px;
+  }
+}
