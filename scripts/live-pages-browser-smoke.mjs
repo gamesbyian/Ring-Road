@@ -92,7 +92,7 @@ async function probe(label,url) {
   console.log("LIVE PAGES "+JSON.stringify(entry));
   if (!sample?.shell||sample?.controls!==7||!sample?.visibleMain)
     throw Error(label+" deployed page did not render the game; see "+out+"/"+label+".json");
-  if(label==="painted"&&(sample.skinMode!=="painted"||!sample.painted))
+  if(label.startsWith("painted")&&(sample.skinMode!=="painted"||!sample.painted))
     throw Error("Painted hosted page did not activate painted scene: "+JSON.stringify(sample));
   if(events.some(x=>x.event==="Runtime.exceptionThrown"||x.event==="Inspector.targetCrashed"))
     throw Error(label+" hosted JS crash: "+JSON.stringify(events.slice(-5)));
@@ -115,6 +115,10 @@ try {
   const suffix="?diagnostic="+Date.now();
   await probe("classic",new URL(suffix,target).toString());
   await probe("painted",new URL("?skin=painted&diagnostic="+Date.now(),target).toString());
+  // Test the *exact* URL previously handed to the owner, including its
+  // cache-buster; do not mistake a differently formatted link for the fix.
+  await probe("painted-exact-link",
+    new URL("?skin=painted&build=android-render-fix-20261019",target).toString());
 } finally {
   socket?.close();
   if(chrome&&chrome.exitCode===null){chrome.kill("SIGTERM");await Promise.race([new Promise(r=>chrome.once("exit",r)),sleep(1800)]);}
