@@ -5,3 +5,14 @@ Thumbs.db
 .tmp/
 tmp/
 coverage/
+
+# Generated native build outputs, local SDK configuration and signing material.
+# The source android/ Gradle project itself IS tracked after bootstrap.
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/*.keystore
+android/app/*.keystore
+android/*.jks
+android/app/*.jks
