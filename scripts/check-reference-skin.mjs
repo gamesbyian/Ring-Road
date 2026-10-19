@@ -56,4 +56,31 @@ for (const filename of observed) if (!imported.has(filename)) {
 if (bytes > 3 * 1024 * 1024) {
   throw new Error("Reference art package exceeds 3 MiB review budget");
 }
+
+// These tiny Vite-imported *derived* source-paper plates live outside the
+// original 20-asset package. Guard their exact approved byte provenance too:
+// modified example digits must never reappear under live DOM counters.
+const cleanedPlates = [
+  {
+    file: "moves-clean-1536.webp",
+    bytes: 3654,
+    sha256: "bb2936968a3653716095206f3315b067def36e6cd1aa8a41b9d60ef3f0d355a3",
+  },
+  {
+    file: "puzzle-clean-1536.webp",
+    bytes: 2510,
+    sha256: "2d374361707951136b322fc39ee409b5327a2512bb03fcbec5e18372fd88c3db",
+  },
+];
+for (const record of cleanedPlates) {
+  const file = new URL("../src/assets/painted/" + record.file, import.meta.url);
+  const data = await readFile(file);
+  const header = data.toString("ascii", 0, 4) === "RIFF" &&
+    data.toString("ascii", 8, 12) === "WEBP";
+  const digest = createHash("sha256").update(data).digest("hex");
+  if (!header || data.length !== record.bytes || digest !== record.sha256) {
+    throw new Error("Source-cleaned live parchment asset mismatch: " + record.file);
+  }
+}
 console.log("Verified " + imported.size + " painted image assets, " + bytes + " compressed bytes.");
+console.log("Verified " + cleanedPlates.length + " source-cleaned, state-free paper plates.");
