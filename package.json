@@ -18,13 +18,16 @@
     "visual:audit": "node scripts/visual-viewport-audit.mjs",
     "check:skin-art": "node scripts/check-reference-skin.mjs",
     "check:visual-audit": "node --check scripts/visual-viewport-audit.mjs",
-    "build:android": "tsc --noEmit && vite build --base=./"
+    "build:android": "tsc --noEmit && vite build --base=./",
+    "android:prepare": "node scripts/prepare-android.mjs",
+    "android:apk": "npm run build:android && npm run android:prepare && cd android && ./gradlew assembleDebug --no-daemon"
   },
   "dependencies": {
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "@capacitor/core": "^7.4.0",
-    "@capacitor/android": "^7.4.0"
+    "@capacitor/core": "7.4.0",
+    "@capacitor/android": "7.4.0",
+    "@capacitor/app": "7.1.2"
   },
   "devDependencies": {
     "@types/react": "19.1.16",
@@ -33,7 +36,7 @@
     "typescript": "5.9.2",
     "vite": "8.3.1",
     "vitest": "5.0.3",
-    "@capacitor/cli": "^7.4.0"
+    "@capacitor/cli": "7.4.0"
   },
   "engines": {
     "node": ">=22.12.0"
