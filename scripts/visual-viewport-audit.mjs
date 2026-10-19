@@ -185,6 +185,20 @@ function inspectDOM(requestedSkin) {
     const scale = rect.width / badge.offsetWidth;
     return heading.getBoundingClientRect().left < rect.left + (left + width) * scale + 1;
   })();
+  // Source registration is a geometry contract, not a subjective judgement:
+  // in the 1536px-wide approved scene, the real board centre lies 43px right
+  // of the scene centre. Tall layout may shrink the live ring art, but should
+  // not move its centre relative to the underlying fixed sandstone arena.
+  const tallBoardCenterDrift = (() => {
+    if (document.querySelector(".painted-stage")?.dataset.tallLayout !== "true") return 0;
+    const board = document.querySelector(".painted-ring-board");
+    const world = document.querySelector(".painted-world");
+    if (!board || !world) return Infinity;
+    const b = board.getBoundingClientRect(), w = world.getBoundingClientRect();
+    const measured = (b.left + b.right) / 2;
+    const registered = w.left + w.width * (768 + 43) / 1536;
+    return Math.abs(measured - registered);
+  })();
   // The tall landscape action triplet must occupy one readable, clickable
   // row like the source/native photo seals, not a spillover 2×2 grid.
   const tallActionsUnregistered = (() => {
@@ -201,6 +215,7 @@ function inspectDOM(requestedSkin) {
   })();
   const failures = [
     ...(tallGoalOverlap ? ["tall landscape Goal heading overlaps painted help medallion"] : []),
+    ...(tallBoardCenterDrift > 2 ? ["tall landscape live rings drift from source sandstone board: " + tallBoardCenterDrift.toFixed(2) + "px"] : []),
     ...(tallActionsUnregistered ? ["tall landscape actions not three accessible painted seals in one row"] : []),
     ...(duplicateSolutionVisible ? ["duplicate painted Solution action visible"] : []),
     ...(painted && !photoLayout && bestVisible ? ["compact Moves plaque has a visible extra Best row"] : []),
