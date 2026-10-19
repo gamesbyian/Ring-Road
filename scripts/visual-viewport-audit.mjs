@@ -280,7 +280,7 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
       // the native reference viewport. Preserve logical unbounded visual
       // degrees and each original alpha notch, not just normalized state.
       const degrees = (value) => {
-        const match = /^rotate\\((-?[0-9.]+)deg\\)$/.exec(value || "");
+        const match = /^rotate\((-?[0-9.]+)deg\)$/.exec(value || "");
         return match ? Number(match[1]) : NaN;
       };
       const ringTransform = (art) => read(
@@ -294,7 +294,7 @@ async function smokePaintedInteraction(cdp, testFullTurns = false) {
         originals.push(initial);
         const groupLabel = await read("document.querySelector(" +
           JSON.stringify(control) + ")?.getAttribute('aria-label')");
-        const cycle = Number(/ of (\\d+)$/.exec(groupLabel || "")?.[1]);
+        const cycle = Number(/ of (\d+)$/.exec(groupLabel || "")?.[1]);
         if (!(cycle >= 2 && cycle <= 19)) {
           errors.push("invalid ring cycle in accessibility label: " + groupLabel);
           continue;
