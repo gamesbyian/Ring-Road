@@ -5,8 +5,8 @@ const routes = {
   solver: ["src/domain/solver.ts", "src/test/domain.test.ts"],
   campaign: ["src/content/campaign.ts", "src/test/domain.test.ts"],
   state: ["src/app/game-state.ts", "src/test/game-state.test.ts"],
-  render: ["src/render/RingBoard.tsx", "src/render/ring-geometry.ts", "src/styles/app.css"],
-  ui: ["src/App.tsx", "src/ui/Modal.tsx", "src/styles/app.css"],
+  render: ["src/render/PaintedScene.tsx", "src/render/painted-geometry.ts", "src/render/painted-ring-retopology.ts", "src/styles/painted-stage.css"],
+  ui: ["src/App.tsx", "src/ui/Modal.tsx", "src/styles/app.css", "src/styles/painted-stage.css"],
   tooling: ["package.json", "vite.config.ts", "tsconfig.json", "scripts/check-repo.mjs"]
 };
 const args = process.argv.slice(2);
