@@ -1,0 +1,1 @@
+Read `../AGENTS.md` as the canonical Ring Road agent guide, then load the active production source and relevant documentation. The single-file prototype and classic renderer are reference evidence, not current implementation. Use `npm run context -- --list` for bounded production source discovery and validate painted one-screen mobile behavior proportionately.

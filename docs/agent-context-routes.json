@@ -45,9 +45,10 @@
       "src/test/game-state.test.ts"
     ],
     "renderer": [
-      "src/render/RingBoard.tsx",
-      "src/render/ring-geometry.ts",
-      "src/styles/app.css"
+      "src/render/PaintedScene.tsx",
+      "src/render/painted-geometry.ts",
+      "src/render/painted-ring-retopology.ts",
+      "src/styles/painted-stage.css"
     ],
     "ui": [
       "src/App.tsx",
@@ -56,6 +57,12 @@
     "browser": [
       "scripts/browser-smoke.mjs",
       "docs/testing.md"
+    ],
+    "tooling": [
+      "package.json",
+      "vite.config.ts",
+      "tsconfig.json",
+      "scripts/check-repo.mjs"
     ]
   }
 }

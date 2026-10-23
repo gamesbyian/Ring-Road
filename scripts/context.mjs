@@ -1,14 +1,9 @@
 import { readFile } from "node:fs/promises";
 
-const routes = {
-  domain: ["src/domain/puzzle.ts", "src/domain/authoring.ts", "src/test/domain.test.ts"],
-  solver: ["src/domain/solver.ts", "src/test/domain.test.ts"],
-  campaign: ["src/content/campaign.ts", "src/test/domain.test.ts"],
-  state: ["src/app/game-state.ts", "src/test/game-state.test.ts"],
-  render: ["src/render/RingBoard.tsx", "src/render/ring-geometry.ts", "src/styles/app.css"],
-  ui: ["src/App.tsx", "src/ui/Modal.tsx", "src/styles/app.css"],
-  tooling: ["package.json", "vite.config.ts", "tsconfig.json", "scripts/check-repo.mjs"]
-};
+// Share one production source-route manifest with the context-budget tooling.
+const configuredRoutes = JSON.parse(await readFile("docs/agent-context-routes.json", "utf8")).productionRoutes;
+const routes = { ...configuredRoutes, render: configuredRoutes.renderer };
+
 const args = process.argv.slice(2);
 const arg = (name) => args.find((item) => item.startsWith(`--${name}=`))?.split("=").slice(1).join("=");
 if (!args.length || args.includes("--list")) {
@@ -26,7 +21,7 @@ if (section) {
 const term = arg("find")?.toLowerCase();
 if (term) {
   let found = false;
-  for (const files of Object.values(routes)) for (const file of files) {
+  for (const file of new Set(Object.values(routes).flat())) {
     const lines = (await readFile(file, "utf8")).split(/\r?\n/);
     lines.forEach((line, index) => { if (line.toLowerCase().includes(term)) { found = true; console.log(`${file}:${index + 1}: ${line.trim()}`); } });
   }
