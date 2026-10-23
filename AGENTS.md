@@ -46,6 +46,14 @@ If production intentionally differs from prototype behavior, encode the intended
 9. Keep mutable facts in one current authority; replace stale claims instead of appending competing ones.
 10. Use branches/PRs for changes and leave the repository at a safe handoff point.
 
+## Autonomous execution and human-facing quality
+
+- Start from fresh `main`; inspect active PRs/issues before choosing a shared source file. Prefer the smallest production change that resolves a verified behavior or art defect; avoid reopening retired renderer/prototype work.
+- For every UI change, name the intended player action and visible result. Check discoverability, immediate feedback, recovery, keyboard/focus and touch interactions, instead of treating a pleasing screenshot as usability proof. Distinguish source review, emulation, viewed output and *actual handset* evidence.
+- Preserve the one-screen landscape composition on mobile, including the entire CSS-rotated portrait experience. Do not solve overflow by adding scrolling or hiding one of the seven controls. Validate reduced browser-chrome viewports and touch-safe gutters, not just nominal panel resolution.
+- Changes crossing domain, state and renderer boundaries need a single semantic owner and corresponding domain/reducer/browser checks. Use existing art/import/geometry paths before adding a parallel implementation.
+- Complete work in a focused branch/PR. Report actual changed behavior, commands/results, viewport and device evidence, unresolved acceptance gates and any conflicting active lane. Rebase/reconcile against new `main` before merge; update only the authority that owns the resulting fact.
+
 ## Product invariants
 
 - seven rings;
